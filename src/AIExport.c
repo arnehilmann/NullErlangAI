@@ -66,28 +66,25 @@ int receive_command_from_hq() {
                 break;
         }
     } else {
-        fprintf(stdout, "message received\n");
-        fprintf(stdout, "type: %li\n", msg.msgtype);
-        fprintf(stdout, "toname: %s\n", msg.toname);
-        fprintf(stdout, "buffer: %s\n", recvbuf.buff);
-        fprintf(stdout, "buffer size: %i\n", recvbuf.buffsz);
-        fprintf(stdout, "buffer index: %i\n", recvbuf.index);
+        printf("message received: ");
+        // fprintf(stdout, "type: %li\n", msg.msgtype);
+        // fprintf(stdout, "toname: %s\n", msg.toname);
+        // fprintf(stdout, "buffer: %s\n", recvbuf.buff);
+        // fprintf(stdout, "buffer size: %i\n", recvbuf.buffsz);
+        // fprintf(stdout, "buffer index: %i\n", recvbuf.index);
 
         char command[24];
         int index, version, arity;
 
         index = 0;
         ei_decode_version(recvbuf.buff, &index, &version);
-        fprintf(stdout, "version: %i\n", version);
-        fprintf(stdout, "index: %i\n", index);
-
         ei_decode_tuple_header(recvbuf.buff, &index, &arity);
-        fprintf(stdout, "arity: %i\n", arity);
-        fprintf(stdout, "index: %i\n", index);
-
         ei_decode_atom(recvbuf.buff, &index, command);
-        fprintf(stdout, "command: %s\n", command);
-        fprintf(stdout, "index: %i\n", index);
+
+        // fprintf(stdout, "version: %i\n", version);
+        fprintf(stdout, " %s", msg.toname);
+        fprintf(stdout, " /%i", arity);
+        fprintf(stdout, " 0:'%s'\n", command);
 
         /*
         if (emsg.type == ERL_REG_SEND) {
