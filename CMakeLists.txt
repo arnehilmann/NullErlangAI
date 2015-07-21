@@ -3,8 +3,8 @@
 
 set(mySourceDirRel         "src") # Common values are "" or "src"
 set(additionalSources      "")
-set(additionalCompileFlags "-Ierl_interface-3.8/include")
-set(additionalLibraries    ${Cpp_AIWRAPPER_TARGET} CUtils "-L${CMAKE_SOURCE_DIR}/AI/Skirmish/TccAI/erl_interface-3.8/lib" "erl_interface" "ei" "nsl")
+set(additionalCompileFlags "-Ierl_interface/include")
+set(additionalLibraries    ${Cpp_AIWRAPPER_TARGET} CUtils "-L${CMAKE_SOURCE_DIR}/AI/Skirmish/TccAI/erl_interface/lib" "erl_interface" "ei" "nsl")
 
 
 if    (BUILD_Cpp_AIWRAPPER)
