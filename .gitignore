@@ -3,3 +3,5 @@ tags
 CMakeFiles
 Makefile
 cmake_install.cmake
+lib*.so
+erl_interface*
