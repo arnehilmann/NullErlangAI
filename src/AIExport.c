@@ -15,8 +15,17 @@
 
 #define BUFSIZE 1000
 
+
+
+int ai = -1;
 ei_cnode ec;
 int fd = -1;
+erlang_pid hq;
+
+ei_x_buff sendbuf;
+ei_x_buff recvbuf;
+
+
 
 EXPORT(int) init(int skirmishAIId, const struct SSkirmishAICallback* callback) {
     fprintf(stdout, "Starting up Erlang CNode %i\n", skirmishAIId);
@@ -29,76 +38,11 @@ EXPORT(int) init(int skirmishAIId, const struct SSkirmishAICallback* callback) {
     fprintf(stdout, "node: %s\n", ei_thisnodename(&ec));
     fprintf(stdout, "host: %s\n", ei_thishostname(&ec));
 
-    return 0;
-}
-
-
-int receive_command_from_hq() {
-    int hq = ensure_connection_to_hq();
-    if (hq < 0) {
-        return 0;
-    }
-
-    erl_errno = 0;
-
-    // unsigned char buf[BUFSIZE];
-    // int got = ei_receive_tmo(hq, buf, BUFSIZE, 10);
-
-    erlang_msg msg;
-    ei_x_buff recvbuf;
     ei_x_new(&recvbuf);
 
-    int got = ei_xreceive_msg_tmo(hq, &msg, &recvbuf, 10);
-
-    if (got == ERL_TICK) {
-        // ignore
-    } else if (got == ERL_ERROR) {
-        switch (erl_errno) {
-            case EAGAIN:
-                break;
-            case EMSGSIZE:
-                erl_err_quit("msgsize!");
-                break;
-            case EIO:
-                fprintf(stderr, "IO-Error?!\n");
-                break;
-            case ETIMEDOUT:
-                break;
-        }
-    } else {
-        printf("message received: ");
-        // fprintf(stdout, "type: %li\n", msg.msgtype);
-        // fprintf(stdout, "toname: %s\n", msg.toname);
-        // fprintf(stdout, "buffer: %s\n", recvbuf.buff);
-        // fprintf(stdout, "buffer size: %i\n", recvbuf.buffsz);
-        // fprintf(stdout, "buffer index: %i\n", recvbuf.index);
-
-        char command[24];
-        int index, version, arity;
-
-        index = 0;
-        ei_decode_version(recvbuf.buff, &index, &version);
-        ei_decode_tuple_header(recvbuf.buff, &index, &arity);
-        ei_decode_atom(recvbuf.buff, &index, command);
-
-        // fprintf(stdout, "version: %i\n", version);
-        fprintf(stdout, " %s", msg.toname);
-        fprintf(stdout, " /%i", arity);
-        fprintf(stdout, " 0:'%s'\n", command);
-
-        /*
-        if (emsg.type == ERL_REG_SEND) {
-            fromp = erl_element(2, emsg.msg);
-            resp = erl_format("{cnode, test}");
-            fprintf(stdout, "sending %s to %s\n", "{cnode, test}", "HQ");
-            erl_send(hq, fromp, resp);
-            erl_free_term(fromp);
-            erl_free_term(resp);
-        }
-        */
-    }
     return 0;
 }
+
 
 int ensure_connection_to_hq() {
     if (fd < 0) {
@@ -112,154 +56,83 @@ int ensure_connection_to_hq() {
     return fd;
 }
 
-int send_event_to_hq(int aiid, int topic, const void* data) {
-    fprintf(stdout, "sending event to hq\n");
 
-    int hq;
-    if ((hq = ensure_connection_to_hq()) < 0) {
-        return 0;
-    }
-    fprintf(stdout, "hq %i connected\n", hq);
-
-
-    /*
-    ErlConnect conn;
-
-    int loop = 1;
-    int got;
-    unsigned char buf[BUFSIZE];
-    ErlMessage emsg;
-
-    ETERM *fromp, *tuplep, *fnp, *argp, *resp;
-    int res;
-
-    if (fd < 0) {
-        if ((fd = erl_connect("foo@elk")) < 0) {
-            //erl_err_quit("connect");
-            printf("no connect?\n");
-            return 0;
-        }
-        printf("connected to foo@elk\n");
-    }
+int receive_command_from_hq() {
+    ensure_connection_to_hq();
     if (fd < 0) {
         return 0;
     }
 
-    // ei_receive_msg_tmo
-    got = erl_receive_msg(fd, buf, BUFSIZE, &emsg);
+    erlang_msg msg;
+
+    erl_errno = 0;
+    int got = ei_xreceive_msg_tmo(fd, &msg, &recvbuf, 10);
+
     if (got == ERL_TICK) {
         // ignore
     } else if (got == ERL_ERROR) {
-        loop = 0;
+        switch (erl_errno) {
+            case EAGAIN:
+                break;
+            case EMSGSIZE:
+                erl_err_quit("msgsize!");
+                break;
+            case EIO:
+                fprintf(stderr, "IO-Error?!\n");
+                fd = -1;
+                break;
+            case ETIMEDOUT:
+                break;
+        }
     } else {
-        if (emsg.type == ERL_REG_SEND) {
-            fromp = erl_element(2, emsg.msg);
-            resp = erl_format("{cnode, test}");
-            fprintf(stdout, "sending %s to %s\n", "{cnode, test}", "foo@elk");
-            erl_send(fd, fromp, resp);
-            erl_free_term(fromp);
-            erl_free_term(resp);
+        hq = msg.from;
+
+        char command[24];
+        int index, version, arity;
+
+        index = 0;
+        ei_decode_version(recvbuf.buff, &index, &version);
+        ei_decode_tuple_header(recvbuf.buff, &index, &arity);
+        ei_decode_atom(recvbuf.buff, &index, command);
+
+        fprintf(stdout, "\t%s <--[%i]-- /%i, 0:'%s'\n", msg.toname, fd, arity, command);
+        if (strcmp(command, "ping") == 0) {
+            send_event_to_hq(42, "pong");
         }
+
     }
+    return 0;
+}
 
-    / *
-    //if ((fd = erl_accept(listen_socket, &conn)) == ERL_ERROR)
-    int n;
-//    fd_set *rfds, *wfds;
-//    struct timeval tv = {0, 0};
-//    n = select(listen_sockeud, rfds, wfds, NULL, &tv);
-
-    n = 1;
-    switch (n) {
-        case 0:
-            // printf("timeout\n");
-            break;
-        case -1:
-            erl_err_quit("error in erl_accept");
-            break;
-        default:
-            printf("waiting\n");
-            fd = erl_accept(listen_socket, &conn);
-            printf("TADAHHHH\n");
-            got = erl_receive_msg(fd, buf, BUFSIZE, &emsg);
-            if (got == ERL_TICK) {
-                // ignore
-            } else if (got == ERL_ERROR) {
-                loop = 0;
-            } else {
-                if (emsg.type == ERL_REG_SEND) {
-                    fromp = erl_element(2, emsg.msg);
-                    tuplep = erl_element(3, emsg.msg);
-                    fnp = erl_element(1, tuplep);
-                    argp = erl_element(2, tuplep);
-
-                    fprintf(stderr, "%s\n", fromp);
-
-                    if (strncmp(ERL_ATOM_PTR(fnp), "foo", 3) == 0) {
-                        res = foo(ERL_INT_VALUE(argp));
-                    } else if (strncmp(ERL_ATOM_PTR(fnp), "bar", 3) == 0) {
-                        res = bar(ERL_INT_VALUE(argp));
-                    }
-
-                    resp = erl_format("{cnode, ~i}", res);
-                    erl_send(fd, fromp, resp);
-
-                    erl_free_term(emsg.from); erl_free_term(emsg.msg);
-                    erl_free_term(fromp); erl_free_term(tuplep);
-                    erl_free_term(fnp); erl_free_term(argp);
-                    erl_free_term(resp);
-                }
-            }
+int send_event_to_hq(int topic, const void* data) {
+    if (ensure_connection_to_hq() < 0) {
+        fprintf(stderr, "\thq unreachable, dropping topic %i\n", topic);
+        return 0;
     }
-    //fprintf(stderr, "Connected to %s\n\r", conn.nodename);
-    */
+    fprintf(stdout, "\t%i, data:'%s' --[%i]--> %s\n", topic, (char*)data, fd, hq.node);
 
+    ei_x_new_with_version(&sendbuf);
+    ei_x_encode_tuple_header(&sendbuf, 3);
+    ei_x_encode_atom(&sendbuf, "event");
+    ei_x_encode_long(&sendbuf, topic);
 
-    /*
-    if ((fd = erl_accept(listen_socket, &conn)) == ERL_ERROR)
-        erl_err_quit("erl_accept");
-    printf("ACCEPTED!!!!!!!!!!!!!!\n");
-
-    loop = 1;
-    while (loop--) {
-        printf(".");
-
-        got = erl_receive_msg(fd, buf, BUFSIZE, &emsg);
-        if (got == ERL_TICK) {
-        } else if (got == ERL_ERROR) {
-            loop = 0;
-        } else {
-
-            if (emsg.type == ERL_REG_SEND) {
-                fromp = erl_element(2, emsg.msg);
-                tuplep = erl_element(3, emsg.msg);
-                fnp = erl_element(1, tuplep);
-                argp = erl_element(2, tuplep);
-
-                if (strncmp(ERL_ATOM_PTR(fnp), "foo", 3) == 0) {
-                    res = foo(ERL_INT_VALUE(argp));
-                } else if (strncmp(ERL_ATOM_PTR(fnp), "bar", 3) == 0) {
-                    res = bar(ERL_INT_VALUE(argp));
-                }
-
-                resp = erl_format("{cnode, ~i}", res);
-                erl_send(fd, fromp, resp);
-
-                erl_free_term(emsg.from); erl_free_term(emsg.msg);
-                erl_free_term(fromp); erl_free_term(tuplep);
-                erl_free_term(fnp); erl_free_term(argp);
-                erl_free_term(resp);
-            }
-        }
+    //char* argh = "heureka again again";
+    char argh[10] = "wtf";
+    //ei_x_encode_string(&sendbuf, argh);
+    ei_x_encode_string(&sendbuf, "heureka again");
+    //ei_x_encode_string(&sendbuf, data);
+    //ei_x_encode_binary(&sendbuf, data, sizeof(data));
+    if (ei_send_tmo(fd, &hq, sendbuf.buff, sendbuf.index, 100) < 0) {
+        fprintf(stdout, "\tsend_event_to_hq failed: %i\n", erl_errno);
     }
-    */
+    ei_x_free(&sendbuf);
 
-    // signal: ok
     return 0;
 }
 
 
 EXPORT(int) handleEvent(int skirmishAIId, int topic, const void* data) {
+    ai = skirmishAIId;
     if (topic == 3) {
         int frame = *((int*)data);  // I 'love' pointers :o)
         if (frame == 1) {
@@ -267,16 +140,17 @@ EXPORT(int) handleEvent(int skirmishAIId, int topic, const void* data) {
         }
         if (frame % 6000 == 0) {
             fprintf(stdout, "frame: %i\n", frame);
+            send_event_to_hq(42, "tick");
         }
-        if (frame % 600 == 0) {
+        if (frame % 60 == 0) {
             return receive_command_from_hq();
         }
         return 0;
     }
 
-    fprintf(stdout, "ai id: %i\n", skirmishAIId);
-    fprintf(stdout, "topic: %i\n", topic);
-    fprintf(stdout, "data : %s\n", data);
+    // fprintf(stdout, "ai id: %i\n", skirmishAIId);
+    // fprintf(stdout, "topic: %i\n", topic);
+    // fprintf(stdout, "data : %s\n", (char*)data);
 
-    return send_event_to_hq(skirmishAIId, topic, data);
+    return send_event_to_hq(topic, data);
 }
