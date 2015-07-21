@@ -117,11 +117,13 @@ int send_event_to_hq(int topic, const void* data) {
     ei_x_encode_long(&sendbuf, topic);
 
     //char* argh = "heureka again again";
-    char argh[10] = "wtf";
+    //char* argh = "wtf";
+    //ei_x_encode_binary(&sendbuf, "wtf", 4);
     //ei_x_encode_string(&sendbuf, argh);
     ei_x_encode_string(&sendbuf, "heureka again");
     //ei_x_encode_string(&sendbuf, data);
     //ei_x_encode_binary(&sendbuf, data, sizeof(data));
+    fprintf(stdout, "\tbuffer:'%s'\n", sendbuf.buff);
     if (ei_send_tmo(fd, &hq, sendbuf.buff, sendbuf.index, 100) < 0) {
         fprintf(stdout, "\tsend_event_to_hq failed: %i\n", erl_errno);
     }
