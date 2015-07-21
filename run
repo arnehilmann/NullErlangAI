@@ -1,0 +1,6 @@
+#!/bin/bash
+
+SPRING_DIR=~/spring
+
+make install
+$SPRING_DIR/bin/spring-headless -w res/tccaitest_script.txt
