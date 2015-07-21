@@ -1,27 +1,23 @@
 #!/bin/bash
 set -e -E -u
 
-SPRING_GIT=${1:-../spring}
-SPRING_DIR=${2:-~/spring}
-ERL_INTERFACE_DIR=${3:-/usr/lib/erlang/lib/erl_interface-*}
+SPRING_DIR=${1:-~/spring}
+ERL_INTERFACE_DIR=${2:-/usr/lib/erlang/lib/erl_interface-*}
 SCRIPT_DIR=$PWD
 
 echo "Preparing TccAI development environment"
-echo "spring checkout: $SPRING_GIT"
 echo " spring install: $SPRING_DIR"
 echo "  erl interface: $ERL_INTERFACE_DIR"
 
-ln -sf "$ERL_INTERFACE_DIR" .
-(
-    cd $SPRING_GIT/AI/Skirmish
-    ln -sf $SCRIPT_DIR .
-)
+git clean -fx
+
+ln -sf $ERL_INTERFACE_DIR erl_interface
 
 (
-    cd $SPRING_GIT
+    cd ../../..
     cmake .
-
-    mkdir -p games maps
 )
+
+mkdir -p $SPRING_DIR/games $SPRING_DIR/maps
 
 make install
