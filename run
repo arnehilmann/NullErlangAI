@@ -2,5 +2,5 @@
 
 SPRING_DIR=~/spring
 
-make install
+make clean install
 $SPRING_DIR/bin/spring-headless -w res/tccaitest_script.txt
