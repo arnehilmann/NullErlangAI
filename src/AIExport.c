@@ -1,9 +1,10 @@
 #include "AIExport.h"
 #include "ExternalAI/Interface/SSkirmishAICallback.h"
-
+#include "ExternalAI/Interface/AISCommands.h"
 
 
 #include <string.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -14,28 +15,31 @@
 #include "ei.h"
 
 #define BUFSIZE 1000
-#define CONNECT_TMO 10
-
+#define COMM_TMO 10
 
 #define HQ_NODE "hq@localhost"
 #define GENERAL "general"
+#define NODE_NAME "springai"
+#define COOKIE "springai"
 
 
-int ai_id = -1;
+int team_id = -1;
 int frame = -1;
 
 ei_cnode ec;
 int uplink = -1;
+const struct SSkirmishAICallback* callback;
 
 
+EXPORT(int) init(int new_team_id, const struct SSkirmishAICallback* new_callback) {
+    team_id = new_team_id;
+    callback = new_callback;
 
+    fprintf(stdout, "sync version: %s\n", callback->Engine_Version_getFull(team_id));
 
-EXPORT(int) init(int skirmishAIId, const struct SSkirmishAICallback* callback) {
-    fprintf(stdout, "Starting up Erlang CNode %i\n", skirmishAIId);
+    fprintf(stdout, "\n\n\t\tStarting up Erlang CNode, Team %i\n\n", team_id);
 
-    ai_id = skirmishAIId;
-
-    if (ei_connect_init(&ec, "springai", "springai", ai_id) < 0) {
+    if (ei_connect_init(&ec, NODE_NAME, COOKIE, team_id) < 0) {
         fprintf(stderr, "ERROR when initializing: %d", erl_errno);
         exit(-1);
     }
@@ -49,7 +53,7 @@ EXPORT(int) init(int skirmishAIId, const struct SSkirmishAICallback* callback) {
 
 int check_uplink() {
     if (uplink < 0) {
-        uplink = ei_connect_tmo(&ec, HQ_NODE, CONNECT_TMO);
+        uplink = ei_connect_tmo(&ec, HQ_NODE, COMM_TMO);
         if (uplink < 0) {
             if (frame % 600 == 0) {
                 fprintf(stderr, "uplink still not available\n");
@@ -63,21 +67,136 @@ int check_uplink() {
 
 
 int send_to_hq(ei_x_buff buff) {
-    if (check_uplink() < 0) {
-        ei_x_free(&buff);
-        return -1;
-    }
-    if (ei_reg_send(&ec, uplink, GENERAL, buff.buff, buff.index) < 0) {
-        fprintf(stderr, "\tsend_tick failed: %i\n", erl_errno);
+    int result = 0;
+    if (check_uplink() >= 0) {
+        if (ei_reg_send_tmo(&ec, uplink, GENERAL, buff.buff, buff.index, COMM_TMO) < 0) {
+            fprintf(stderr, "\tsend failed: %i\n", erl_errno);
+            result = -1;
+        }
     }
     ei_x_free(&buff);
-    return 0;
+    return result;
+}
+
+
+int send_event_to_hq(int topic, const void* data) {
+    fprintf(stdout, "\n\tsend: %i, data:'%s' --[%i]--> hq\n", topic, (char*)data, uplink);
+
+    erl_errno = 0;
+    ei_x_buff sendbuf;
+    if (ei_x_new_with_version(&sendbuf) < 0) {
+        fprintf(stderr, "\tei_x_new_with_version failed: %i\n", erl_errno);
+    }
+    if (ei_x_encode_tuple_header(&sendbuf, 3) < 0) {
+        fprintf(stderr, "\tei_x_encode_tuple_header failed: %i\n", erl_errno);
+    }
+    if (ei_x_encode_atom(&sendbuf, "event") < 0){
+        fprintf(stderr, "\tei_x_encode_atom failed: %i\n", erl_errno);
+    }
+    if (ei_x_encode_long(&sendbuf, topic) < 0){
+        fprintf(stderr, "\tei_x_encode_long failed: %i\n", erl_errno);
+    }
+    if (ei_x_encode_binary(&sendbuf, data, sizeof(data)) < 0) {
+        fprintf(stderr, "\tei_x_encode_string failed: %i\n", erl_errno);
+    }
+    fprintf(stdout, "\t\tpayload size: %i bytes\n", sendbuf.index);
+
+    return send_to_hq(sendbuf);
+}
+
+
+int send_pong() {
+    ei_x_buff buff;
+    ei_x_new_with_version(&buff);
+    ei_x_encode_atom(&buff, "pong");
+    return send_to_hq(buff);
+}
+
+
+int send_tick() {
+    ei_x_buff buff;
+    ei_x_new_with_version(&buff);
+    ei_x_encode_atom(&buff, "tick");
+    return send_to_hq(buff);
+}
+
+
+int send_atom_intlist_to_hq(const char* atom, int* ls, int size) {
+    ei_x_buff buff;
+    ei_x_new_with_version(&buff);
+    ei_x_encode_tuple_header(&buff, 2);
+    ei_x_encode_atom(&buff, atom);
+    int i = 0;
+    for (; i < size; i++) {
+        ei_x_encode_list_header(&buff, 1);
+        ei_x_encode_ulong(&buff, ls[i]);
+    }
+    ei_x_encode_empty_list(&buff);
+    return send_to_hq(buff);
+}
+
+
+int send_atom_long_atom_string_to_hq(const char* atom1, long l, const char* atom2, const char* s) {
+    ei_x_buff buff;
+    ei_x_new_with_version(&buff);
+    ei_x_encode_tuple_header(&buff, 4);
+    ei_x_encode_atom(&buff, atom1);
+    ei_x_encode_ulong(&buff, l);
+    ei_x_encode_atom(&buff, atom2);
+    ei_x_encode_string(&buff, s);
+    return send_to_hq(buff);
+}
+
+
+int send_atom_int_atom_float3_to_hq(const char* atom1, int i, const char* atom2, const float* pos) {
+    ei_x_buff buff;
+    ei_x_new_with_version(&buff);
+    ei_x_encode_tuple_header(&buff, 6);
+    ei_x_encode_atom(&buff, atom1);
+    ei_x_encode_ulong(&buff, i);
+    ei_x_encode_atom(&buff, atom2);
+    ei_x_encode_double(&buff, pos[0]);
+    ei_x_encode_double(&buff, pos[1]);
+    ei_x_encode_double(&buff, pos[2]);
+    return send_to_hq(buff);
+}
+
+int send_all_unit_ids() {
+    int ids[100];
+    int result = callback->getTeamUnits(team_id, ids, 100);
+    fprintf(stdout, "result: %i\n", result);
+    return send_atom_intlist_to_hq("teamunits", ids, result);
+}
+
+
+int send_unit_name(unit_id) {
+    int unit_def_id = callback->Unit_getDef(team_id, unit_id);
+    const char* name = callback->UnitDef_getHumanName(team_id, unit_def_id);
+    return send_atom_long_atom_string_to_hq("unit", unit_id, "name", name);
+}
+
+
+int unit_pos(unit_id) {
+    float pos[3];
+    callback->Unit_getPos(team_id, unit_id, pos);
+    return send_atom_int_atom_float3_to_hq("unit", unit_id, "pos", pos);
+}
+
+
+int move_unit(int unit_id, float* pos) {
+    struct SMoveUnitCommand move_command = {
+        unit_id,
+        -1,
+        0,
+        INT_MAX,
+        pos
+    };
+    callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_MOVE, &move_command);
 }
 
 
 int receive_command_from_hq() {
-    check_uplink();
-    if (uplink < 0) {
+    if (check_uplink() < 0) {
         return 0;
     }
 
@@ -86,10 +205,9 @@ int receive_command_from_hq() {
     ei_x_buff recvbuf;
     ei_x_new(&recvbuf);
 
-    int got = ei_xreceive_msg_tmo(uplink, &msg, &recvbuf, 10);
+    int got = ei_xreceive_msg_tmo(uplink, &msg, &recvbuf, COMM_TMO);
     char command[24] = "";
     int index, version, arity;
-
 
     if (got == ERL_TICK) {
         // ignore
@@ -117,49 +235,29 @@ int receive_command_from_hq() {
     }
     if (strcmp(command, "ping") == 0) {
         send_pong();
+    } else if (strcmp(command, "send_all_unit_ids") == 0) {
+        send_all_unit_ids();
+    } else if (strcmp(command, "send_unit_name") == 0) {
+        long id;
+        ei_decode_long(recvbuf.buff, &index, &id);
+        send_unit_name(id);
+    } else if (strcmp(command, "unit_pos") == 0) {
+        long id;
+        ei_decode_long(recvbuf.buff, &index, &id);
+        unit_pos(id);
+    } else if (strcmp(command, "move") == 0) {
+        long id;
+        ei_decode_long(recvbuf.buff, &index, &id);
+        double pos[3];
+        ei_decode_double(recvbuf.buff, &index, &pos[0]);
+        ei_decode_double(recvbuf.buff, &index, &pos[1]);
+        ei_decode_double(recvbuf.buff, &index, &pos[2]);
+        move_unit(id, (float*)pos);
     }
 
     return 0;
 }
 
-int send_event_to_hq(int topic, const void* data) {
-    fprintf(stdout, "\n\tsend: %i, data:'%s' --[%i]--> hq\n", topic, (char*)data, uplink);
-
-    erl_errno = 0;
-    ei_x_buff sendbuf;
-    if (ei_x_new_with_version(&sendbuf) < 0) {
-        fprintf(stderr, "\tei_x_new_with_version failed: %i\n", erl_errno);
-    }
-    if (ei_x_encode_tuple_header(&sendbuf, 3) < 0) {
-        fprintf(stderr, "\tei_x_encode_tuple_header failed: %i\n", erl_errno);
-    }
-    if (ei_x_encode_atom(&sendbuf, "event") < 0){
-        fprintf(stderr, "\tei_x_encode_atom failed: %i\n", erl_errno);
-    }
-    if (ei_x_encode_long(&sendbuf, topic) < 0){
-        fprintf(stderr, "\tei_x_encode_long failed: %i\n", erl_errno);
-    }
-    if (ei_x_encode_string(&sendbuf, data) < 0) {
-        fprintf(stderr, "\tei_x_encode_string failed: %i\n", erl_errno);
-    }
-    fprintf(stdout, "\t\tpayload size: %i bytes\n", sendbuf.index);
-
-    return send_to_hq(sendbuf);
-}
-
-int send_pong() {
-    ei_x_buff buff;
-    ei_x_new_with_version(&buff);
-    ei_x_encode_atom(&buff, "pong");
-    return send_to_hq(buff);
-}
-
-int send_tick() {
-    ei_x_buff buff;
-    ei_x_new_with_version(&buff);
-    ei_x_encode_atom(&buff, "tick");
-    return send_to_hq(buff);
-}
 
 EXPORT(int) handleEvent(int skirmishAIId, int topic, const void* data) {
     if (topic == 3) {
@@ -176,10 +274,6 @@ EXPORT(int) handleEvent(int skirmishAIId, int topic, const void* data) {
         }
         return 0;
     }
-
-    // fprintf(stdout, "ai id: %i\n", skirmishAIId);
-    // fprintf(stdout, "topic: %i\n", topic);
-    // fprintf(stdout, "data : %s\n", (char*)data);
 
     return send_event_to_hq(topic, data);
 }
