@@ -14,13 +14,18 @@
 #include "ei.h"
 
 #define BUFSIZE 1000
+#define CONNECT_TMO 10
 
 
+#define HQ_NODE "hq@localhost"
+#define GENERAL "general"
 
-int ai = -1;
+
+int ai_id = -1;
+int frame = -1;
+
 ei_cnode ec;
-int fd = -1;
-erlang_pid hq;
+int uplink = -1;
 
 
 
@@ -28,9 +33,9 @@ erlang_pid hq;
 EXPORT(int) init(int skirmishAIId, const struct SSkirmishAICallback* callback) {
     fprintf(stdout, "Starting up Erlang CNode %i\n", skirmishAIId);
 
-    ai = skirmishAIId;
+    ai_id = skirmishAIId;
 
-    if (ei_connect_init(&ec, "springai", "springai", ai) < 0) {
+    if (ei_connect_init(&ec, "springai", "springai", ai_id) < 0) {
         fprintf(stderr, "ERROR when initializing: %d", erl_errno);
         exit(-1);
     }
@@ -42,22 +47,37 @@ EXPORT(int) init(int skirmishAIId, const struct SSkirmishAICallback* callback) {
 }
 
 
-int ensure_connection_to_hq() {
-    if (fd < 0) {
-        fd = ei_connect_tmo(&ec, "hq@localhost", 100);
-        if (fd < 0) {
-            printf("hq did not answer within 1 sec\n");
+int check_uplink() {
+    if (uplink < 0) {
+        uplink = ei_connect_tmo(&ec, HQ_NODE, CONNECT_TMO);
+        if (uplink < 0) {
+            if (frame % 600 == 0) {
+                fprintf(stderr, "uplink still not available\n");
+            }
         } else {
-            fprintf(stdout, "hq reached: %i\n", fd);
+            fprintf(stdout, "uplink established on channel %i\n", uplink);
         }
     }
-    return fd;
+    return uplink;
+}
+
+
+int send_to_hq(ei_x_buff buff) {
+    if (check_uplink() < 0) {
+        ei_x_free(&buff);
+        return -1;
+    }
+    if (ei_reg_send(&ec, uplink, GENERAL, buff.buff, buff.index) < 0) {
+        fprintf(stderr, "\tsend_tick failed: %i\n", erl_errno);
+    }
+    ei_x_free(&buff);
+    return 0;
 }
 
 
 int receive_command_from_hq() {
-    ensure_connection_to_hq();
-    if (fd < 0) {
+    check_uplink();
+    if (uplink < 0) {
         return 0;
     }
 
@@ -66,7 +86,7 @@ int receive_command_from_hq() {
     ei_x_buff recvbuf;
     ei_x_new(&recvbuf);
 
-    int got = ei_xreceive_msg_tmo(fd, &msg, &recvbuf, 10);
+    int got = ei_xreceive_msg_tmo(uplink, &msg, &recvbuf, 10);
     char command[24] = "";
     int index, version, arity;
 
@@ -82,44 +102,28 @@ int receive_command_from_hq() {
                 break;
             case EIO:
                 fprintf(stderr, "IO-Error?!\n");
-                fd = -1;
-                hq.node[0] = 0;
+                uplink = -1;
                 break;
             case ETIMEDOUT:
                 break;
         }
     } else {
-        hq = msg.from;
-
         index = 0;
         ei_decode_version(recvbuf.buff, &index, &version);
         ei_decode_tuple_header(recvbuf.buff, &index, &arity);
         ei_decode_atom(recvbuf.buff, &index, command);
 
-        fprintf(stdout, "\treceive: %s <--[%i]-- /%i, 0:'%s'\n", msg.toname, fd, arity, command);
+        fprintf(stdout, "\treceive: %s <--[%i]-- /%i, 0:'%s'\n", msg.toname, uplink, arity, command);
     }
     if (strcmp(command, "ping") == 0) {
-        erlang_pid pid;
-        printf("\tping encountered\n");
-        ei_decode_pid(recvbuf.buff, &index, &pid);
-        fprintf(stdout, "\tpid from ping payload: %s %i,%i,%i\n", pid.node, pid.num, pid.serial, pid.creation);
-        send_event_to_hq(41, "pong");
-        send_event_to_hq(43, "pong");
+        send_pong();
     }
 
     return 0;
 }
 
 int send_event_to_hq(int topic, const void* data) {
-    if (ensure_connection_to_hq() < 0) {
-        fprintf(stderr, "\thq unreachable, dropping topic %i\n", topic);
-        return 0;
-    }
-    if (!hq.node) {
-        fprintf(stdout, "\tsend: %i, data:'%s' --[%i]-|  no hq yet\n", topic, (char*)data, fd);
-        return 0;
-    }
-    fprintf(stdout, "\tsend: %i, data:'%s' --[%i]--> %s %i,%i,%i\n", topic, (char*)data, fd, hq.node, hq.num, hq.serial, hq.creation);
+    fprintf(stdout, "\n\tsend: %i, data:'%s' --[%i]--> hq\n", topic, (char*)data, uplink);
 
     erl_errno = 0;
     ei_x_buff sendbuf;
@@ -138,38 +142,28 @@ int send_event_to_hq(int topic, const void* data) {
     if (ei_x_encode_string(&sendbuf, data) < 0) {
         fprintf(stderr, "\tei_x_encode_string failed: %i\n", erl_errno);
     }
+    fprintf(stdout, "\t\tpayload size: %i bytes\n", sendbuf.index);
 
-    fprintf(stdout, "\tpayload size: %i bytes\n", sendbuf.index);
-    if (ei_send_tmo(fd, &hq, sendbuf.buff, sendbuf.index, 1000) < 0) {
-        fprintf(stderr, "\tsend_event_to_hq failed: %i\n", erl_errno);
-    }
-    ei_x_free(&sendbuf);
-    printf("\n");
-
-    return 0;
+    return send_to_hq(sendbuf);
 }
 
+int send_pong() {
+    ei_x_buff buff;
+    ei_x_new_with_version(&buff);
+    ei_x_encode_atom(&buff, "pong");
+    return send_to_hq(buff);
+}
 
 int send_tick() {
-    if (ensure_connection_to_hq()  < 0) {
-        fprintf(stderr, "\tno connection established\n");
-        return 0;
-    }
-    erl_errno = 0;
     ei_x_buff buff;
     ei_x_new_with_version(&buff);
     ei_x_encode_atom(&buff, "tick");
-    fprintf(stdout, "\tsend: 'tick' %i bytes --[%i]--> %s %i,%i,%i\n", buff.index, fd, hq.node, hq.num, hq.serial, hq.creation);
-    ei_send_tmo(fd, &hq, buff.buff, buff.index, 1000);
-    ei_x_free(&buff);
-    return 0;
+    return send_to_hq(buff);
 }
 
-
 EXPORT(int) handleEvent(int skirmishAIId, int topic, const void* data) {
-    ai = skirmishAIId;
     if (topic == 3) {
-        int frame = *((int*)data);  // I 'love' pointers :o)
+        frame = *((int*)data);  // I 'love' pointers :o)
         if (frame == 1) {
             fprintf(stdout, "\n                LET THE WAR BEGIN!\n\n");
         }
