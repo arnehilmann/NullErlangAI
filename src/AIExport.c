@@ -18,13 +18,15 @@
 #define COMM_TMO 10
 
 #define HQ_NODE "hq"
-#define GENERAL "general"
-#define NODE_NAME "springai"
-#define COOKIE "springai"
+#define GENERAL "commroom"
+#define NODE_NAME_PREFIX "cnode_ai_"
+#define COOKIE_PREFIX "cnode_ai_"
 
 
 int team_id = -1;
 int frame = -1;
+char node_name[100];
+char cookie[100];
 
 ei_cnode ec;
 char hq_node[100];
@@ -40,7 +42,10 @@ EXPORT(int) init(int new_team_id, const struct SSkirmishAICallback* new_callback
 
     fprintf(stdout, "\n\n\t\tStarting up Erlang CNode, Team %i\n\n", team_id);
 
-    if (ei_connect_init(&ec, NODE_NAME, COOKIE, team_id) < 0) {
+    sprintf(node_name, "%s%i", NODE_NAME_PREFIX, team_id);
+    sprintf(cookie, "%s%i", COOKIE_PREFIX, team_id);
+
+    if (ei_connect_init(&ec, node_name, cookie, team_id) < 0) {
         fprintf(stderr, "ERROR when initializing: %d", erl_errno);
         exit(-1);
     }
@@ -50,7 +55,7 @@ EXPORT(int) init(int new_team_id, const struct SSkirmishAICallback* new_callback
     fprintf(stdout, "this node: %s\n", ei_thisnodename(&ec));
     // fprintf(stdout, "host: %s\n", ei_thishostname(&ec));
     fprintf(stdout, "  hq node: %s\n", hq_node);
-    fprintf(stdout, "   cookie: %s\n", COOKIE);
+    fprintf(stdout, "   cookie: %s\n", cookie);
 
     return 0;
 }
