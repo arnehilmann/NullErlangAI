@@ -17,7 +17,7 @@
 #define BUFSIZE 1000
 #define COMM_TMO 10
 
-#define HQ_NODE "hq@localhost"
+#define HQ_NODE "hq"
 #define GENERAL "general"
 #define NODE_NAME "springai"
 #define COOKIE "springai"
@@ -27,6 +27,7 @@ int team_id = -1;
 int frame = -1;
 
 ei_cnode ec;
+char hq_node[100];
 int uplink = -1;
 const struct SSkirmishAICallback* callback;
 
@@ -44,8 +45,12 @@ EXPORT(int) init(int new_team_id, const struct SSkirmishAICallback* new_callback
         exit(-1);
     }
 
-    fprintf(stdout, "node: %s\n", ei_thisnodename(&ec));
-    fprintf(stdout, "host: %s\n", ei_thishostname(&ec));
+    sprintf(hq_node, "%s@%s", HQ_NODE, ei_thishostname(&ec));
+
+    fprintf(stdout, "this node: %s\n", ei_thisnodename(&ec));
+    // fprintf(stdout, "host: %s\n", ei_thishostname(&ec));
+    fprintf(stdout, "  hq node: %s\n", hq_node);
+    fprintf(stdout, "   cookie: %s\n", COOKIE);
 
     return 0;
 }
@@ -53,7 +58,7 @@ EXPORT(int) init(int new_team_id, const struct SSkirmishAICallback* new_callback
 
 int check_uplink() {
     if (uplink < 0) {
-        uplink = ei_connect_tmo(&ec, HQ_NODE, COMM_TMO);
+        uplink = ei_connect_tmo(&ec, hq_node, COMM_TMO);
         if (uplink < 0) {
             if (frame % 600 == 0) {
                 fprintf(stderr, "uplink still not available\n");
@@ -69,10 +74,13 @@ int check_uplink() {
 int send_to_hq(ei_x_buff buff) {
     int result = 0;
     if (check_uplink() >= 0) {
+        fprintf(stdout, "\tsend: ... --[%i]--> hq\n", uplink);
         if (ei_reg_send_tmo(&ec, uplink, GENERAL, buff.buff, buff.index, COMM_TMO) < 0) {
             fprintf(stderr, "\tsend failed: %i\n", erl_errno);
             result = -1;
         }
+    } else {
+        printf("no uplink?!\n");
     }
     ei_x_free(&buff);
     return result;
@@ -169,14 +177,14 @@ int send_all_unit_ids() {
 }
 
 
-int send_unit_name(unit_id) {
+int send_unit_name(int unit_id) {
     int unit_def_id = callback->Unit_getDef(team_id, unit_id);
     const char* name = callback->UnitDef_getHumanName(team_id, unit_def_id);
     return send_atom_long_atom_string_to_hq("unit", unit_id, "name", name);
 }
 
 
-int unit_pos(unit_id) {
+int unit_pos(int unit_id) {
     float pos[3];
     callback->Unit_getPos(team_id, unit_id, pos);
     return send_atom_int_atom_float3_to_hq("unit", unit_id, "pos", pos);
@@ -248,11 +256,13 @@ int receive_command_from_hq() {
     } else if (strcmp(command, "move") == 0) {
         long id;
         ei_decode_long(recvbuf.buff, &index, &id);
-        double pos[3];
-        ei_decode_double(recvbuf.buff, &index, &pos[0]);
-        ei_decode_double(recvbuf.buff, &index, &pos[1]);
-        ei_decode_double(recvbuf.buff, &index, &pos[2]);
-        move_unit(id, (float*)pos);
+        double x, y, z;
+        ei_decode_double(recvbuf.buff, &index, &x);
+        ei_decode_double(recvbuf.buff, &index, &y);
+        ei_decode_double(recvbuf.buff, &index, &z);
+        float pos[3] = {(float)x, (float)y, (float)z};
+        fprintf(stdout, "move %i to %f/%f\n", id, pos[0], pos[2]);
+        move_unit(id, pos);
     }
 
     return 0;
