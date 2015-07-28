@@ -9,7 +9,7 @@ difficulty=3;
 host=2;
 isfromdemo=0;
 name=Bot1;
-shortname=TccAI;
+shortname=NullErlangAI;
 team=0;
 version=0.1;
 }
