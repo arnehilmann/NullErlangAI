@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+import re
+
+events = {}
+with open("../../../../rts/ExternalAI/Interface/AISEvents.h") as eventfile:
+    parsing = False
+    for line in eventfile:
+        if parsing and line.startswith("};"):
+            break
+        if line.startswith("enum EventTopic"):
+            parsing = True
+        if not parsing:
+            continue
+        if "=" not in line:
+            continue
+        name, _ = line.split("=")
+        name = name.strip()
+        # print(name)
+        events[name] = []
+
+with open("../../../../rts/ExternalAI/Interface/AISEvents.h") as eventfile:
+    parsing = False
+    args = []
+    for line in eventfile:
+        if line.startswith("struct "):
+            parsing = True
+            args = []
+            continue
+        if line.startswith("}; //$ "):
+            parsing = False
+            name = line.strip().split(" ")[2]
+            # print("%s found" % name)
+            events[name] = args
+        if not parsing:
+            continue
+        line = line.strip()
+        if line.startswith("/") or line.startswith("*"):
+            continue
+        m = re.match("^\s*(.*)\s(\S+);$", line)
+        if m:
+            # print("\t%s: %s" % (m.group(2), m.group(1)))
+            args.append((m.group(2), m.group(1)))
+
+print(events)
