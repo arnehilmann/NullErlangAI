@@ -3,4 +3,4 @@
 SPRING_DIR=~/spring
 
 make clean install
-$SPRING_DIR/bin/spring-headless -w res/tccaitest_script.txt
+$SPRING_DIR/bin/spring-headless -w res/nullai_test.txt

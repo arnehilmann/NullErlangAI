@@ -16,7 +16,7 @@
 local infos = {
 	{
 		key    = 'shortName',
-		value  = 'TccAI',
+		value  = 'NullErlangAI',
 		desc   = 'machine conform name.',
 	},
 	{
@@ -35,7 +35,7 @@ local infos = {
 	},
 	{
 		key    = 'url',
-		value  = 'http://springrts.com/wiki/AI:TccAI',
+		value  = 'http://springrts.com/wiki/AI:NullErlangAI',
 		desc   = 'URL with more detailed info about the AI',
 	},
 	{
