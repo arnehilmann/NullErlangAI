@@ -1,7 +1,7 @@
 #include "AIExport.h"
 #include "ExternalAI/Interface/SSkirmishAICallback.h"
 #include "ExternalAI/Interface/AISCommands.h"
-#include "ExternalAI/Interface/AISEvents.h"
+#include "events.h"
 
 
 #include <string.h>
@@ -128,6 +128,11 @@ int send_event(int topic, const void* data) {
     ei_x_encode_tuple_header(&sendbuf, 3);
     ei_x_encode_atom(&sendbuf, "event");
 
+    if (add_event_data(sendbuf, topic, data) < 0) {
+        ei_x_free(&sendbuf);
+        return 1;
+    }
+    /*
     switch (topic) {
         case EVENT_UNIT_CREATED: {
                 fprintf(stdout, "EVENT_UNIT_CREATED received\n");
@@ -150,6 +155,7 @@ int send_event(int topic, const void* data) {
             ei_x_encode_long(&sendbuf, topic);
             ei_x_encode_binary(&sendbuf, data, sizeof(data));
     }
+    */
 
     return send_to_hq(sendbuf);
 }

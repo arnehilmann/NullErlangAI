@@ -19,8 +19,11 @@
 
 
 #include "ExternalAI/Interface/aidefines.h"
+//#include "ExternalAI/Interface/AISEvents.h"
+//#include "ei.h"
+//#include "events.h"
 //#include "ExternalAI/Interface/ELevelOfSupport.h"
-//struct SSkirmishAICallback;
+struct SSkirmishAICallback;
 
 // for a list of the functions that have to be exported,
 // see struct SSkirmishAILibrary in "ExternalAI/Interface/SSkirmishAILibrary.h"
@@ -32,9 +35,11 @@
 //		const char* aiInterfaceShortName, const char* aiInterfaceVersion);
 
 // instance functions
-//EXPORT(int) init(int skirmishAIId,
-//		const struct SSkirmishAICallback* callback);
+EXPORT(int) init(int skirmishAIId,
+		const struct SSkirmishAICallback* callback);
 //EXPORT(int) release(int skirmishAIId);
 EXPORT(int) handleEvent(int skirmishAIId, int topic, const void* data);
+
+//EXPORT(int) send_to_hq(ei_x_buff buff);
 
 #endif // _AIEXPORT_H
