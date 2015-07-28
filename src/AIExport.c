@@ -1,6 +1,7 @@
 #include "AIExport.h"
 #include "ExternalAI/Interface/SSkirmishAICallback.h"
 #include "ExternalAI/Interface/AISCommands.h"
+#include "ExternalAI/Interface/AISEvents.h"
 
 
 #include <string.h>
@@ -19,8 +20,8 @@
 
 #define HQ_NODE "hq"
 #define GENERAL "commroom"
-#define NODE_NAME_PREFIX "cnode_ai_"
-#define COOKIE_PREFIX "cnode_ai_"
+#define NODE_NAME_PREFIX "erlang_ai"
+#define COOKIE_PREFIX "erlang_ai"
 
 
 int team_id = -1;
@@ -92,7 +93,7 @@ int send_to_hq(ei_x_buff buff) {
 }
 
 
-int send_event_to_hq(int topic, const void* data) {
+int send_raw_event(int topic, const void* data) {
     fprintf(stdout, "\n\tsend: %i, data:'%s' --[%i]--> hq\n", topic, (char*)data, uplink);
 
     erl_errno = 0;
@@ -113,6 +114,42 @@ int send_event_to_hq(int topic, const void* data) {
         fprintf(stderr, "\tei_x_encode_string failed: %i\n", erl_errno);
     }
     fprintf(stdout, "\t\tpayload size: %i bytes\n", sendbuf.index);
+
+    return send_to_hq(sendbuf);
+}
+
+
+int send_event(int topic, const void* data) {
+    fprintf(stdout, "\n\tsend: %i, data:'%s' --[%i]--> hq\n", topic, (char*)data, uplink);
+
+    erl_errno = 0;
+    ei_x_buff sendbuf;
+    ei_x_new_with_version(&sendbuf);
+    ei_x_encode_tuple_header(&sendbuf, 3);
+    ei_x_encode_atom(&sendbuf, "event");
+
+    switch (topic) {
+        case EVENT_UNIT_CREATED: {
+                fprintf(stdout, "EVENT_UNIT_CREATED received\n");
+                struct SUnitCreatedEvent* event_data = (struct SUnitCreatedEvent*)data;
+                ei_x_encode_atom(&sendbuf, "unit_created");
+                ei_x_encode_tuple_header(&sendbuf, 2);
+                ei_x_encode_long(&sendbuf, event_data->unit);
+                ei_x_encode_long(&sendbuf, event_data->builder);
+                break;
+            }
+        case EVENT_UNIT_FINISHED: {
+                fprintf(stdout, "EVENT_UNIT_FINISHED received\n");
+                struct SUnitFinishedEvent* event_data = (struct SUnitFinishedEvent*)data;
+                ei_x_encode_atom(&sendbuf, "unit_finished");
+                ei_x_encode_tuple_header(&sendbuf, 1);
+                ei_x_encode_long(&sendbuf, event_data->unit);
+                break;
+            }
+        default:
+            ei_x_encode_long(&sendbuf, topic);
+            ei_x_encode_binary(&sendbuf, data, sizeof(data));
+    }
 
     return send_to_hq(sendbuf);
 }
@@ -266,7 +303,7 @@ int receive_command_from_hq() {
         ei_decode_double(recvbuf.buff, &index, &y);
         ei_decode_double(recvbuf.buff, &index, &z);
         float pos[3] = {(float)x, (float)y, (float)z};
-        fprintf(stdout, "move %i to %f/%f\n", id, pos[0], pos[2]);
+        fprintf(stdout, "move %li to %f/%f\n", id, pos[0], pos[2]);
         move_unit(id, pos);
     }
 
@@ -290,5 +327,6 @@ EXPORT(int) handleEvent(int skirmishAIId, int topic, const void* data) {
         return 0;
     }
 
-    return send_event_to_hq(topic, data);
+    send_raw_event(topic, data);
+    send_event(topic, data);
 }
