@@ -60,9 +60,9 @@ def indent(indent, s):
 
 def wrap_encode(i, value, c_type, encode_type):
     lines = []
-    lines.append(indent(i, 'fprintf(stderr, "    encoding %s\\n", %s);' % (c_type, value)))
+    #lines.append(indent(i, 'fprintf(stderr, "    encoding %s\\n", %s);' % (c_type, value)))
     lines.append(indent(i, "if (ei_x_encode_%s(sendbuf, %s) < 0) {" % (encode_type, value)))
-    #lines.append(indent(i + 1, """fprintf(stderr, "cannot encode '%s' as '%s'\\n", %s);""" % (c_type, encode_type, value)))
+    lines.append(indent(i + 1, """fprintf(stderr, "cannot encode '%s' as '%s'\\n", %s);""" % (c_type, encode_type, value)))
     lines.append(indent(i + 1, 'return -1;'))
     lines.append(indent(i, "}"))
     return "\n".join(lines)
@@ -75,7 +75,7 @@ for name in sorted(events):
     lines = []
     struct_name, args = params
     lines.append(indent(2, "case %s: {" % name))
-    lines.append(indent(3, 'fprintf(stderr, "encoding %s\\n");' % name))
+    #lines.append(indent(3, 'fprintf(stderr, "encoding %s\\n");' % name))
     lines.append(indent(3, "ei_x_encode_atom(sendbuf, \"%s\");" % name.lower()))
     lines.append(indent(3, "%s* event_data = (%s*)data;" % (struct_name, struct_name)))
     lines.append(indent(3, "ei_x_encode_tuple_header(sendbuf, %i);" % (2 * len(args))))
@@ -96,7 +96,14 @@ for name in sorted(events):
 #            lines.append(indent(4, "ei_x_encode_string(sendbuf, event_data->%s)" % arg_name))
         elif arg_type == "float":
             lines.append(wrap_encode(4, "event_data->%s" % arg_name, "%f", "double"))
+        elif arg_type == "float*":
+            lines.append(wrap_encode(4, "3", "%i", "tuple_header"))
+            lines.append(wrap_encode(4, "event_data->%s[0]" % arg_name, "%f", "double"))
+            lines.append(wrap_encode(4, "event_data->%s[1]" % arg_name, "%f", "double"))
+            lines.append(wrap_encode(4, "event_data->%s[2]" % arg_name, "%f", "double"))
 #            lines.append(indent(4, "ei_x_encode_double(sendbuf, event_data->%s)" % arg_name))
+        elif arg_type == "bool":
+            lines.append(wrap_encode(4, 'event_data->%s ? "true" : "false"' % arg_name, "%s", "atom"))
         else:
             print("%s: no src generated due to unknown type %s" % (name, arg_type), file=sys.stderr)
             unknown_types = True
