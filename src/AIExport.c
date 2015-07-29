@@ -19,7 +19,7 @@
 #define COMM_TMO 10
 
 #define HQ_NODE "hq"
-#define GENERAL "commroom"
+#define COMMROOM "commroom"
 #define NODE_NAME_PREFIX "erlang_ai"
 #define COOKIE_PREFIX "erlang_ai"
 
@@ -81,7 +81,7 @@ int send_to_hq(ei_x_buff buff) {
     int result = 0;
     if (check_uplink() >= 0) {
         fprintf(stdout, "\tsend: ... --[%i]--> hq\n", uplink);
-        if (ei_reg_send_tmo(&ec, uplink, GENERAL, buff.buff, buff.index, COMM_TMO) < 0) {
+        if (ei_reg_send_tmo(&ec, uplink, COMMROOM, buff.buff, buff.index, COMM_TMO) < 0) {
             fprintf(stderr, "\tsend failed: %i\n", erl_errno);
             result = -1;
         }
@@ -128,7 +128,8 @@ int send_event(int topic, const void* data) {
     ei_x_encode_tuple_header(&sendbuf, 3);
     ei_x_encode_atom(&sendbuf, "event");
 
-    if (add_event_data(sendbuf, topic, data) < 0) {
+    if (add_event_data(&sendbuf, topic, data) < 0) {
+        printf("cannot add event data?!\n");
         ei_x_free(&sendbuf);
         return 1;
     }
@@ -333,6 +334,6 @@ EXPORT(int) handleEvent(int skirmishAIId, int topic, const void* data) {
         return 0;
     }
 
-    send_raw_event(topic, data);
-    send_event(topic, data);
+    //send_raw_event(topic, data);
+    return send_event(topic, data);
 }

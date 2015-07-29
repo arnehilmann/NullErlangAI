@@ -3,6 +3,6 @@
 
 #include "ei.h"
 
-int add_event_data(ei_x_buff buff, int topic, const void* data);
+int add_event_data(ei_x_buff* buff, int topic, const void* data);
 
 #endif
