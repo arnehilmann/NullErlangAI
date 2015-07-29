@@ -51,7 +51,7 @@ EXPORT(int) init(int new_team_id, const struct SSkirmishAICallback* new_callback
         exit(-1);
     }
 
-    sprintf(hq_node, "%s@%s", HQ_NODE, ei_thishostname(&ec));
+    sprintf(hq_node, "%s%i@%s", HQ_NODE, team_id, ei_thishostname(&ec));
 
     fprintf(stdout, "this node: %s\n", ei_thisnodename(&ec));
     // fprintf(stdout, "host: %s\n", ei_thishostname(&ec));
