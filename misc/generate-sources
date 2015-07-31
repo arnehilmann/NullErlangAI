@@ -165,15 +165,14 @@ class SourceGeneraterCallbacks(object):
                 if not match:
                     continue
                 name = match.group(2)
-                if "getTeamUnits" not in name:
-                    continue
                 cb_returns = match.group(1).strip()
                 cb_args = []
                 for arg in match.group(3).split(","):
                     arg_type, arg_name = arg.rsplit(None, 1)
                     cb_args.append((arg_type.strip(), arg_name.strip()))
                 meta = match.group(4)
-                fetched_prefix = "____"
+                fetched = "____"
+                fetched_maxsize = "____"
                 if "FETCHER:MULTI" in meta:
                     fetched = meta.split(":")[-1]
                     fetched_maxsize = fetched + "_sizeMax"
@@ -219,11 +218,17 @@ class SourceGeneraterCallbacks(object):
             for name, cb in self.cbs.items():
                 lines = []
                 lines.append(indent(2, 'if (strcmp(command, "%s") == 0) {' % cb["fetch_name"]))
+                ok = True
                 for arg in cb["ext_args"]:
                     arg_type, arg_name = arg
                     if arg_type == "int":
                         lines.append(indent(3, 'long %s;' % arg_name))
                         lines.append(indent(3, 'ei_decode_long(recvbuff, &index, &%s);' % arg_name))
+                    else:
+                        print("unknown arg type %s" % arg_type)
+                        ok = False
+                if not ok:
+                    continue
                 if cb["fetched_arg"]:
                     fetched_type, fetched_name = cb["fetched_arg"]
                     fetched_type = fetched_type.replace("*", "")
@@ -248,12 +253,22 @@ class SourceGeneraterCallbacks(object):
                     lines.append(indent(3, 'ei_x_encode_empty_list(&sendbuff);'))
                     lines.append(indent(3, 'return send_to_hq(skirmishAIId, sendbuff);'))
                 else:
-                    print("NIY: no fetched arg\n")
-                    continue
+                    if cb["cb_returns"] == "const char*":
+                        lines.append(indent(3, 'ei_x_encode_string(&sendbuff, result);'))
+                    elif cb["cb_returns"] == "int":
+                        lines.append(indent(3, 'ei_x_encode_long(&sendbuff, result);'))
+                    elif cb["cb_returns"] == "float":
+                        lines.append(indent(3, 'ei_x_encode_double(&sendbuff, result);'))
+                    elif cb["cb_returns"] == "bool":
+                        lines.append(indent(3, 'ei_x_encode_boolean(&sendbuff, result);'))
+                    else:
+                        print("%s: unknown return type %s\n" % (name, cb["cb_returns"]))
+                        continue
+                    lines.append(indent(3, 'return send_to_hq(skirmishAIId, sendbuff);'))
                 lines.append(indent(2, '}'))
-                lines.append(indent(2, 'return -1;'))
                 lines.append("")
                 cbgen_file.write("\n".join(lines))
+            cbgen_file.write(indent(2, 'return -1;\n'))
             cbgen_file.write(indent(1, '}\n'))
 
 
