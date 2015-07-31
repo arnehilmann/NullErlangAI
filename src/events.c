@@ -1,4 +1,6 @@
 
+/* THIS FILE GETS GENERATED, DO NOT EDIT DIRECTLY! */
+
 #include "ei.h"
 #include "rts/ExternalAI/Interface/AISEvents.h"
 
