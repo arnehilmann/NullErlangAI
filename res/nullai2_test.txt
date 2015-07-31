@@ -26,11 +26,28 @@
         team=1;
         version=0.9;
     }
+    [ai2]
+    {
+        [options]
+        {
+            difficulty=3;
+        }
+        host=2;
+        isfromdemo=0;
+        name=Bot3;
+        shortname=NullErlangAI;
+        team=2;
+        version=0.1;
+    }
     [allyteam0]
     {
         numallies=0;
     }
     [allyteam1]
+    {
+        numallies=0;
+    }
+    [allyteam2]
     {
         numallies=0;
     }
@@ -89,6 +106,16 @@
         rgbcolor=0.509804 0.498039 1;
         side=CORE;
         startposx=7887;
+        startposz=7931;
+        teamleader=2;
+    }
+    [team2]
+    {
+        allyteam=2;
+        handicap=0;
+        rgbcolor=0.509804 0.498039 1;
+        side=CORE;
+        startposx=5887;
         startposz=7931;
         teamleader=2;
     }
