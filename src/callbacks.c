@@ -1,6 +1,8 @@
 
 /* THIS FILE GETS GENERATED, DO NOT EDIT DIRECTLY! */
 
+#include <string.h>
+
 #include "ei.h"
 #include "rts/ExternalAI/Interface/SSkirmishAICallback.h"
 
@@ -14,11 +16,12 @@ int handle_command(int skirmishAIId, const struct SSkirmishAICallback* callback,
             ei_x_new_with_version(&sendbuff);
             ei_x_encode_tuple_header(&sendbuff, 2);
             ei_x_encode_atom(&sendbuff, "result_getTeamUnits");
+            ei_x_encode_list_header(&sendbuff, result);
             int i = 0;
             for (; i < result; i++) {
-                ei_x_encode_list_header(&sendbuff, 1);
                 ei_x_encode_long(&sendbuff, unitIds[i]);
             }
+            ei_x_encode_empty_list(&sendbuff);
             return send_to_hq(skirmishAIId, sendbuff);
         }
         return -1;

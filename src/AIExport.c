@@ -24,16 +24,18 @@
 #define NODE_NAME_PREFIX "erlang_ai"
 #define COOKIE_PREFIX "erlang_ai"
 
+#define MAX_TEAM_COUNT 4
+
 
 int frame = -1;
-char node_names[32][100];
+char node_names[MAX_TEAM_COUNT][100];
 
-char cookies[32][100];
+char cookies[MAX_TEAM_COUNT][100];
 
-ei_cnode ecs[32];
-char hq_nodes[32][100];
-int uplinks[32];
-const struct SSkirmishAICallback* callbacks[32];
+ei_cnode ecs[MAX_TEAM_COUNT];
+char hq_nodes[MAX_TEAM_COUNT][100];
+int uplinks[MAX_TEAM_COUNT];
+const struct SSkirmishAICallback* callbacks[MAX_TEAM_COUNT];
 
 
 EXPORT(int) init(int team_id, const struct SSkirmishAICallback* new_callback) {
@@ -274,7 +276,7 @@ int check_for_command_from_hq(int team_id) {
         fprintf(stdout, "move %li to %f/%f\n", id, pos[0], pos[2]);
         move_unit(team_id, id, pos);
     } else {
-        handle_command(team_id, callback, command, recvbuf.buff, index);
+        handle_command(team_id, callbacks[team_id], command, recvbuf.buff, index);
     }
 
     return 0;

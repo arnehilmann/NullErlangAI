@@ -209,6 +209,8 @@ class SourceGeneraterCallbacks(object):
             cbgen_file.write(dedent("""
                 /* THIS FILE GETS GENERATED, DO NOT EDIT DIRECTLY! */
 
+                #include <string.h>
+
                 #include "ei.h"
                 #include "rts/ExternalAI/Interface/SSkirmishAICallback.h"
 
@@ -234,13 +236,20 @@ class SourceGeneraterCallbacks(object):
                 lines.append(indent(3, 'ei_x_encode_atom(&sendbuff, "%s");' % cb["result_name"]))
                 if cb["fetched_arg"]:
                     fetched_type, fetched_name = cb["fetched_arg"]
+                    lines.append(indent(3, 'ei_x_encode_list_header(&sendbuff, result);'))
                     lines.append(indent(3, 'int i = 0;'))
                     lines.append(indent(3, 'for (; i < result; i++) {'))
-                    lines.append(indent(4, 'ei_x_encode_list_header(&sendbuff, 1);'))
                     if fetched_type == "int*":
                         lines.append(indent(4, 'ei_x_encode_long(&sendbuff, %s[i]);' % fetched_name))
+                    else:
+                        print("unknown fetch type %s\n" % fetched_type)
+                        continue;
                     lines.append(indent(3, '}'))
+                    lines.append(indent(3, 'ei_x_encode_empty_list(&sendbuff);'))
                     lines.append(indent(3, 'return send_to_hq(skirmishAIId, sendbuff);'))
+                else:
+                    print("NIY: no fetched arg\n")
+                    continue
                 lines.append(indent(2, '}'))
                 lines.append(indent(2, 'return -1;'))
                 lines.append("")
