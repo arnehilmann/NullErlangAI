@@ -6,57 +6,9 @@ import re
 import sys
 from textwrap import dedent
 
-misc_dirname = os.path.dirname(os.path.abspath(__file__))
-eventdef_filename = os.path.join(misc_dirname,
-                                 "../../../../rts/ExternalAI/Interface/AISEvents.h")
-eventdef_filename = os.path.abspath(eventdef_filename)
-
-eventgen_filename = os.path.join(misc_dirname, "../src/events.c")
-eventgen_filename = os.path.abspath(eventgen_filename)
-
-events = {}
-with open(eventdef_filename) as eventdef_file:
-    parsing = False
-    for line in eventdef_file:
-        if parsing and line.startswith("};"):
-            break
-        if line.startswith("enum EventTopic"):
-            parsing = True
-        if not parsing:
-            continue
-        if "=" not in line:
-            continue
-        name, _ = line.split("=")
-        name = name.strip()
-        # print(name)
-        events[name] = {}
-
-with open(eventdef_filename) as eventdef_file:
-    parsing = False
-    args = []
-    struct_name = None
-    for line in eventdef_file:
-        if line.startswith("struct "):
-            parsing = True
-            args = []
-            struct_name = line.strip().replace(" {", "")
-            continue
-        if line.startswith("}; //$ "):
-            parsing = False
-            name = line.strip().split(" ")[2]
-            # print("%s found" % name)
-            events[name] = (struct_name, args)
-        if not parsing:
-            continue
-        line = line.strip()
-        if line.startswith("/") or line.startswith("*"):
-            continue
-        m = re.match("^\s*(.*)\s(\S+);$", line)
-        if m:
-            args.append((m.group(2), m.group(1)))
-
 def indent(indent, s):
     return "    " * indent + s
+
 
 def wrap_encode(i, value, c_type, encode_type):
     lines = []
@@ -67,70 +19,238 @@ def wrap_encode(i, value, c_type, encode_type):
     lines.append(indent(i, "}"))
     return "\n".join(lines)
 
-gen_src = []
-for name in sorted(events):
-    params = events[name]
-    if not params:
-        continue
-    lines = []
-    struct_name, args = params
-    lines.append(indent(2, "case %s: {" % name))
-    #lines.append(indent(3, 'fprintf(stderr, "encoding %s\\n");' % name))
-    lines.append(indent(3, "ei_x_encode_atom(sendbuf, \"%s\");" % name.lower()))
-    lines.append(indent(3, "%s* event_data = (%s*)data;" % (struct_name, struct_name)))
-    lines.append(indent(3, "ei_x_encode_tuple_header(sendbuf, %i);" % (2 * len(args))))
-    unknown_types = False
-    for arg in args:
-        arg_name, arg_type = arg
-        lines.append(indent(3, "{"))
-        #lines.append(indent(4, 'fprintf(stderr, "    encoding %s\\n");' % arg_name))
-        #lines.append(indent(4, 'const char* arg_name = "%s";' % arg_name))
-        lines.append(wrap_encode(4, '"%s"' % arg_name.lower(), "%s", "atom"))
-#        lines.append(indent(3, "if ("))
-#        lines.append(indent(4, "ei_x_encode_atom(sendbuf, \"%s\")" % arg_name))
-        if arg_type == "int":
-            lines.append(wrap_encode(4, "event_data->%s" % arg_name, "%i", "long"))
-#            lines.append(indent(4, "ei_x_encode_long(sendbuf, event_data->%s)" % arg_name))
-        elif arg_type == "const char*":
-            lines.append(wrap_encode(4, "event_data->%s" % arg_name, "%s", "string"))
-#            lines.append(indent(4, "ei_x_encode_string(sendbuf, event_data->%s)" % arg_name))
-        elif arg_type == "float":
-            lines.append(wrap_encode(4, "event_data->%s" % arg_name, "%f", "double"))
-        elif arg_type == "float*":
-            lines.append(wrap_encode(4, "3", "%i", "tuple_header"))
-            lines.append(wrap_encode(4, "event_data->%s[0]" % arg_name, "%f", "double"))
-            lines.append(wrap_encode(4, "event_data->%s[1]" % arg_name, "%f", "double"))
-            lines.append(wrap_encode(4, "event_data->%s[2]" % arg_name, "%f", "double"))
-#            lines.append(indent(4, "ei_x_encode_double(sendbuf, event_data->%s)" % arg_name))
-        elif arg_type == "bool":
-            lines.append(wrap_encode(4, 'event_data->%s ? "true" : "false"' % arg_name, "%s", "atom"))
-        else:
-            print("%s: no src generated due to unknown type %s" % (name, arg_type), file=sys.stderr)
-            unknown_types = True
-        lines.append(indent(3, "}"))
-#        lines.append(indent(3, "< 0) {"))
-#        lines.append(indent(4, 'fprintf(stderr, "cannot encode arg %s [%s] with value %%s", event_data->arg_name);' % (arg_name, arg_type)))
-#        lines.append(indent(3, "}"))
-    lines.append(indent(3, "break;"))
-    lines.append(indent(2, "}"))
-    if not unknown_types:
-        gen_src.extend(lines)
 
-with open(eventgen_filename, "w") as eventgen_file:
-    eventgen_file.write(dedent("""
-        #include "ei.h"
-        #include "rts/ExternalAI/Interface/AISEvents.h"
+class SourceGeneratorEvents(object):
+    def __init__(self, cwd):
+        self.eventdef_filename = os.path.join(cwd,
+                                        "../../../../rts/ExternalAI/Interface/AISEvents.h")
+        self.eventdef_filename = os.path.abspath(self.eventdef_filename)
 
-        int add_event_data(ei_x_buff* sendbuf, int topic, const void* data) {
-            switch (topic) {
-        """))
-    eventgen_file.write("\n".join(gen_src))
-    eventgen_file.write(dedent("""
-                default: {
-                    ei_x_encode_long(sendbuf, topic);
-                    ei_x_encode_binary(sendbuf, data, sizeof(data));
+        self.eventgen_filename = os.path.join(cwd, "../src/events.c")
+        self.eventgen_filename = os.path.abspath(self.eventgen_filename)
+
+        self.events = {}
+
+    def _find_all_event_names(self):
+        with open(self.eventdef_filename) as eventdef_file:
+            parsing = False
+            for line in eventdef_file:
+                if parsing and line.startswith("};"):
+                    break
+                if line.startswith("enum EventTopic"):
+                    parsing = True
+                if not parsing:
+                    continue
+                if "=" not in line:
+                    continue
+                name, _ = line.split("=")
+                name = name.strip()
+                # print(name)
+                self.events[name] = {}
+
+    def _find_all_event_definitions(self):
+        with open(self.eventdef_filename) as eventdef_file:
+            parsing = False
+            args = []
+            struct_name = None
+            for line in eventdef_file:
+                if line.startswith("struct "):
+                    parsing = True
+                    args = []
+                    struct_name = line.strip().replace(" {", "")
+                    continue
+                if line.startswith("}; //$ "):
+                    parsing = False
+                    name = line.strip().split(" ")[2]
+                    # print("%s found" % name)
+                    self.events[name] = (struct_name, args)
+                if not parsing:
+                    continue
+                line = line.strip()
+                if line.startswith("/") or line.startswith("*"):
+                    continue
+                m = re.match("^\s*(.*)\s(\S+);$", line)
+                if m:
+                    args.append((m.group(2), m.group(1)))
+
+    def _render_c_source(self):
+        gen_src = []
+        for name in sorted(self.events):
+            params = self.events[name]
+            if not params:
+                continue
+            lines = []
+            struct_name, args = params
+            lines.append(indent(2, "case %s: {" % name))
+            lines.append(indent(3, "ei_x_encode_atom(sendbuf, \"%s\");" % name.lower()))
+            lines.append(indent(3, "%s* event_data = (%s*)data;" % (struct_name, struct_name)))
+            lines.append(indent(3, "ei_x_encode_tuple_header(sendbuf, %i);" % (2 * len(args))))
+            unknown_types = False
+            for arg in args:
+                arg_name, arg_type = arg
+                lines.append(indent(3, "{"))
+                lines.append(wrap_encode(4, '"%s"' % arg_name.lower(), "%s", "atom"))
+                if arg_type == "int":
+                    lines.append(wrap_encode(4, "event_data->%s" % arg_name, "%i", "long"))
+                elif arg_type == "const char*":
+                    lines.append(wrap_encode(4, "event_data->%s" % arg_name, "%s", "string"))
+                elif arg_type == "float":
+                    lines.append(wrap_encode(4, "event_data->%s" % arg_name, "%f", "double"))
+                elif arg_type == "float*":
+                    lines.append(wrap_encode(4, "3", "%i", "tuple_header"))
+                    lines.append(wrap_encode(4, "event_data->%s[0]" % arg_name, "%f", "double"))
+                    lines.append(wrap_encode(4, "event_data->%s[1]" % arg_name, "%f", "double"))
+                    lines.append(wrap_encode(4, "event_data->%s[2]" % arg_name, "%f", "double"))
+                elif arg_type == "bool":
+                    lines.append(wrap_encode(4, 'event_data->%s ? "true" : "false"' % arg_name, "%s", "atom"))
+                else:
+                    print("%s: no src generated due to unknown type %s" % (name, arg_type), file=sys.stderr)
+                    unknown_types = True
+                lines.append(indent(3, "}"))
+            lines.append(indent(3, "break;"))
+            lines.append(indent(2, "}"))
+            if not unknown_types:
+                gen_src.extend(lines)
+
+        with open(self.eventgen_filename, "w") as eventgen_file:
+            eventgen_file.write(dedent("""
+                /* THIS FILE GETS GENERATED, DO NOT EDIT DIRECTLY! */
+
+                #include "ei.h"
+                #include "rts/ExternalAI/Interface/AISEvents.h"
+
+                int add_event_data(ei_x_buff* sendbuf, int topic, const void* data) {
+                    switch (topic) {
+                """))
+            eventgen_file.write("\n".join(gen_src))
+            eventgen_file.write(dedent("""
+                        default: {
+                            ei_x_encode_long(sendbuf, topic);
+                            ei_x_encode_binary(sendbuf, data, sizeof(data));
+                        }
+                    }
+                    return 0;
                 }
-            }
-            return 0;
-        }
-        """))
+                """))
+
+    def generate(self):
+        self._find_all_event_names()
+        self._find_all_event_definitions()
+        self._render_c_source()
+
+
+class SourceGeneraterCallbacks(object):
+    def __init__(self, cw):
+        self.cbdef_filename = os.path.join(cw,
+                                        "../../../../rts/ExternalAI/Interface/SSkirmishAICallback.h")
+        self.cbdef_filename = os.path.abspath(self.cbdef_filename)
+
+        self.cbgen_filename = os.path.join(cw, "../src/callbacks.c")
+        self.cbgen_filename = os.path.abspath(self.cbgen_filename)
+
+        self.cbs = {}
+
+    def generate(self):
+        self._find_all_callback_definitions()
+        self._render_c_source()
+
+    def _find_all_callback_definitions(self):
+        with open(self.cbdef_filename) as cbdef_file:
+            for line in cbdef_file:
+                if "CALLING_CONV" not in line:
+                    continue
+                if line.startswith("//"):
+                    continue
+                match = re.match("^\s*(.+)\s+\(CALLING_CONV \*([^\)]+)\)\((.*)\);(.*)$", line)
+                if not match:
+                    continue
+                name = match.group(2)
+                if "getTeamUnits" not in name:
+                    continue
+                cb_returns = match.group(1).strip()
+                cb_args = []
+                for arg in match.group(3).split(","):
+                    arg_type, arg_name = arg.rsplit(None, 1)
+                    cb_args.append((arg_type.strip(), arg_name.strip()))
+                meta = match.group(4)
+                fetched_prefix = "____"
+                if "FETCHER:MULTI" in meta:
+                    fetched = meta.split(":")[-1]
+                    fetched_maxsize = fetched + "_sizeMax"
+
+                ext_args = []
+                fetched_arg = None
+                fetched_size_arg = None
+                for arg in cb_args[1:]:
+                    arg_type, arg_name = arg
+                    if fetched == arg_name:
+                        fetched_arg = arg
+                    else:
+                        ext_args.append(arg)
+                        if arg_name == fetched_maxsize:
+                            fetched_size_arg = arg_name
+
+
+                self.cbs[name] = {"cb_name": name,
+                                  "fetch_name": "fetch_" + name,
+                                  "result_name": "result_" + name,
+                                  "cb_returns": cb_returns,
+                                  "cb_args": cb_args,
+                                  "ext_args": ext_args,
+                                  "fetched_arg": fetched_arg,
+                                  "fetched_size_arg": fetched_size_arg
+                                  }
+
+
+    def _render_c_source(self):
+        import json
+        print(json.dumps(self.cbs, indent=4, sort_keys=True))
+        with open(self.cbgen_filename, "w") as cbgen_file:
+            cbgen_file.write(dedent("""
+                /* THIS FILE GETS GENERATED, DO NOT EDIT DIRECTLY! */
+
+                #include "ei.h"
+                #include "rts/ExternalAI/Interface/SSkirmishAICallback.h"
+
+                int handle_command(int skirmishAIId, const struct SSkirmishAICallback* callback, char* command, char* recvbuff, int index){
+            """))
+            for name, cb in self.cbs.items():
+                lines = []
+                lines.append(indent(2, 'if (strcmp(command, "%s") == 0) {' % cb["fetch_name"]))
+                for arg in cb["ext_args"]:
+                    arg_type, arg_name = arg
+                    if arg_type == "int":
+                        lines.append(indent(3, 'long %s;' % arg_name))
+                        lines.append(indent(3, 'ei_decode_long(recvbuff, &index, &%s);' % arg_name))
+                if cb["fetched_arg"]:
+                    fetched_type, fetched_name = cb["fetched_arg"]
+                    fetched_type = fetched_type.replace("*", "")
+                    lines.append(indent(3, '%s %s[%s];' % (fetched_type, fetched_name, cb["fetched_size_arg"])))
+                lines.append(indent(3, '%s result = callback->%s(%s);' % (cb["cb_returns"], cb["cb_name"], ", ".join(name for t, name in cb["cb_args"]))))
+
+                lines.append(indent(3, 'ei_x_buff sendbuff;'))
+                lines.append(indent(3, 'ei_x_new_with_version(&sendbuff);'))
+                lines.append(indent(3, 'ei_x_encode_tuple_header(&sendbuff, 2);'))
+                lines.append(indent(3, 'ei_x_encode_atom(&sendbuff, "%s");' % cb["result_name"]))
+                if cb["fetched_arg"]:
+                    fetched_type, fetched_name = cb["fetched_arg"]
+                    lines.append(indent(3, 'int i = 0;'))
+                    lines.append(indent(3, 'for (; i < result; i++) {'))
+                    lines.append(indent(4, 'ei_x_encode_list_header(&sendbuff, 1);'))
+                    if fetched_type == "int*":
+                        lines.append(indent(4, 'ei_x_encode_long(&sendbuff, %s[i]);' % fetched_name))
+                    lines.append(indent(3, '}'))
+                    lines.append(indent(3, 'return send_to_hq(skirmishAIId, sendbuff);'))
+                lines.append(indent(2, '}'))
+                lines.append(indent(2, 'return -1;'))
+                lines.append("")
+                cbgen_file.write("\n".join(lines))
+            cbgen_file.write(indent(1, '}\n'))
+
+
+if __name__ == "__main__":
+    misc_dirname = os.path.dirname(os.path.abspath(__file__))
+    SourceGeneraterCallbacks(misc_dirname).generate()
+
+    #SourceGeneratorEvents(misc_dirname).generate()
+
