@@ -2,6 +2,7 @@
 #include "ExternalAI/Interface/SSkirmishAICallback.h"
 #include "ExternalAI/Interface/AISCommands.h"
 #include "events.h"
+#include "callbacks.h"
 
 
 #include <string.h>
@@ -312,6 +313,8 @@ int receive_command_from_hq() {
         float pos[3] = {(float)x, (float)y, (float)z};
         fprintf(stdout, "move %li to %f/%f\n", id, pos[0], pos[2]);
         move_unit(id, pos);
+    } else {
+        handle_command(team_id, callback, command, recvbuf.buff, index);
     }
 
     return 0;
