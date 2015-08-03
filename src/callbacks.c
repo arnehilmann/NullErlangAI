@@ -3087,6 +3087,28 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(command, "UnitDef_getBuildOptions") == 0) {
+        long unitDefId;
+        ei_decode_long(recvbuff, &index, &unitDefId);
+        long unitDefIds_sizeMax;
+        ei_decode_long(recvbuff, &index, &unitDefIds_sizeMax);
+        int unitDefIds[unitDefIds_sizeMax];
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        int result = callback->UnitDef_getBuildOptions(skirmishAIId, unitDefId, unitDefIds, unitDefIds_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 3);
+        ei_x_encode_atom(&sendbuff, "result");
+        ei_x_encode_atom(&sendbuff, "UnitDef_getBuildOptions");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_long(&sendbuff, unitDefIds[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(command, "UnitDef_getBuildSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
@@ -8183,6 +8205,56 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_long(&sendbuff, featureDefIds[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(command, "getFeatures") == 0) {
+        long featureIds_sizeMax;
+        ei_decode_long(recvbuff, &index, &featureIds_sizeMax);
+        int featureIds[featureIds_sizeMax];
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        int result = callback->getFeatures(skirmishAIId, featureIds, featureIds_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 3);
+        ei_x_encode_atom(&sendbuff, "result");
+        ei_x_encode_atom(&sendbuff, "getFeatures");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_long(&sendbuff, featureIds[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(command, "getFeaturesIn") == 0) {
+        float pos_posF3[3];
+        double tmp;
+        ei_decode_double(recvbuff, &index, &tmp);
+        pos_posF3[0] = tmp;
+        ei_decode_double(recvbuff, &index, &tmp);
+        pos_posF3[1] = tmp;
+        ei_decode_double(recvbuff, &index, &tmp);
+        pos_posF3[2] = tmp;
+        double radius;
+        ei_decode_double(recvbuff, &index, &radius);
+        long featureIds_sizeMax;
+        ei_decode_long(recvbuff, &index, &featureIds_sizeMax);
+        int featureIds[featureIds_sizeMax];
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        int result = callback->getFeaturesIn(skirmishAIId, pos_posF3, radius, featureIds, featureIds_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 3);
+        ei_x_encode_atom(&sendbuff, "result");
+        ei_x_encode_atom(&sendbuff, "getFeaturesIn");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_long(&sendbuff, featureIds[i]);
         }
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);

@@ -173,9 +173,12 @@ class SourceGeneraterCallbacks(object):
                 meta = match.group(4)
                 fetched = "____"
                 fetched_maxsize = "____"
-                if "FETCHER:MULTI" in meta:
+                if "MULTI" in meta:
                     fetched = meta.split(":")[-1]
+                    fetched = fetched.split("->")[0]
+                    print(fetched)
                     fetched_maxsize = fetched + "_sizeMax"
+                    print(fetched_maxsize)
 
                 ext_args = []
                 fetched_arg = None
@@ -200,8 +203,8 @@ class SourceGeneraterCallbacks(object):
 
 
     def _render_c_source(self):
-        #import json
-        #print(json.dumps(self.cbs, indent=4, sort_keys=True))
+        import json
+        print(json.dumps(self.cbs, indent=4, sort_keys=True))
         with open(self.cbgen_filename, "w") as cbgen_file:
             cbgen_file.write(dedent("""
                 /* THIS FILE GETS GENERATED, DO NOT EDIT DIRECTLY! */
