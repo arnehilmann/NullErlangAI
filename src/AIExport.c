@@ -1,7 +1,7 @@
 #include "AIExport.h"
 #include "ExternalAI/Interface/SSkirmishAICallback.h"
 #include "ExternalAI/Interface/AISCommands.h"
-#include "send_to_hq.h"
+#include "send_to.h"
 #include "events.h"
 #include "callbacks.h"
 
@@ -102,6 +102,21 @@ EXPORT(int) send_to_hq(int team_id, ei_x_buff buff) {
     return result;
 }
 
+EXPORT(int) send_to_pid(int team_id, erlang_pid* pid, ei_x_buff buff) {
+    int result = 0;
+    if (check_uplink(team_id) >= 0) {
+        int uplink = uplinks[team_id];
+        if (ei_send_tmo(uplink, pid, buff.buff, buff.index, COMM_TMO) < 0) {
+            fprintf(stderr, "\tsend failed: %i\n", erl_errno);
+            result = -1;
+        }
+    } else {
+        printf("no uplink?!\n");
+    }
+    ei_x_free(&buff);
+    return result;
+}
+
 
 int send_event(int team_id, int topic, const void* data) {
     int uplink = uplinks[team_id];
@@ -123,11 +138,11 @@ int send_event(int team_id, int topic, const void* data) {
 }
 
 
-int send_pong(int team_id) {
+int send_pong(int team_id, erlang_pid pid) {
     ei_x_buff buff;
     ei_x_new_with_version(&buff);
     ei_x_encode_atom(&buff, "pong");
-    return send_to_hq(team_id, buff);
+    return send_to_pid(team_id, &pid, buff);
 }
 
 
@@ -214,7 +229,7 @@ int move_unit(int team_id, int unit_id, float* pos) {
 }
 
 
-int check_for_command_from_hq(int team_id) {
+int check_for_message_from_hq(int team_id) {
     if (check_uplink(team_id) < 0) {
         return 0;
     }
@@ -227,7 +242,7 @@ int check_for_command_from_hq(int team_id) {
     ei_x_new(&recvbuf);
 
     int got = ei_xreceive_msg_tmo(uplink, &msg, &recvbuf, COMM_TMO);
-    char command[24] = "";
+    char message[24] = "";
     int index, version, arity;
 
     if (got == ERL_TICK) {
@@ -250,23 +265,25 @@ int check_for_command_from_hq(int team_id) {
         index = 0;
         ei_decode_version(recvbuf.buff, &index, &version);
         ei_decode_tuple_header(recvbuf.buff, &index, &arity);
-        ei_decode_atom(recvbuf.buff, &index, command);
+        ei_decode_atom(recvbuf.buff, &index, message);
 
-        fprintf(stdout, "\treceive: %s <--[%i]-- /%i, 0:'%s'\n", msg.toname, uplink, arity, command);
+        fprintf(stdout, "\treceive: %s <--[%i]-- /%i, 0:'%s'\n", msg.toname, uplink, arity, message);
     }
-    if (strcmp(command, "ping") == 0) {
-        send_pong(team_id);
-    } else if (strcmp(command, "send_all_unit_ids") == 0) {
+    if (strcmp(message, "ping") == 0) {
+        erlang_pid from;
+        ei_decode_pid(recvbuf.buff, &index, &from);
+        send_pong(team_id, from);
+    } else if (strcmp(message, "send_all_unit_ids") == 0) {
         send_all_unit_ids(team_id);
-    } else if (strcmp(command, "send_unit_name") == 0) {
+    } else if (strcmp(message, "send_unit_name") == 0) {
         long id;
         ei_decode_long(recvbuf.buff, &index, &id);
         send_unit_name(team_id, id);
-    } else if (strcmp(command, "unit_pos") == 0) {
+    } else if (strcmp(message, "unit_pos") == 0) {
         long id;
         ei_decode_long(recvbuf.buff, &index, &id);
         unit_pos(team_id, id);
-    } else if (strcmp(command, "move") == 0) {
+    } else if (strcmp(message, "move") == 0) {
         long id;
         ei_decode_long(recvbuf.buff, &index, &id);
         double x, y, z;
@@ -276,8 +293,8 @@ int check_for_command_from_hq(int team_id) {
         float pos[3] = {(float)x, (float)y, (float)z};
         fprintf(stdout, "move %li to %f/%f\n", id, pos[0], pos[2]);
         move_unit(team_id, id, pos);
-    } else {
-        handle_command(team_id, callbacks[team_id], command, recvbuf.buff, index);
+    } else if (strcmp(message, "callback") == 0) {
+        return handle_callback(team_id, callbacks[team_id], recvbuf.buff, index);
     }
 
     return 0;
@@ -294,7 +311,7 @@ EXPORT(int) handleEvent(int team_id, int topic, const void* data) {
             send_tick(team_id, frame);
         }
         if (frame % 60 == 0) {
-            return check_for_command_from_hq(team_id);
+            return check_for_message_from_hq(team_id);
         }
         return 0;
     }

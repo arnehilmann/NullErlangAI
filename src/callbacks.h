@@ -1,3 +1,3 @@
 #include "ExternalAI/Interface/SSkirmishAICallback.h"
 
-int handle_command(int skirmishAIId, const struct SSkirmishAICallback* callback, char* command, char* recvbuff, int index);
+int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback, char* recvbuff, int index);
