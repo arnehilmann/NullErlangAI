@@ -202,8 +202,8 @@ class SourceGeneraterCallbacks(object):
 
 
     def _render_c_source(self):
-        import json
-        print(json.dumps(self.cbs, indent=4, sort_keys=True))
+        #import json
+        #print(json.dumps(self.cbs, indent=4, sort_keys=True))
         with open(self.cbgen_filename, "w") as cbgen_file:
             cbgen_file.write(dedent("""
                 /* THIS FILE GETS GENERATED, DO NOT EDIT DIRECTLY! */
@@ -212,6 +212,7 @@ class SourceGeneraterCallbacks(object):
 
                 #include "ei.h"
                 #include "rts/ExternalAI/Interface/SSkirmishAICallback.h"
+                #include "send_to_hq.h"
 
                 int handle_command(int skirmishAIId, const struct SSkirmishAICallback* callback, char* command, char* recvbuff, int index){
             """))
@@ -222,54 +223,76 @@ class SourceGeneraterCallbacks(object):
                 for arg in cb["ext_args"]:
                     arg_type, arg_name = arg
                     if arg_type == "int":
-                        lines.append(indent(3, 'long %s;' % arg_name))
-                        lines.append(indent(3, 'ei_decode_long(recvbuff, &index, &%s);' % arg_name))
+                        lines.append(indent(2, 'long %s;' % arg_name))
+                        lines.append(indent(2, 'ei_decode_long(recvbuff, &index, &%s);' % arg_name))
+                    elif arg_type == "float":
+                        lines.append(indent(2, 'double %s;' % arg_name))
+                        lines.append(indent(2, 'ei_decode_double(recvbuff, &index, &%s);' % arg_name))
+                    elif arg_type == "bool":
+                        lines.append(indent(2, 'int %s;' % arg_name))
+                        lines.append(indent(2, 'ei_decode_boolean(recvbuff, &index, &%s);' % arg_name))
+                    elif arg_type in ("char*", "const char*", "const char* const"):
+                        lines.append(indent(2, 'char* %s;' % arg_name))
+                        lines.append(indent(2, 'ei_decode_string(recvbuff, &index, %s);' % arg_name))
+                    elif "posF3" in arg_name and arg_type == "float*":
+                        lines.append(indent(2, 'float %s[3];' % arg_name))
+                        lines.append(indent(2, 'double tmp;'))
+                        lines.append(indent(2, 'ei_decode_double(recvbuff, &index, &tmp);'))
+                        lines.append(indent(2, '%s[0] = tmp;' % arg_name))
+                        lines.append(indent(2, 'ei_decode_double(recvbuff, &index, &tmp);'))
+                        lines.append(indent(2, '%s[1] = tmp;' % arg_name))
+                        lines.append(indent(2, 'ei_decode_double(recvbuff, &index, &tmp);'))
+                        lines.append(indent(2, '%s[2] = tmp;' % arg_name))
                     else:
-                        print("unknown arg type %s" % arg_type)
+                        print("%s:%s: unknown arg type %s" % (name, arg_name, arg_type))
                         ok = False
                 if not ok:
                     continue
                 if cb["fetched_arg"]:
                     fetched_type, fetched_name = cb["fetched_arg"]
                     fetched_type = fetched_type.replace("*", "")
-                    lines.append(indent(3, '%s %s[%s];' % (fetched_type, fetched_name, cb["fetched_size_arg"])))
-                lines.append(indent(3, '%s result = callback->%s(%s);' % (cb["cb_returns"], cb["cb_name"], ", ".join(name for t, name in cb["cb_args"]))))
+                    lines.append(indent(2, '%s %s[%s];' % (fetched_type, fetched_name, cb["fetched_size_arg"])))
+                lines.append(indent(2, '%s result = callback->%s(%s);' % (cb["cb_returns"], cb["cb_name"], ", ".join(name for t, name in cb["cb_args"]))))
 
-                lines.append(indent(3, 'ei_x_buff sendbuff;'))
-                lines.append(indent(3, 'ei_x_new_with_version(&sendbuff);'))
-                lines.append(indent(3, 'ei_x_encode_tuple_header(&sendbuff, 2);'))
-                lines.append(indent(3, 'ei_x_encode_atom(&sendbuff, "%s");' % cb["result_name"]))
+                lines.append(indent(2, 'ei_x_buff sendbuff;'))
+                lines.append(indent(2, 'ei_x_new_with_version(&sendbuff);'))
+                lines.append(indent(2, 'ei_x_encode_tuple_header(&sendbuff, 2);'))
+                lines.append(indent(2, 'ei_x_encode_atom(&sendbuff, "%s");' % cb["result_name"]))
                 if cb["fetched_arg"]:
                     fetched_type, fetched_name = cb["fetched_arg"]
-                    lines.append(indent(3, 'ei_x_encode_list_header(&sendbuff, result);'))
-                    lines.append(indent(3, 'int i = 0;'))
-                    lines.append(indent(3, 'for (; i < result; i++) {'))
+                    lines.append(indent(2, 'ei_x_encode_list_header(&sendbuff, result);'))
+                    lines.append(indent(2, 'int i = 0;'))
+                    lines.append(indent(2, 'for (; i < result; i++) {'))
                     if fetched_type == "int*":
-                        lines.append(indent(4, 'ei_x_encode_long(&sendbuff, %s[i]);' % fetched_name))
+                        lines.append(indent(3, 'ei_x_encode_long(&sendbuff, %s[i]);' % fetched_name))
                     else:
                         print("unknown fetch type %s\n" % fetched_type)
                         continue;
-                    lines.append(indent(3, '}'))
-                    lines.append(indent(3, 'ei_x_encode_empty_list(&sendbuff);'))
-                    lines.append(indent(3, 'return send_to_hq(skirmishAIId, sendbuff);'))
+                    lines.append(indent(2, '}'))
+                    lines.append(indent(2, 'ei_x_encode_empty_list(&sendbuff);'))
+                    lines.append(indent(2, 'return send_to_hq(skirmishAIId, sendbuff);'))
                 else:
                     if cb["cb_returns"] == "const char*":
-                        lines.append(indent(3, 'ei_x_encode_string(&sendbuff, result);'))
+                        lines.append(indent(2, 'ei_x_encode_string(&sendbuff, result);'))
+                    elif cb["cb_returns"] == "char":
+                        lines.append(indent(2, 'ei_x_encode_char(&sendbuff, result);'))
                     elif cb["cb_returns"] == "int":
-                        lines.append(indent(3, 'ei_x_encode_long(&sendbuff, result);'))
+                        lines.append(indent(2, 'ei_x_encode_long(&sendbuff, result);'))
                     elif cb["cb_returns"] == "float":
-                        lines.append(indent(3, 'ei_x_encode_double(&sendbuff, result);'))
+                        lines.append(indent(2, 'ei_x_encode_double(&sendbuff, result);'))
                     elif cb["cb_returns"] == "bool":
-                        lines.append(indent(3, 'ei_x_encode_boolean(&sendbuff, result);'))
+                        lines.append(indent(2, 'ei_x_encode_boolean(&sendbuff, result);'))
+                    elif cb["cb_returns"] == "short":
+                        lines.append(indent(2, 'ei_x_encode_long(&sendbuff, result);'))
                     else:
-                        print("%s: unknown return type %s\n" % (name, cb["cb_returns"]))
+                        print("%s: unknown return type '%s'\n" % (name, cb["cb_returns"]))
                         continue
-                    lines.append(indent(3, 'return send_to_hq(skirmishAIId, sendbuff);'))
-                lines.append(indent(2, '}'))
+                    lines.append(indent(2, 'return send_to_hq(skirmishAIId, sendbuff);'))
+                lines.append(indent(1, '}'))
                 lines.append("")
                 cbgen_file.write("\n".join(lines))
-            cbgen_file.write(indent(2, 'return -1;\n'))
-            cbgen_file.write(indent(1, '}\n'))
+            cbgen_file.write(indent(1, 'return -1;\n'))
+            cbgen_file.write(indent(0, '}\n'))
 
 
 if __name__ == "__main__":

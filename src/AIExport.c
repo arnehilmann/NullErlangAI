@@ -1,6 +1,7 @@
 #include "AIExport.h"
 #include "ExternalAI/Interface/SSkirmishAICallback.h"
 #include "ExternalAI/Interface/AISCommands.h"
+#include "send_to_hq.h"
 #include "events.h"
 #include "callbacks.h"
 
@@ -84,7 +85,7 @@ int check_uplink(int team_id) {
 }
 
 
-int send_to_hq(int team_id, ei_x_buff buff) {
+EXPORT(int) send_to_hq(int team_id, ei_x_buff buff) {
     int result = 0;
     if (check_uplink(team_id) >= 0) {
         //fprintf(stdout, "[%s] --[%i]--> hq\n", ei_thishostname(&ec), uplink);
