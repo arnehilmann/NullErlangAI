@@ -4,6 +4,7 @@
 #include "send_to.h"
 #include "events.h"
 #include "callbacks.h"
+#include "commands.h"
 
 
 #include <string.h>
@@ -295,6 +296,8 @@ int check_for_message_from_hq(int team_id) {
         move_unit(team_id, id, pos);
     } else if (strcmp(message, "callback") == 0) {
         return handle_callback(team_id, callbacks[team_id], recvbuf.buff, index);
+    } else if (strcmp(message, "command") == 0) {
+        return handle_command(team_id, callbacks[team_id], recvbuf.buff, index);
     }
 
     return 0;

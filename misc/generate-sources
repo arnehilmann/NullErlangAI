@@ -20,6 +20,94 @@ def wrap_encode(i, value, c_type, encode_type):
     return "\n".join(lines)
 
 
+def find_all_structs(f, start_token, end_token):
+    result = {}
+    parsing = False
+    args = []
+    struct_name = None
+    for line in f:
+        if line.startswith(start_token):
+            parsing = True
+            args = []
+            struct_name = line.strip().replace(" {", "")
+            continue
+        if line.startswith(end_token):
+            parsing = False
+            name = line.strip().split(" ")[2]
+            # print("%s found" % name)
+            result[name] = (struct_name, args)
+        if not parsing:
+            continue
+        line = line.strip()
+        if line.startswith("/") or line.startswith("*"):
+            continue
+        m = re.match("^\s*(.*)\s(\S+);$", line)
+        if m:
+            args.append((m.group(2), m.group(1)))
+    return result
+
+
+class SourceGeneratorCommands(object):
+    def __init__(self, cwd):
+        self.commanddef_filename = os.path.join(cwd,
+                                                "../../../../rts/ExternalAI/Interface/AISCommands.h")
+        self.commanddef_filename = os.path.abspath(self.commanddef_filename)
+
+        self.commandgen_filename = os.path.join(cwd, "../src/commands.c")
+        self.commandgen_filename = os.path.abspath(self.commandgen_filename)
+
+        self.commands = {}
+
+    def generate(self):
+        with open(self.commanddef_filename) as commanddef_file:
+            self.commands = find_all_structs(commanddef_file, "struct", "}; //$ ")
+            import json
+            print(json.dumps(self.commands, indent=4))
+
+        with open(self.commandgen_filename, "w") as commandgen_file:
+            commandgen_file.write(dedent("""
+                /* GENERATED FILE, DO NOT EDIT DIRECTLY */
+
+                #include <string.h>
+                #include "ei.h"
+                #include "rts/ExternalAI/Interface/SSkirmishAICallback.h"
+                #include "rts/ExternalAI/Interface/AISCommands.h"
+
+                int handle_command(int team_id, const struct SSkirmishAICallback* callback, char* recvbuff, int index) {
+                    char command[64] = "";
+                    ei_decode_atom(recvbuff, &index, command);
+
+                """))
+            for name in sorted(self.commands):
+                lines = []
+                lines.append(indent(1, 'if (strcmp(command, "%s") == 0) {' % name))
+                struct, args = self.commands[name]
+                for arg_name, arg_type in args:
+                    lines.append(indent(2, '%s %s;' % (arg_type, arg_name)))
+                lines.append(indent(2, '%s command = {' % struct))
+                for arg_name, arg_type in args:
+                    lines.append(indent(3, '%s,' % arg_name))
+                lines.append(indent(2, '};'))
+                lines.append(indent(2, 'int result = callback->Engine_handleCommand(team_id, team_id, -1, %s, &command);' % name))
+                lines.append(indent(1, "}"))
+                lines.append("")
+                commandgen_file.write("\n".join(lines))
+
+            commandgen_file.write("}")
+
+
+#int move_unit(int team_id, int unit_id, float* pos) {
+    #struct SMoveUnitCommand move_command = {
+        #unit_id,
+        #-1,
+        #0,
+        #INT_MAX,
+        #pos
+    #};
+    #callbacks[team_id]->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_MOVE, &move_command);
+#}
+
+
 class SourceGeneratorEvents(object):
     def __init__(self, cwd):
         self.eventdef_filename = os.path.join(cwd,
@@ -50,28 +138,7 @@ class SourceGeneratorEvents(object):
 
     def _find_all_event_definitions(self):
         with open(self.eventdef_filename) as eventdef_file:
-            parsing = False
-            args = []
-            struct_name = None
-            for line in eventdef_file:
-                if line.startswith("struct "):
-                    parsing = True
-                    args = []
-                    struct_name = line.strip().replace(" {", "")
-                    continue
-                if line.startswith("}; //$ "):
-                    parsing = False
-                    name = line.strip().split(" ")[2]
-                    # print("%s found" % name)
-                    self.events[name] = (struct_name, args)
-                if not parsing:
-                    continue
-                line = line.strip()
-                if line.startswith("/") or line.startswith("*"):
-                    continue
-                m = re.match("^\s*(.*)\s(\S+);$", line)
-                if m:
-                    args.append((m.group(2), m.group(1)))
+            self.events = find_all_structs(eventdef_file, "struct", "}; //$ ")
 
     def _render_c_source(self):
         gen_src = []
@@ -139,7 +206,7 @@ class SourceGeneratorEvents(object):
         self._render_c_source()
 
 
-class SourceGeneraterCallbacks(object):
+class SourceGeneratorCallbacks(object):
     def __init__(self, cw):
         self.cbdef_filename = os.path.join(cw,
                                         "../../../../rts/ExternalAI/Interface/SSkirmishAICallback.h")
@@ -220,8 +287,8 @@ class SourceGeneraterCallbacks(object):
                     #include "send_to.h"
 
                     int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback, char* recvbuff, int index){
-                        char command[64] = "";
-                        ei_decode_atom(recvbuff, &index, command);
+                        char callback_what[64] = "";
+                        ei_decode_atom(recvbuff, &index, callback_what);
 
                 """))
                 for name in sorted(self.cbs):
@@ -229,7 +296,7 @@ class SourceGeneraterCallbacks(object):
                     lines = []
                     docs = [":callback", ":%s" % name]
 
-                    lines.append(indent(1, 'if (strcmp(command, "%s") == 0) {' % cb["cb_name"]))
+                    lines.append(indent(1, 'if (strcmp(callback_what, "%s") == 0) {' % cb["cb_name"]))
 
                     ok = True
                     for arg in cb["ext_args"]:
@@ -321,7 +388,8 @@ class SourceGeneraterCallbacks(object):
 
 if __name__ == "__main__":
     misc_dirname = os.path.dirname(os.path.abspath(__file__))
-    SourceGeneraterCallbacks(misc_dirname).generate()
 
-    #SourceGeneratorEvents(misc_dirname).generate()
+    SourceGeneratorCallbacks(misc_dirname).generate()
+    SourceGeneratorEvents(misc_dirname).generate()
+    SourceGeneratorCommands(misc_dirname).generate()
 

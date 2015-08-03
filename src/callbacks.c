@@ -8,10 +8,10 @@
 #include "send_to.h"
 
 int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback, char* recvbuff, int index){
-    char command[64] = "";
-    ei_decode_atom(recvbuff, &index, command);
+    char callback_what[64] = "";
+    ei_decode_atom(recvbuff, &index, callback_what);
 
-    if (strcmp(command, "Cheats_isEnabled") == 0) {
+    if (strcmp(callback_what, "Cheats_isEnabled") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Cheats_isEnabled(skirmishAIId);
@@ -23,7 +23,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Cheats_isOnlyPassive") == 0) {
+    if (strcmp(callback_what, "Cheats_isOnlyPassive") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Cheats_isOnlyPassive(skirmishAIId);
@@ -35,7 +35,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Cheats_setEnabled") == 0) {
+    if (strcmp(callback_what, "Cheats_setEnabled") == 0) {
         int enable;
         ei_decode_boolean(recvbuff, &index, &enable);
         erlang_pid from;
@@ -49,7 +49,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Cheats_setEventsEnabled") == 0) {
+    if (strcmp(callback_what, "Cheats_setEventsEnabled") == 0) {
         int enabled;
         ei_decode_boolean(recvbuff, &index, &enabled);
         erlang_pid from;
@@ -63,7 +63,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "DataDirs_Roots_getDir") == 0) {
+    if (strcmp(callback_what, "DataDirs_Roots_getDir") == 0) {
         char* path;
         ei_decode_string(recvbuff, &index, path);
         long path_sizeMax;
@@ -81,7 +81,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "DataDirs_Roots_getSize") == 0) {
+    if (strcmp(callback_what, "DataDirs_Roots_getSize") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->DataDirs_Roots_getSize(skirmishAIId);
@@ -93,7 +93,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "DataDirs_Roots_locatePath") == 0) {
+    if (strcmp(callback_what, "DataDirs_Roots_locatePath") == 0) {
         char* path;
         ei_decode_string(recvbuff, &index, path);
         long path_sizeMax;
@@ -117,7 +117,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "DataDirs_getConfigDir") == 0) {
+    if (strcmp(callback_what, "DataDirs_getConfigDir") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->DataDirs_getConfigDir(skirmishAIId);
@@ -129,7 +129,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "DataDirs_getPathSeparator") == 0) {
+    if (strcmp(callback_what, "DataDirs_getPathSeparator") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         char result = callback->DataDirs_getPathSeparator(skirmishAIId);
@@ -141,7 +141,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_char(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "DataDirs_getWriteableDir") == 0) {
+    if (strcmp(callback_what, "DataDirs_getWriteableDir") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->DataDirs_getWriteableDir(skirmishAIId);
@@ -153,7 +153,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "DataDirs_locatePath") == 0) {
+    if (strcmp(callback_what, "DataDirs_locatePath") == 0) {
         char* path;
         ei_decode_string(recvbuff, &index, path);
         long path_sizeMax;
@@ -179,7 +179,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Debug_GraphDrawer_isEnabled") == 0) {
+    if (strcmp(callback_what, "Debug_GraphDrawer_isEnabled") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Debug_GraphDrawer_isEnabled(skirmishAIId);
@@ -191,7 +191,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Economy_getCurrent") == 0) {
+    if (strcmp(callback_what, "Economy_getCurrent") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -205,7 +205,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Economy_getExcess") == 0) {
+    if (strcmp(callback_what, "Economy_getExcess") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -219,7 +219,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Economy_getIncome") == 0) {
+    if (strcmp(callback_what, "Economy_getIncome") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -233,7 +233,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Economy_getPull") == 0) {
+    if (strcmp(callback_what, "Economy_getPull") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -247,7 +247,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Economy_getReceived") == 0) {
+    if (strcmp(callback_what, "Economy_getReceived") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -261,7 +261,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Economy_getSent") == 0) {
+    if (strcmp(callback_what, "Economy_getSent") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -275,7 +275,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Economy_getShare") == 0) {
+    if (strcmp(callback_what, "Economy_getShare") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -289,7 +289,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Economy_getStorage") == 0) {
+    if (strcmp(callback_what, "Economy_getStorage") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -303,7 +303,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Economy_getUsage") == 0) {
+    if (strcmp(callback_what, "Economy_getUsage") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -317,7 +317,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getAdditional") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getAdditional") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getAdditional(skirmishAIId);
@@ -329,7 +329,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getBranch") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getBranch") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getBranch(skirmishAIId);
@@ -341,7 +341,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getBuildTime") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getBuildTime") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getBuildTime(skirmishAIId);
@@ -353,7 +353,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getCommits") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getCommits") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getCommits(skirmishAIId);
@@ -365,7 +365,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getFull") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getFull") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getFull(skirmishAIId);
@@ -377,7 +377,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getHash") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getHash") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getHash(skirmishAIId);
@@ -389,7 +389,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getMajor") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getMajor") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getMajor(skirmishAIId);
@@ -401,7 +401,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getMinor") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getMinor") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getMinor(skirmishAIId);
@@ -413,7 +413,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getNormal") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getNormal") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getNormal(skirmishAIId);
@@ -425,7 +425,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getPatchset") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getPatchset") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getPatchset(skirmishAIId);
@@ -437,7 +437,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_getSync") == 0) {
+    if (strcmp(callback_what, "Engine_Version_getSync") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Engine_Version_getSync(skirmishAIId);
@@ -449,7 +449,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Engine_Version_isRelease") == 0) {
+    if (strcmp(callback_what, "Engine_Version_isRelease") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Engine_Version_isRelease(skirmishAIId);
@@ -461,7 +461,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getContainedResource") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getContainedResource") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         long resourceId;
@@ -477,7 +477,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getDeathFeature") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getDeathFeature") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -491,7 +491,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getDescription") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getDescription") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -505,7 +505,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getDrawType") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getDrawType") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -519,7 +519,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getFileName") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getFileName") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -533,7 +533,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getMass") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getMass") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -547,7 +547,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getMaxHealth") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getMaxHealth") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -561,7 +561,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getModelName") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getModelName") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -575,7 +575,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getName") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getName") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -589,7 +589,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getReclaimTime") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getReclaimTime") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -603,7 +603,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getResurrectable") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getResurrectable") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -617,7 +617,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getSmokeTime") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getSmokeTime") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -631,7 +631,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getXSize") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getXSize") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -645,7 +645,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_getZSize") == 0) {
+    if (strcmp(callback_what, "FeatureDef_getZSize") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -659,7 +659,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_isBlocking") == 0) {
+    if (strcmp(callback_what, "FeatureDef_isBlocking") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -673,7 +673,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_isBurnable") == 0) {
+    if (strcmp(callback_what, "FeatureDef_isBurnable") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -687,7 +687,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_isDestructable") == 0) {
+    if (strcmp(callback_what, "FeatureDef_isDestructable") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -701,7 +701,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_isFloating") == 0) {
+    if (strcmp(callback_what, "FeatureDef_isFloating") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -715,7 +715,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_isGeoThermal") == 0) {
+    if (strcmp(callback_what, "FeatureDef_isGeoThermal") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -729,7 +729,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_isNoSelect") == 0) {
+    if (strcmp(callback_what, "FeatureDef_isNoSelect") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -743,7 +743,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_isReclaimable") == 0) {
+    if (strcmp(callback_what, "FeatureDef_isReclaimable") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -757,7 +757,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "FeatureDef_isUpright") == 0) {
+    if (strcmp(callback_what, "FeatureDef_isUpright") == 0) {
         long featureDefId;
         ei_decode_long(recvbuff, &index, &featureDefId);
         erlang_pid from;
@@ -771,7 +771,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Feature_getDef") == 0) {
+    if (strcmp(callback_what, "Feature_getDef") == 0) {
         long featureId;
         ei_decode_long(recvbuff, &index, &featureId);
         erlang_pid from;
@@ -785,7 +785,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Feature_getHealth") == 0) {
+    if (strcmp(callback_what, "Feature_getHealth") == 0) {
         long featureId;
         ei_decode_long(recvbuff, &index, &featureId);
         erlang_pid from;
@@ -799,7 +799,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Feature_getReclaimLeft") == 0) {
+    if (strcmp(callback_what, "Feature_getReclaimLeft") == 0) {
         long featureId;
         ei_decode_long(recvbuff, &index, &featureId);
         erlang_pid from;
@@ -813,7 +813,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "File_getSize") == 0) {
+    if (strcmp(callback_what, "File_getSize") == 0) {
         char* fileName;
         ei_decode_string(recvbuff, &index, fileName);
         erlang_pid from;
@@ -827,7 +827,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "GameRulesParam_getName") == 0) {
+    if (strcmp(callback_what, "GameRulesParam_getName") == 0) {
         long gameRulesParamId;
         ei_decode_long(recvbuff, &index, &gameRulesParamId);
         erlang_pid from;
@@ -841,7 +841,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "GameRulesParam_getValueFloat") == 0) {
+    if (strcmp(callback_what, "GameRulesParam_getValueFloat") == 0) {
         long gameRulesParamId;
         ei_decode_long(recvbuff, &index, &gameRulesParamId);
         erlang_pid from;
@@ -855,7 +855,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "GameRulesParam_getValueString") == 0) {
+    if (strcmp(callback_what, "GameRulesParam_getValueString") == 0) {
         long gameRulesParamId;
         ei_decode_long(recvbuff, &index, &gameRulesParamId);
         erlang_pid from;
@@ -869,7 +869,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getAiInterfaceVersion") == 0) {
+    if (strcmp(callback_what, "Game_getAiInterfaceVersion") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Game_getAiInterfaceVersion(skirmishAIId);
@@ -881,7 +881,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getCategoriesFlag") == 0) {
+    if (strcmp(callback_what, "Game_getCategoriesFlag") == 0) {
         char* categoryNames;
         ei_decode_string(recvbuff, &index, categoryNames);
         erlang_pid from;
@@ -895,7 +895,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getCategoryFlag") == 0) {
+    if (strcmp(callback_what, "Game_getCategoryFlag") == 0) {
         char* categoryName;
         ei_decode_string(recvbuff, &index, categoryName);
         erlang_pid from;
@@ -909,7 +909,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getCurrentFrame") == 0) {
+    if (strcmp(callback_what, "Game_getCurrentFrame") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Game_getCurrentFrame(skirmishAIId);
@@ -921,7 +921,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getGameRulesParamById") == 0) {
+    if (strcmp(callback_what, "Game_getGameRulesParamById") == 0) {
         long rulesParamId;
         ei_decode_long(recvbuff, &index, &rulesParamId);
         erlang_pid from;
@@ -935,7 +935,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getGameRulesParamByName") == 0) {
+    if (strcmp(callback_what, "Game_getGameRulesParamByName") == 0) {
         char* rulesParamName;
         ei_decode_string(recvbuff, &index, rulesParamName);
         erlang_pid from;
@@ -949,7 +949,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getGameRulesParams") == 0) {
+    if (strcmp(callback_what, "Game_getGameRulesParams") == 0) {
         long paramIds_sizeMax;
         ei_decode_long(recvbuff, &index, &paramIds_sizeMax);
         int paramIds[paramIds_sizeMax];
@@ -969,7 +969,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getMode") == 0) {
+    if (strcmp(callback_what, "Game_getMode") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Game_getMode(skirmishAIId);
@@ -981,7 +981,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getMyAllyTeam") == 0) {
+    if (strcmp(callback_what, "Game_getMyAllyTeam") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Game_getMyAllyTeam(skirmishAIId);
@@ -993,7 +993,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getMyTeam") == 0) {
+    if (strcmp(callback_what, "Game_getMyTeam") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Game_getMyTeam(skirmishAIId);
@@ -1005,7 +1005,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getPlayerTeam") == 0) {
+    if (strcmp(callback_what, "Game_getPlayerTeam") == 0) {
         long playerId;
         ei_decode_long(recvbuff, &index, &playerId);
         erlang_pid from;
@@ -1019,7 +1019,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getSetupScript") == 0) {
+    if (strcmp(callback_what, "Game_getSetupScript") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Game_getSetupScript(skirmishAIId);
@@ -1031,7 +1031,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getSpeedFactor") == 0) {
+    if (strcmp(callback_what, "Game_getSpeedFactor") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Game_getSpeedFactor(skirmishAIId);
@@ -1043,7 +1043,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamAllyTeam") == 0) {
+    if (strcmp(callback_what, "Game_getTeamAllyTeam") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         erlang_pid from;
@@ -1057,7 +1057,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamIncomeMultiplier") == 0) {
+    if (strcmp(callback_what, "Game_getTeamIncomeMultiplier") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         erlang_pid from;
@@ -1071,7 +1071,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamResourceCurrent") == 0) {
+    if (strcmp(callback_what, "Game_getTeamResourceCurrent") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         long resourceId;
@@ -1087,7 +1087,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamResourceExcess") == 0) {
+    if (strcmp(callback_what, "Game_getTeamResourceExcess") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         long resourceId;
@@ -1103,7 +1103,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamResourceIncome") == 0) {
+    if (strcmp(callback_what, "Game_getTeamResourceIncome") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         long resourceId;
@@ -1119,7 +1119,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamResourcePull") == 0) {
+    if (strcmp(callback_what, "Game_getTeamResourcePull") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         long resourceId;
@@ -1135,7 +1135,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamResourceReceived") == 0) {
+    if (strcmp(callback_what, "Game_getTeamResourceReceived") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         long resourceId;
@@ -1151,7 +1151,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamResourceSent") == 0) {
+    if (strcmp(callback_what, "Game_getTeamResourceSent") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         long resourceId;
@@ -1167,7 +1167,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamResourceShare") == 0) {
+    if (strcmp(callback_what, "Game_getTeamResourceShare") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         long resourceId;
@@ -1183,7 +1183,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamResourceStorage") == 0) {
+    if (strcmp(callback_what, "Game_getTeamResourceStorage") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         long resourceId;
@@ -1199,7 +1199,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamResourceUsage") == 0) {
+    if (strcmp(callback_what, "Game_getTeamResourceUsage") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         long resourceId;
@@ -1215,7 +1215,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeamSide") == 0) {
+    if (strcmp(callback_what, "Game_getTeamSide") == 0) {
         long otherTeamId;
         ei_decode_long(recvbuff, &index, &otherTeamId);
         erlang_pid from;
@@ -1229,7 +1229,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_getTeams") == 0) {
+    if (strcmp(callback_what, "Game_getTeams") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Game_getTeams(skirmishAIId);
@@ -1241,7 +1241,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_isAllied") == 0) {
+    if (strcmp(callback_what, "Game_isAllied") == 0) {
         long firstAllyTeamId;
         ei_decode_long(recvbuff, &index, &firstAllyTeamId);
         long secondAllyTeamId;
@@ -1257,7 +1257,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_isDebugModeEnabled") == 0) {
+    if (strcmp(callback_what, "Game_isDebugModeEnabled") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Game_isDebugModeEnabled(skirmishAIId);
@@ -1269,7 +1269,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_isExceptionHandlingEnabled") == 0) {
+    if (strcmp(callback_what, "Game_isExceptionHandlingEnabled") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Game_isExceptionHandlingEnabled(skirmishAIId);
@@ -1281,7 +1281,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Game_isPaused") == 0) {
+    if (strcmp(callback_what, "Game_isPaused") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Game_isPaused(skirmishAIId);
@@ -1293,7 +1293,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_OrderPreview_getId") == 0) {
+    if (strcmp(callback_what, "Group_OrderPreview_getId") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         erlang_pid from;
@@ -1307,7 +1307,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_OrderPreview_getOptions") == 0) {
+    if (strcmp(callback_what, "Group_OrderPreview_getOptions") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         erlang_pid from;
@@ -1321,7 +1321,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_OrderPreview_getTag") == 0) {
+    if (strcmp(callback_what, "Group_OrderPreview_getTag") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         erlang_pid from;
@@ -1335,7 +1335,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_OrderPreview_getTimeOut") == 0) {
+    if (strcmp(callback_what, "Group_OrderPreview_getTimeOut") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         erlang_pid from;
@@ -1349,7 +1349,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_SupportedCommand_getId") == 0) {
+    if (strcmp(callback_what, "Group_SupportedCommand_getId") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         long supportedCommandId;
@@ -1365,7 +1365,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_SupportedCommand_getName") == 0) {
+    if (strcmp(callback_what, "Group_SupportedCommand_getName") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         long supportedCommandId;
@@ -1381,7 +1381,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_SupportedCommand_getToolTip") == 0) {
+    if (strcmp(callback_what, "Group_SupportedCommand_getToolTip") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         long supportedCommandId;
@@ -1397,7 +1397,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_SupportedCommand_isDisabled") == 0) {
+    if (strcmp(callback_what, "Group_SupportedCommand_isDisabled") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         long supportedCommandId;
@@ -1413,7 +1413,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_SupportedCommand_isShowUnique") == 0) {
+    if (strcmp(callback_what, "Group_SupportedCommand_isShowUnique") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         long supportedCommandId;
@@ -1429,7 +1429,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_getSupportedCommands") == 0) {
+    if (strcmp(callback_what, "Group_getSupportedCommands") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         erlang_pid from;
@@ -1443,7 +1443,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Group_isSelected") == 0) {
+    if (strcmp(callback_what, "Group_isSelected") == 0) {
         long groupId;
         ei_decode_long(recvbuff, &index, &groupId);
         erlang_pid from;
@@ -1457,7 +1457,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Gui_getScreenX") == 0) {
+    if (strcmp(callback_what, "Gui_getScreenX") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Gui_getScreenX(skirmishAIId);
@@ -1469,7 +1469,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Gui_getScreenY") == 0) {
+    if (strcmp(callback_what, "Gui_getScreenY") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Gui_getScreenY(skirmishAIId);
@@ -1481,7 +1481,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Gui_getViewRange") == 0) {
+    if (strcmp(callback_what, "Gui_getViewRange") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Gui_getViewRange(skirmishAIId);
@@ -1493,7 +1493,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_Point_getLabel") == 0) {
+    if (strcmp(callback_what, "Map_Point_getLabel") == 0) {
         long pointId;
         ei_decode_long(recvbuff, &index, &pointId);
         erlang_pid from;
@@ -1507,7 +1507,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getChecksum") == 0) {
+    if (strcmp(callback_what, "Map_getChecksum") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Map_getChecksum(skirmishAIId);
@@ -1519,7 +1519,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getCurWind") == 0) {
+    if (strcmp(callback_what, "Map_getCurWind") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Map_getCurWind(skirmishAIId);
@@ -1531,7 +1531,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getElevationAt") == 0) {
+    if (strcmp(callback_what, "Map_getElevationAt") == 0) {
         double x;
         ei_decode_double(recvbuff, &index, &x);
         double z;
@@ -1547,7 +1547,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getExtractorRadius") == 0) {
+    if (strcmp(callback_what, "Map_getExtractorRadius") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -1561,7 +1561,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getGravity") == 0) {
+    if (strcmp(callback_what, "Map_getGravity") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Map_getGravity(skirmishAIId);
@@ -1573,7 +1573,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getHash") == 0) {
+    if (strcmp(callback_what, "Map_getHash") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Map_getHash(skirmishAIId);
@@ -1585,7 +1585,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getHeight") == 0) {
+    if (strcmp(callback_what, "Map_getHeight") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Map_getHeight(skirmishAIId);
@@ -1597,7 +1597,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getHumanName") == 0) {
+    if (strcmp(callback_what, "Map_getHumanName") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Map_getHumanName(skirmishAIId);
@@ -1609,7 +1609,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getLines") == 0) {
+    if (strcmp(callback_what, "Map_getLines") == 0) {
         int includeAllies;
         ei_decode_boolean(recvbuff, &index, &includeAllies);
         erlang_pid from;
@@ -1623,7 +1623,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getMaxHeight") == 0) {
+    if (strcmp(callback_what, "Map_getMaxHeight") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Map_getMaxHeight(skirmishAIId);
@@ -1635,7 +1635,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getMaxResource") == 0) {
+    if (strcmp(callback_what, "Map_getMaxResource") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -1649,7 +1649,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getMaxWind") == 0) {
+    if (strcmp(callback_what, "Map_getMaxWind") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Map_getMaxWind(skirmishAIId);
@@ -1661,7 +1661,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getMinHeight") == 0) {
+    if (strcmp(callback_what, "Map_getMinHeight") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Map_getMinHeight(skirmishAIId);
@@ -1673,7 +1673,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getMinWind") == 0) {
+    if (strcmp(callback_what, "Map_getMinWind") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Map_getMinWind(skirmishAIId);
@@ -1685,7 +1685,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getName") == 0) {
+    if (strcmp(callback_what, "Map_getName") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Map_getName(skirmishAIId);
@@ -1697,7 +1697,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getPoints") == 0) {
+    if (strcmp(callback_what, "Map_getPoints") == 0) {
         int includeAllies;
         ei_decode_boolean(recvbuff, &index, &includeAllies);
         erlang_pid from;
@@ -1711,7 +1711,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getResourceMapSpotsAverageIncome") == 0) {
+    if (strcmp(callback_what, "Map_getResourceMapSpotsAverageIncome") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -1725,7 +1725,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getResourceMapSpotsPositions") == 0) {
+    if (strcmp(callback_what, "Map_getResourceMapSpotsPositions") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         float spots_AposF3[3];
@@ -1749,7 +1749,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getTidalStrength") == 0) {
+    if (strcmp(callback_what, "Map_getTidalStrength") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Map_getTidalStrength(skirmishAIId);
@@ -1761,7 +1761,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getWaterDamage") == 0) {
+    if (strcmp(callback_what, "Map_getWaterDamage") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Map_getWaterDamage(skirmishAIId);
@@ -1773,7 +1773,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_getWidth") == 0) {
+    if (strcmp(callback_what, "Map_getWidth") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Map_getWidth(skirmishAIId);
@@ -1785,7 +1785,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_isPosInCamera") == 0) {
+    if (strcmp(callback_what, "Map_isPosInCamera") == 0) {
         float pos_posF3[3];
         double tmp;
         ei_decode_double(recvbuff, &index, &tmp);
@@ -1807,7 +1807,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Map_isPossibleToBuildAt") == 0) {
+    if (strcmp(callback_what, "Map_isPossibleToBuildAt") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         float pos_posF3[3];
@@ -1831,7 +1831,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getAirLosMul") == 0) {
+    if (strcmp(callback_what, "Mod_getAirLosMul") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Mod_getAirLosMul(skirmishAIId);
@@ -1843,7 +1843,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getAirMipLevel") == 0) {
+    if (strcmp(callback_what, "Mod_getAirMipLevel") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getAirMipLevel(skirmishAIId);
@@ -1855,7 +1855,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getAllowTeamColors") == 0) {
+    if (strcmp(callback_what, "Mod_getAllowTeamColors") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Mod_getAllowTeamColors(skirmishAIId);
@@ -1867,7 +1867,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getCaptureEnergyCostFactor") == 0) {
+    if (strcmp(callback_what, "Mod_getCaptureEnergyCostFactor") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Mod_getCaptureEnergyCostFactor(skirmishAIId);
@@ -1879,7 +1879,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getConstructionDecay") == 0) {
+    if (strcmp(callback_what, "Mod_getConstructionDecay") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Mod_getConstructionDecay(skirmishAIId);
@@ -1891,7 +1891,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getConstructionDecaySpeed") == 0) {
+    if (strcmp(callback_what, "Mod_getConstructionDecaySpeed") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Mod_getConstructionDecaySpeed(skirmishAIId);
@@ -1903,7 +1903,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getConstructionDecayTime") == 0) {
+    if (strcmp(callback_what, "Mod_getConstructionDecayTime") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getConstructionDecayTime(skirmishAIId);
@@ -1915,7 +1915,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getDescription") == 0) {
+    if (strcmp(callback_what, "Mod_getDescription") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Mod_getDescription(skirmishAIId);
@@ -1927,7 +1927,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getFileName") == 0) {
+    if (strcmp(callback_what, "Mod_getFileName") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Mod_getFileName(skirmishAIId);
@@ -1939,7 +1939,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getFireAtCrashing") == 0) {
+    if (strcmp(callback_what, "Mod_getFireAtCrashing") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getFireAtCrashing(skirmishAIId);
@@ -1951,7 +1951,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getFireAtKilled") == 0) {
+    if (strcmp(callback_what, "Mod_getFireAtKilled") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getFireAtKilled(skirmishAIId);
@@ -1963,7 +1963,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getFlankingBonusModeDefault") == 0) {
+    if (strcmp(callback_what, "Mod_getFlankingBonusModeDefault") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getFlankingBonusModeDefault(skirmishAIId);
@@ -1975,7 +1975,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getHash") == 0) {
+    if (strcmp(callback_what, "Mod_getHash") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getHash(skirmishAIId);
@@ -1987,7 +1987,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getHumanName") == 0) {
+    if (strcmp(callback_what, "Mod_getHumanName") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Mod_getHumanName(skirmishAIId);
@@ -1999,7 +1999,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getLosMipLevel") == 0) {
+    if (strcmp(callback_what, "Mod_getLosMipLevel") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getLosMipLevel(skirmishAIId);
@@ -2011,7 +2011,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getLosMul") == 0) {
+    if (strcmp(callback_what, "Mod_getLosMul") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Mod_getLosMul(skirmishAIId);
@@ -2023,7 +2023,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getMultiReclaim") == 0) {
+    if (strcmp(callback_what, "Mod_getMultiReclaim") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getMultiReclaim(skirmishAIId);
@@ -2035,7 +2035,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getMutator") == 0) {
+    if (strcmp(callback_what, "Mod_getMutator") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Mod_getMutator(skirmishAIId);
@@ -2047,7 +2047,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getReclaimAllowAllies") == 0) {
+    if (strcmp(callback_what, "Mod_getReclaimAllowAllies") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Mod_getReclaimAllowAllies(skirmishAIId);
@@ -2059,7 +2059,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getReclaimAllowEnemies") == 0) {
+    if (strcmp(callback_what, "Mod_getReclaimAllowEnemies") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Mod_getReclaimAllowEnemies(skirmishAIId);
@@ -2071,7 +2071,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getReclaimFeatureEnergyCostFactor") == 0) {
+    if (strcmp(callback_what, "Mod_getReclaimFeatureEnergyCostFactor") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Mod_getReclaimFeatureEnergyCostFactor(skirmishAIId);
@@ -2083,7 +2083,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getReclaimMethod") == 0) {
+    if (strcmp(callback_what, "Mod_getReclaimMethod") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getReclaimMethod(skirmishAIId);
@@ -2095,7 +2095,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getReclaimUnitEfficiency") == 0) {
+    if (strcmp(callback_what, "Mod_getReclaimUnitEfficiency") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Mod_getReclaimUnitEfficiency(skirmishAIId);
@@ -2107,7 +2107,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getReclaimUnitEnergyCostFactor") == 0) {
+    if (strcmp(callback_what, "Mod_getReclaimUnitEnergyCostFactor") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Mod_getReclaimUnitEnergyCostFactor(skirmishAIId);
@@ -2119,7 +2119,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getReclaimUnitMethod") == 0) {
+    if (strcmp(callback_what, "Mod_getReclaimUnitMethod") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getReclaimUnitMethod(skirmishAIId);
@@ -2131,7 +2131,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getRepairEnergyCostFactor") == 0) {
+    if (strcmp(callback_what, "Mod_getRepairEnergyCostFactor") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Mod_getRepairEnergyCostFactor(skirmishAIId);
@@ -2143,7 +2143,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getRequireSonarUnderWater") == 0) {
+    if (strcmp(callback_what, "Mod_getRequireSonarUnderWater") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         bool result = callback->Mod_getRequireSonarUnderWater(skirmishAIId);
@@ -2155,7 +2155,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getResurrectEnergyCostFactor") == 0) {
+    if (strcmp(callback_what, "Mod_getResurrectEnergyCostFactor") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         float result = callback->Mod_getResurrectEnergyCostFactor(skirmishAIId);
@@ -2167,7 +2167,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getShortName") == 0) {
+    if (strcmp(callback_what, "Mod_getShortName") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Mod_getShortName(skirmishAIId);
@@ -2179,7 +2179,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getTransportAir") == 0) {
+    if (strcmp(callback_what, "Mod_getTransportAir") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getTransportAir(skirmishAIId);
@@ -2191,7 +2191,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getTransportGround") == 0) {
+    if (strcmp(callback_what, "Mod_getTransportGround") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getTransportGround(skirmishAIId);
@@ -2203,7 +2203,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getTransportHover") == 0) {
+    if (strcmp(callback_what, "Mod_getTransportHover") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getTransportHover(skirmishAIId);
@@ -2215,7 +2215,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getTransportShip") == 0) {
+    if (strcmp(callback_what, "Mod_getTransportShip") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Mod_getTransportShip(skirmishAIId);
@@ -2227,7 +2227,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Mod_getVersion") == 0) {
+    if (strcmp(callback_what, "Mod_getVersion") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         const char* result = callback->Mod_getVersion(skirmishAIId);
@@ -2239,7 +2239,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Resource_getName") == 0) {
+    if (strcmp(callback_what, "Resource_getName") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -2253,7 +2253,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Resource_getOptimum") == 0) {
+    if (strcmp(callback_what, "Resource_getOptimum") == 0) {
         long resourceId;
         ei_decode_long(recvbuff, &index, &resourceId);
         erlang_pid from;
@@ -2267,7 +2267,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAI_Info_getDescription") == 0) {
+    if (strcmp(callback_what, "SkirmishAI_Info_getDescription") == 0) {
         long infoIndex;
         ei_decode_long(recvbuff, &index, &infoIndex);
         erlang_pid from;
@@ -2281,7 +2281,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAI_Info_getKey") == 0) {
+    if (strcmp(callback_what, "SkirmishAI_Info_getKey") == 0) {
         long infoIndex;
         ei_decode_long(recvbuff, &index, &infoIndex);
         erlang_pid from;
@@ -2295,7 +2295,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAI_Info_getSize") == 0) {
+    if (strcmp(callback_what, "SkirmishAI_Info_getSize") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->SkirmishAI_Info_getSize(skirmishAIId);
@@ -2307,7 +2307,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAI_Info_getValue") == 0) {
+    if (strcmp(callback_what, "SkirmishAI_Info_getValue") == 0) {
         long infoIndex;
         ei_decode_long(recvbuff, &index, &infoIndex);
         erlang_pid from;
@@ -2321,7 +2321,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAI_Info_getValueByKey") == 0) {
+    if (strcmp(callback_what, "SkirmishAI_Info_getValueByKey") == 0) {
         char* key;
         ei_decode_string(recvbuff, &index, key);
         erlang_pid from;
@@ -2335,7 +2335,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAI_OptionValues_getKey") == 0) {
+    if (strcmp(callback_what, "SkirmishAI_OptionValues_getKey") == 0) {
         long optionIndex;
         ei_decode_long(recvbuff, &index, &optionIndex);
         erlang_pid from;
@@ -2349,7 +2349,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAI_OptionValues_getSize") == 0) {
+    if (strcmp(callback_what, "SkirmishAI_OptionValues_getSize") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->SkirmishAI_OptionValues_getSize(skirmishAIId);
@@ -2361,7 +2361,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAI_OptionValues_getValue") == 0) {
+    if (strcmp(callback_what, "SkirmishAI_OptionValues_getValue") == 0) {
         long optionIndex;
         ei_decode_long(recvbuff, &index, &optionIndex);
         erlang_pid from;
@@ -2375,7 +2375,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAI_OptionValues_getValueByKey") == 0) {
+    if (strcmp(callback_what, "SkirmishAI_OptionValues_getValueByKey") == 0) {
         char* key;
         ei_decode_string(recvbuff, &index, key);
         erlang_pid from;
@@ -2389,7 +2389,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAI_getTeamId") == 0) {
+    if (strcmp(callback_what, "SkirmishAI_getTeamId") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->SkirmishAI_getTeamId(skirmishAIId);
@@ -2401,7 +2401,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAIs_getMax") == 0) {
+    if (strcmp(callback_what, "SkirmishAIs_getMax") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->SkirmishAIs_getMax(skirmishAIId);
@@ -2413,7 +2413,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "SkirmishAIs_getSize") == 0) {
+    if (strcmp(callback_what, "SkirmishAIs_getSize") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->SkirmishAIs_getSize(skirmishAIId);
@@ -2425,7 +2425,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Team_TeamRulesParam_getName") == 0) {
+    if (strcmp(callback_what, "Team_TeamRulesParam_getName") == 0) {
         long teamId;
         ei_decode_long(recvbuff, &index, &teamId);
         long teamRulesParamId;
@@ -2441,7 +2441,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Team_TeamRulesParam_getValueFloat") == 0) {
+    if (strcmp(callback_what, "Team_TeamRulesParam_getValueFloat") == 0) {
         long teamId;
         ei_decode_long(recvbuff, &index, &teamId);
         long teamRulesParamId;
@@ -2457,7 +2457,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Team_TeamRulesParam_getValueString") == 0) {
+    if (strcmp(callback_what, "Team_TeamRulesParam_getValueString") == 0) {
         long teamId;
         ei_decode_long(recvbuff, &index, &teamId);
         long teamRulesParamId;
@@ -2473,7 +2473,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Team_getTeamRulesParamById") == 0) {
+    if (strcmp(callback_what, "Team_getTeamRulesParamById") == 0) {
         long teamId;
         ei_decode_long(recvbuff, &index, &teamId);
         long rulesParamId;
@@ -2489,7 +2489,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Team_getTeamRulesParamByName") == 0) {
+    if (strcmp(callback_what, "Team_getTeamRulesParamByName") == 0) {
         long teamId;
         ei_decode_long(recvbuff, &index, &teamId);
         char* rulesParamName;
@@ -2505,7 +2505,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Team_getTeamRulesParams") == 0) {
+    if (strcmp(callback_what, "Team_getTeamRulesParams") == 0) {
         long teamId;
         ei_decode_long(recvbuff, &index, &teamId);
         long paramIds_sizeMax;
@@ -2527,7 +2527,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Team_hasAIController") == 0) {
+    if (strcmp(callback_what, "Team_hasAIController") == 0) {
         long teamId;
         ei_decode_long(recvbuff, &index, &teamId);
         erlang_pid from;
@@ -2541,7 +2541,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Teams_getSize") == 0) {
+    if (strcmp(callback_what, "Teams_getSize") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Teams_getSize(skirmishAIId);
@@ -2553,7 +2553,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_FlankingBonus_getMax") == 0) {
+    if (strcmp(callback_what, "UnitDef_FlankingBonus_getMax") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2567,7 +2567,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_FlankingBonus_getMin") == 0) {
+    if (strcmp(callback_what, "UnitDef_FlankingBonus_getMin") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2581,7 +2581,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_FlankingBonus_getMobilityAdd") == 0) {
+    if (strcmp(callback_what, "UnitDef_FlankingBonus_getMobilityAdd") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2595,7 +2595,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_FlankingBonus_getMode") == 0) {
+    if (strcmp(callback_what, "UnitDef_FlankingBonus_getMode") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2609,7 +2609,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getCrushStrength") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getCrushStrength") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2623,7 +2623,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getDepth") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getDepth") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2637,7 +2637,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getDepthMod") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getDepthMod") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         double height;
@@ -2653,7 +2653,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getFollowGround") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getFollowGround") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2667,7 +2667,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getMaxAcceleration") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getMaxAcceleration") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2681,7 +2681,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getMaxBreaking") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getMaxBreaking") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2695,7 +2695,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getMaxSlope") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getMaxSlope") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2709,7 +2709,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getMaxSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getMaxSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2723,7 +2723,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getMaxTurnRate") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getMaxTurnRate") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2737,7 +2737,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getMoveType") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getMoveType") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2751,7 +2751,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getName") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getName") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2765,7 +2765,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getPathType") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getPathType") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2779,7 +2779,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getSlopeMod") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getSlopeMod") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2793,7 +2793,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getSpeedModClass") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getSpeedModClass") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2807,7 +2807,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getTerrainClass") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getTerrainClass") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2821,7 +2821,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getXSize") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getXSize") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2835,7 +2835,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_getZSize") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_getZSize") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2849,7 +2849,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_MoveData_isSubMarine") == 0) {
+    if (strcmp(callback_what, "UnitDef_MoveData_isSubMarine") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2863,7 +2863,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_WeaponMount_getBadTargetCategory") == 0) {
+    if (strcmp(callback_what, "UnitDef_WeaponMount_getBadTargetCategory") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long weaponMountId;
@@ -2879,7 +2879,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_WeaponMount_getFuelUsage") == 0) {
+    if (strcmp(callback_what, "UnitDef_WeaponMount_getFuelUsage") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long weaponMountId;
@@ -2895,7 +2895,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_WeaponMount_getMaxAngleDif") == 0) {
+    if (strcmp(callback_what, "UnitDef_WeaponMount_getMaxAngleDif") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long weaponMountId;
@@ -2911,7 +2911,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_WeaponMount_getName") == 0) {
+    if (strcmp(callback_what, "UnitDef_WeaponMount_getName") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long weaponMountId;
@@ -2927,7 +2927,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_WeaponMount_getOnlyTargetCategory") == 0) {
+    if (strcmp(callback_what, "UnitDef_WeaponMount_getOnlyTargetCategory") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long weaponMountId;
@@ -2943,7 +2943,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_WeaponMount_getSlavedTo") == 0) {
+    if (strcmp(callback_what, "UnitDef_WeaponMount_getSlavedTo") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long weaponMountId;
@@ -2959,7 +2959,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_WeaponMount_getWeaponDef") == 0) {
+    if (strcmp(callback_what, "UnitDef_WeaponMount_getWeaponDef") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long weaponMountId;
@@ -2975,7 +2975,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_canManualFire") == 0) {
+    if (strcmp(callback_what, "UnitDef_canManualFire") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -2989,7 +2989,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getAiHint") == 0) {
+    if (strcmp(callback_what, "UnitDef_getAiHint") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3003,7 +3003,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getAirLosRadius") == 0) {
+    if (strcmp(callback_what, "UnitDef_getAirLosRadius") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3017,7 +3017,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getArmorType") == 0) {
+    if (strcmp(callback_what, "UnitDef_getArmorType") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3031,7 +3031,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getArmoredMultiple") == 0) {
+    if (strcmp(callback_what, "UnitDef_getArmoredMultiple") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3045,7 +3045,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getAutoHeal") == 0) {
+    if (strcmp(callback_what, "UnitDef_getAutoHeal") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3059,7 +3059,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getBuildAngle") == 0) {
+    if (strcmp(callback_what, "UnitDef_getBuildAngle") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3073,7 +3073,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getBuildDistance") == 0) {
+    if (strcmp(callback_what, "UnitDef_getBuildDistance") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3087,7 +3087,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getBuildOptions") == 0) {
+    if (strcmp(callback_what, "UnitDef_getBuildOptions") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long unitDefIds_sizeMax;
@@ -3109,7 +3109,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getBuildSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getBuildSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3123,7 +3123,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getBuildTime") == 0) {
+    if (strcmp(callback_what, "UnitDef_getBuildTime") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3137,7 +3137,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getBuildingDecalDecaySpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getBuildingDecalDecaySpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3151,7 +3151,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getBuildingDecalSizeX") == 0) {
+    if (strcmp(callback_what, "UnitDef_getBuildingDecalSizeX") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3165,7 +3165,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getBuildingDecalSizeY") == 0) {
+    if (strcmp(callback_what, "UnitDef_getBuildingDecalSizeY") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3179,7 +3179,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getBuildingDecalType") == 0) {
+    if (strcmp(callback_what, "UnitDef_getBuildingDecalType") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3193,7 +3193,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getCaptureSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getCaptureSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3207,7 +3207,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getCategory") == 0) {
+    if (strcmp(callback_what, "UnitDef_getCategory") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3221,7 +3221,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getCategoryString") == 0) {
+    if (strcmp(callback_what, "UnitDef_getCategoryString") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3235,7 +3235,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getCloakCost") == 0) {
+    if (strcmp(callback_what, "UnitDef_getCloakCost") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3249,7 +3249,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getCloakCostMoving") == 0) {
+    if (strcmp(callback_what, "UnitDef_getCloakCostMoving") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3263,7 +3263,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getCobId") == 0) {
+    if (strcmp(callback_what, "UnitDef_getCobId") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3277,7 +3277,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getCost") == 0) {
+    if (strcmp(callback_what, "UnitDef_getCost") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long resourceId;
@@ -3293,7 +3293,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getDeathExplosion") == 0) {
+    if (strcmp(callback_what, "UnitDef_getDeathExplosion") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3307,7 +3307,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getDecloakDistance") == 0) {
+    if (strcmp(callback_what, "UnitDef_getDecloakDistance") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3321,7 +3321,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getDecoyDef") == 0) {
+    if (strcmp(callback_what, "UnitDef_getDecoyDef") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3335,7 +3335,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getDlHoverFactor") == 0) {
+    if (strcmp(callback_what, "UnitDef_getDlHoverFactor") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3349,7 +3349,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getDrag") == 0) {
+    if (strcmp(callback_what, "UnitDef_getDrag") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3363,7 +3363,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getExtractsResource") == 0) {
+    if (strcmp(callback_what, "UnitDef_getExtractsResource") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long resourceId;
@@ -3379,7 +3379,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getFallSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getFallSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3393,7 +3393,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getFileName") == 0) {
+    if (strcmp(callback_what, "UnitDef_getFileName") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3407,7 +3407,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getFireState") == 0) {
+    if (strcmp(callback_what, "UnitDef_getFireState") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3421,7 +3421,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getFlareDelay") == 0) {
+    if (strcmp(callback_what, "UnitDef_getFlareDelay") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3435,7 +3435,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getFlareEfficiency") == 0) {
+    if (strcmp(callback_what, "UnitDef_getFlareEfficiency") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3449,7 +3449,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getFlareReloadTime") == 0) {
+    if (strcmp(callback_what, "UnitDef_getFlareReloadTime") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3463,7 +3463,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getFlareSalvoDelay") == 0) {
+    if (strcmp(callback_what, "UnitDef_getFlareSalvoDelay") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3477,7 +3477,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getFlareSalvoSize") == 0) {
+    if (strcmp(callback_what, "UnitDef_getFlareSalvoSize") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3491,7 +3491,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getFlareTime") == 0) {
+    if (strcmp(callback_what, "UnitDef_getFlareTime") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3505,7 +3505,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getFrontToSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getFrontToSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3519,7 +3519,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getGaia") == 0) {
+    if (strcmp(callback_what, "UnitDef_getGaia") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3533,7 +3533,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getHealth") == 0) {
+    if (strcmp(callback_what, "UnitDef_getHealth") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3547,7 +3547,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getHeight") == 0) {
+    if (strcmp(callback_what, "UnitDef_getHeight") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3561,7 +3561,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getHighTrajectoryType") == 0) {
+    if (strcmp(callback_what, "UnitDef_getHighTrajectoryType") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3575,7 +3575,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getHumanName") == 0) {
+    if (strcmp(callback_what, "UnitDef_getHumanName") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3589,7 +3589,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getIdleAutoHeal") == 0) {
+    if (strcmp(callback_what, "UnitDef_getIdleAutoHeal") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3603,7 +3603,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getIdleTime") == 0) {
+    if (strcmp(callback_what, "UnitDef_getIdleTime") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3617,7 +3617,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getJammerRadius") == 0) {
+    if (strcmp(callback_what, "UnitDef_getJammerRadius") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3631,7 +3631,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getKamikazeDist") == 0) {
+    if (strcmp(callback_what, "UnitDef_getKamikazeDist") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3645,7 +3645,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getLoadingRadius") == 0) {
+    if (strcmp(callback_what, "UnitDef_getLoadingRadius") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3659,7 +3659,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getLosHeight") == 0) {
+    if (strcmp(callback_what, "UnitDef_getLosHeight") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3673,7 +3673,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getLosRadius") == 0) {
+    if (strcmp(callback_what, "UnitDef_getLosRadius") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3687,7 +3687,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMakesResource") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMakesResource") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long resourceId;
@@ -3703,7 +3703,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMass") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMass") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3717,7 +3717,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxAcceleration") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxAcceleration") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3731,7 +3731,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxAileron") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxAileron") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3745,7 +3745,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxBank") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxBank") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3759,7 +3759,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxDeceleration") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxDeceleration") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3773,7 +3773,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxElevator") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxElevator") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3787,7 +3787,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxFuel") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxFuel") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3801,7 +3801,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxHeightDif") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxHeightDif") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3815,7 +3815,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxPitch") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxPitch") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3829,7 +3829,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxRepairSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxRepairSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3843,7 +3843,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxRudder") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxRudder") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3857,7 +3857,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxSlope") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxSlope") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3871,7 +3871,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxThisUnit") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxThisUnit") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3885,7 +3885,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxWaterDepth") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxWaterDepth") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3899,7 +3899,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMaxWeaponRange") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMaxWeaponRange") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3913,7 +3913,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMinAirBasePower") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMinAirBasePower") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3927,7 +3927,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMinCollisionSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMinCollisionSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3941,7 +3941,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMinTransportMass") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMinTransportMass") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3955,7 +3955,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMinTransportSize") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMinTransportSize") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3969,7 +3969,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMinWaterDepth") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMinWaterDepth") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3983,7 +3983,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMoveState") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMoveState") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -3997,7 +3997,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getMyGravity") == 0) {
+    if (strcmp(callback_what, "UnitDef_getMyGravity") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4011,7 +4011,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getName") == 0) {
+    if (strcmp(callback_what, "UnitDef_getName") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4025,7 +4025,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getNoChaseCategory") == 0) {
+    if (strcmp(callback_what, "UnitDef_getNoChaseCategory") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4039,7 +4039,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getPower") == 0) {
+    if (strcmp(callback_what, "UnitDef_getPower") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4053,7 +4053,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getRadarRadius") == 0) {
+    if (strcmp(callback_what, "UnitDef_getRadarRadius") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4067,7 +4067,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getRadius") == 0) {
+    if (strcmp(callback_what, "UnitDef_getRadius") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4081,7 +4081,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getReclaimSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getReclaimSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4095,7 +4095,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getRefuelTime") == 0) {
+    if (strcmp(callback_what, "UnitDef_getRefuelTime") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4109,7 +4109,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getRepairSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getRepairSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4123,7 +4123,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getResourceExtractorRange") == 0) {
+    if (strcmp(callback_what, "UnitDef_getResourceExtractorRange") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long resourceId;
@@ -4139,7 +4139,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getResourceMake") == 0) {
+    if (strcmp(callback_what, "UnitDef_getResourceMake") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long resourceId;
@@ -4155,7 +4155,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getResurrectSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getResurrectSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4169,7 +4169,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getSeismicRadius") == 0) {
+    if (strcmp(callback_what, "UnitDef_getSeismicRadius") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4183,7 +4183,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getSeismicSignature") == 0) {
+    if (strcmp(callback_what, "UnitDef_getSeismicSignature") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4197,7 +4197,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getSelfDCountdown") == 0) {
+    if (strcmp(callback_what, "UnitDef_getSelfDCountdown") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4211,7 +4211,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getSelfDExplosion") == 0) {
+    if (strcmp(callback_what, "UnitDef_getSelfDExplosion") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4225,7 +4225,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getShieldDef") == 0) {
+    if (strcmp(callback_what, "UnitDef_getShieldDef") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4239,7 +4239,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getSlideTolerance") == 0) {
+    if (strcmp(callback_what, "UnitDef_getSlideTolerance") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4253,7 +4253,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getSonarJamRadius") == 0) {
+    if (strcmp(callback_what, "UnitDef_getSonarJamRadius") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4267,7 +4267,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getSonarRadius") == 0) {
+    if (strcmp(callback_what, "UnitDef_getSonarRadius") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4281,7 +4281,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4295,7 +4295,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getSpeedToFront") == 0) {
+    if (strcmp(callback_what, "UnitDef_getSpeedToFront") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4309,7 +4309,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getStockpileDef") == 0) {
+    if (strcmp(callback_what, "UnitDef_getStockpileDef") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4323,7 +4323,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getStorage") == 0) {
+    if (strcmp(callback_what, "UnitDef_getStorage") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long resourceId;
@@ -4339,7 +4339,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTechLevel") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTechLevel") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4353,7 +4353,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTerraformSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTerraformSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4367,7 +4367,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTidalResourceGenerator") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTidalResourceGenerator") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long resourceId;
@@ -4383,7 +4383,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTooltip") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTooltip") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4397,7 +4397,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTrackOffset") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTrackOffset") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4411,7 +4411,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTrackStrength") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTrackStrength") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4425,7 +4425,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTrackStretch") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTrackStretch") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4439,7 +4439,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTrackType") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTrackType") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4453,7 +4453,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTrackWidth") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTrackWidth") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4467,7 +4467,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTransportCapacity") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTransportCapacity") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4481,7 +4481,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTransportMass") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTransportMass") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4495,7 +4495,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTransportSize") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTransportSize") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4509,7 +4509,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTransportUnloadMethod") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTransportUnloadMethod") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4523,7 +4523,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTurnInPlaceDistance") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTurnInPlaceDistance") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4537,7 +4537,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTurnInPlaceSpeedLimit") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTurnInPlaceSpeedLimit") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4551,7 +4551,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTurnRadius") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTurnRadius") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4565,7 +4565,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getTurnRate") == 0) {
+    if (strcmp(callback_what, "UnitDef_getTurnRate") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4579,7 +4579,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getType") == 0) {
+    if (strcmp(callback_what, "UnitDef_getType") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4593,7 +4593,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getUnitFallSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getUnitFallSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4607,7 +4607,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getUnloadSpread") == 0) {
+    if (strcmp(callback_what, "UnitDef_getUnloadSpread") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4621,7 +4621,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getUpkeep") == 0) {
+    if (strcmp(callback_what, "UnitDef_getUpkeep") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long resourceId;
@@ -4637,7 +4637,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getVerticalSpeed") == 0) {
+    if (strcmp(callback_what, "UnitDef_getVerticalSpeed") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4651,7 +4651,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getWantedHeight") == 0) {
+    if (strcmp(callback_what, "UnitDef_getWantedHeight") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4665,7 +4665,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getWaterline") == 0) {
+    if (strcmp(callback_what, "UnitDef_getWaterline") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4679,7 +4679,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getWeaponMounts") == 0) {
+    if (strcmp(callback_what, "UnitDef_getWeaponMounts") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4693,7 +4693,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getWindResourceGenerator") == 0) {
+    if (strcmp(callback_what, "UnitDef_getWindResourceGenerator") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long resourceId;
@@ -4709,7 +4709,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getWingAngle") == 0) {
+    if (strcmp(callback_what, "UnitDef_getWingAngle") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4723,7 +4723,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getWingDrag") == 0) {
+    if (strcmp(callback_what, "UnitDef_getWingDrag") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4737,7 +4737,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getWreckName") == 0) {
+    if (strcmp(callback_what, "UnitDef_getWreckName") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4751,7 +4751,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getXSize") == 0) {
+    if (strcmp(callback_what, "UnitDef_getXSize") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4765,7 +4765,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_getZSize") == 0) {
+    if (strcmp(callback_what, "UnitDef_getZSize") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4779,7 +4779,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToAssist") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToAssist") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4793,7 +4793,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToAttack") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToAttack") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4807,7 +4807,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToCapture") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToCapture") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4821,7 +4821,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToCloak") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToCloak") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4835,7 +4835,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToCrash") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToCrash") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4849,7 +4849,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToDropFlare") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToDropFlare") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4863,7 +4863,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToFight") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToFight") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4877,7 +4877,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToFireControl") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToFireControl") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4891,7 +4891,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToFly") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToFly") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4905,7 +4905,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToGuard") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToGuard") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4919,7 +4919,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToHover") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToHover") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4933,7 +4933,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToKamikaze") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToKamikaze") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4947,7 +4947,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToLoopbackAttack") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToLoopbackAttack") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4961,7 +4961,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToMove") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToMove") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4975,7 +4975,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToPatrol") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToPatrol") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -4989,7 +4989,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToReclaim") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToReclaim") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5003,7 +5003,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToRepair") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToRepair") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5017,7 +5017,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToRepeat") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToRepeat") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5031,7 +5031,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToRestore") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToRestore") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5045,7 +5045,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToResurrect") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToResurrect") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5059,7 +5059,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToSelfD") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToSelfD") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5073,7 +5073,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToSelfRepair") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToSelfRepair") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5087,7 +5087,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAbleToSubmerge") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAbleToSubmerge") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5101,7 +5101,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isActivateWhenBuilt") == 0) {
+    if (strcmp(callback_what, "UnitDef_isActivateWhenBuilt") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5115,7 +5115,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAirBase") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAirBase") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5129,7 +5129,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAirStrafe") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAirStrafe") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5143,7 +5143,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isAssistable") == 0) {
+    if (strcmp(callback_what, "UnitDef_isAssistable") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5157,7 +5157,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isBuildRange3D") == 0) {
+    if (strcmp(callback_what, "UnitDef_isBuildRange3D") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5171,7 +5171,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isBuilder") == 0) {
+    if (strcmp(callback_what, "UnitDef_isBuilder") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5185,7 +5185,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isCapturable") == 0) {
+    if (strcmp(callback_what, "UnitDef_isCapturable") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5199,7 +5199,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isCollide") == 0) {
+    if (strcmp(callback_what, "UnitDef_isCollide") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5213,7 +5213,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isCommander") == 0) {
+    if (strcmp(callback_what, "UnitDef_isCommander") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5227,7 +5227,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isDecloakOnFire") == 0) {
+    if (strcmp(callback_what, "UnitDef_isDecloakOnFire") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5241,7 +5241,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isDecloakSpherical") == 0) {
+    if (strcmp(callback_what, "UnitDef_isDecloakSpherical") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5255,7 +5255,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isDontLand") == 0) {
+    if (strcmp(callback_what, "UnitDef_isDontLand") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5269,7 +5269,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isFactoryHeadingTakeoff") == 0) {
+    if (strcmp(callback_what, "UnitDef_isFactoryHeadingTakeoff") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5283,7 +5283,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isFeature") == 0) {
+    if (strcmp(callback_what, "UnitDef_isFeature") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5297,7 +5297,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isFirePlatform") == 0) {
+    if (strcmp(callback_what, "UnitDef_isFirePlatform") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5311,7 +5311,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isFloater") == 0) {
+    if (strcmp(callback_what, "UnitDef_isFloater") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5325,7 +5325,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isFullHealthFactory") == 0) {
+    if (strcmp(callback_what, "UnitDef_isFullHealthFactory") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5339,7 +5339,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isHideDamage") == 0) {
+    if (strcmp(callback_what, "UnitDef_isHideDamage") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5353,7 +5353,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isHoldSteady") == 0) {
+    if (strcmp(callback_what, "UnitDef_isHoldSteady") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5367,7 +5367,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isHoverAttack") == 0) {
+    if (strcmp(callback_what, "UnitDef_isHoverAttack") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5381,7 +5381,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isLeaveTracks") == 0) {
+    if (strcmp(callback_what, "UnitDef_isLeaveTracks") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5395,7 +5395,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isLevelGround") == 0) {
+    if (strcmp(callback_what, "UnitDef_isLevelGround") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5409,7 +5409,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isMoveDataAvailable") == 0) {
+    if (strcmp(callback_what, "UnitDef_isMoveDataAvailable") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5423,7 +5423,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isNeedGeo") == 0) {
+    if (strcmp(callback_what, "UnitDef_isNeedGeo") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5437,7 +5437,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isNotTransportable") == 0) {
+    if (strcmp(callback_what, "UnitDef_isNotTransportable") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5451,7 +5451,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isOnOffable") == 0) {
+    if (strcmp(callback_what, "UnitDef_isOnOffable") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5465,7 +5465,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isPushResistant") == 0) {
+    if (strcmp(callback_what, "UnitDef_isPushResistant") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5479,7 +5479,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isReclaimable") == 0) {
+    if (strcmp(callback_what, "UnitDef_isReclaimable") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5493,7 +5493,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isReleaseHeld") == 0) {
+    if (strcmp(callback_what, "UnitDef_isReleaseHeld") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5507,7 +5507,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isShowPlayerName") == 0) {
+    if (strcmp(callback_what, "UnitDef_isShowPlayerName") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5521,7 +5521,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isSonarStealth") == 0) {
+    if (strcmp(callback_what, "UnitDef_isSonarStealth") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5535,7 +5535,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isSquareResourceExtractor") == 0) {
+    if (strcmp(callback_what, "UnitDef_isSquareResourceExtractor") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         long resourceId;
@@ -5551,7 +5551,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isStartCloaked") == 0) {
+    if (strcmp(callback_what, "UnitDef_isStartCloaked") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5565,7 +5565,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isStealth") == 0) {
+    if (strcmp(callback_what, "UnitDef_isStealth") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5579,7 +5579,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isStrafeToAttack") == 0) {
+    if (strcmp(callback_what, "UnitDef_isStrafeToAttack") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5593,7 +5593,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isTargetingFacility") == 0) {
+    if (strcmp(callback_what, "UnitDef_isTargetingFacility") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5607,7 +5607,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isTransportByEnemy") == 0) {
+    if (strcmp(callback_what, "UnitDef_isTransportByEnemy") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5621,7 +5621,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isTurnInPlace") == 0) {
+    if (strcmp(callback_what, "UnitDef_isTurnInPlace") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5635,7 +5635,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isUpright") == 0) {
+    if (strcmp(callback_what, "UnitDef_isUpright") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5649,7 +5649,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "UnitDef_isUseBuildingGroundDecal") == 0) {
+    if (strcmp(callback_what, "UnitDef_isUseBuildingGroundDecal") == 0) {
         long unitDefId;
         ei_decode_long(recvbuff, &index, &unitDefId);
         erlang_pid from;
@@ -5663,7 +5663,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_CurrentCommand_getId") == 0) {
+    if (strcmp(callback_what, "Unit_CurrentCommand_getId") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long commandId;
@@ -5679,7 +5679,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_CurrentCommand_getOptions") == 0) {
+    if (strcmp(callback_what, "Unit_CurrentCommand_getOptions") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long commandId;
@@ -5695,7 +5695,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_CurrentCommand_getTag") == 0) {
+    if (strcmp(callback_what, "Unit_CurrentCommand_getTag") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long commandId;
@@ -5711,7 +5711,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_CurrentCommand_getTimeOut") == 0) {
+    if (strcmp(callback_what, "Unit_CurrentCommand_getTimeOut") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long commandId;
@@ -5727,7 +5727,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_CurrentCommand_getType") == 0) {
+    if (strcmp(callback_what, "Unit_CurrentCommand_getType") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -5741,7 +5741,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_SupportedCommand_getId") == 0) {
+    if (strcmp(callback_what, "Unit_SupportedCommand_getId") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long supportedCommandId;
@@ -5757,7 +5757,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_SupportedCommand_getName") == 0) {
+    if (strcmp(callback_what, "Unit_SupportedCommand_getName") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long supportedCommandId;
@@ -5773,7 +5773,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_SupportedCommand_getToolTip") == 0) {
+    if (strcmp(callback_what, "Unit_SupportedCommand_getToolTip") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long supportedCommandId;
@@ -5789,7 +5789,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_SupportedCommand_isDisabled") == 0) {
+    if (strcmp(callback_what, "Unit_SupportedCommand_isDisabled") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long supportedCommandId;
@@ -5805,7 +5805,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_SupportedCommand_isShowUnique") == 0) {
+    if (strcmp(callback_what, "Unit_SupportedCommand_isShowUnique") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long supportedCommandId;
@@ -5821,7 +5821,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_UnitRulesParam_getName") == 0) {
+    if (strcmp(callback_what, "Unit_UnitRulesParam_getName") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long unitRulesParamId;
@@ -5837,7 +5837,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_UnitRulesParam_getValueFloat") == 0) {
+    if (strcmp(callback_what, "Unit_UnitRulesParam_getValueFloat") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long unitRulesParamId;
@@ -5853,7 +5853,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_UnitRulesParam_getValueString") == 0) {
+    if (strcmp(callback_what, "Unit_UnitRulesParam_getValueString") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long unitRulesParamId;
@@ -5869,7 +5869,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_Weapon_getDef") == 0) {
+    if (strcmp(callback_what, "Unit_Weapon_getDef") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long weaponId;
@@ -5885,7 +5885,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_Weapon_getRange") == 0) {
+    if (strcmp(callback_what, "Unit_Weapon_getRange") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long weaponId;
@@ -5901,7 +5901,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_Weapon_getReloadFrame") == 0) {
+    if (strcmp(callback_what, "Unit_Weapon_getReloadFrame") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long weaponId;
@@ -5917,7 +5917,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_Weapon_getReloadTime") == 0) {
+    if (strcmp(callback_what, "Unit_Weapon_getReloadTime") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long weaponId;
@@ -5933,7 +5933,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getAiHint") == 0) {
+    if (strcmp(callback_what, "Unit_getAiHint") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -5947,7 +5947,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getAllyTeam") == 0) {
+    if (strcmp(callback_what, "Unit_getAllyTeam") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -5961,7 +5961,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getBuildingFacing") == 0) {
+    if (strcmp(callback_what, "Unit_getBuildingFacing") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -5975,7 +5975,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getCurrentCommands") == 0) {
+    if (strcmp(callback_what, "Unit_getCurrentCommands") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -5989,7 +5989,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getCurrentFuel") == 0) {
+    if (strcmp(callback_what, "Unit_getCurrentFuel") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6003,7 +6003,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getDef") == 0) {
+    if (strcmp(callback_what, "Unit_getDef") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6017,7 +6017,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getExperience") == 0) {
+    if (strcmp(callback_what, "Unit_getExperience") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6031,7 +6031,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getGroup") == 0) {
+    if (strcmp(callback_what, "Unit_getGroup") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6045,7 +6045,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getHealth") == 0) {
+    if (strcmp(callback_what, "Unit_getHealth") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6059,7 +6059,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getLastUserOrderFrame") == 0) {
+    if (strcmp(callback_what, "Unit_getLastUserOrderFrame") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6073,7 +6073,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getLimit") == 0) {
+    if (strcmp(callback_what, "Unit_getLimit") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Unit_getLimit(skirmishAIId);
@@ -6085,7 +6085,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getMax") == 0) {
+    if (strcmp(callback_what, "Unit_getMax") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->Unit_getMax(skirmishAIId);
@@ -6097,7 +6097,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getMaxHealth") == 0) {
+    if (strcmp(callback_what, "Unit_getMaxHealth") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6111,7 +6111,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getMaxRange") == 0) {
+    if (strcmp(callback_what, "Unit_getMaxRange") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6125,7 +6125,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getMaxSpeed") == 0) {
+    if (strcmp(callback_what, "Unit_getMaxSpeed") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6139,7 +6139,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getPower") == 0) {
+    if (strcmp(callback_what, "Unit_getPower") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6153,7 +6153,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getResourceMake") == 0) {
+    if (strcmp(callback_what, "Unit_getResourceMake") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long resourceId;
@@ -6169,7 +6169,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getResourceUse") == 0) {
+    if (strcmp(callback_what, "Unit_getResourceUse") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long resourceId;
@@ -6185,7 +6185,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getSpeed") == 0) {
+    if (strcmp(callback_what, "Unit_getSpeed") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6199,7 +6199,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getStockpile") == 0) {
+    if (strcmp(callback_what, "Unit_getStockpile") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6213,7 +6213,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getStockpileQueued") == 0) {
+    if (strcmp(callback_what, "Unit_getStockpileQueued") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6227,7 +6227,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getSupportedCommands") == 0) {
+    if (strcmp(callback_what, "Unit_getSupportedCommands") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6241,7 +6241,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getTeam") == 0) {
+    if (strcmp(callback_what, "Unit_getTeam") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6255,7 +6255,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getUnitRulesParamById") == 0) {
+    if (strcmp(callback_what, "Unit_getUnitRulesParamById") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long rulesParamId;
@@ -6271,7 +6271,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getUnitRulesParamByName") == 0) {
+    if (strcmp(callback_what, "Unit_getUnitRulesParamByName") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         char* rulesParamName;
@@ -6287,7 +6287,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getUnitRulesParams") == 0) {
+    if (strcmp(callback_what, "Unit_getUnitRulesParams") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long paramIds_sizeMax;
@@ -6309,7 +6309,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getWeapon") == 0) {
+    if (strcmp(callback_what, "Unit_getWeapon") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         long weaponMountId;
@@ -6325,7 +6325,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_getWeapons") == 0) {
+    if (strcmp(callback_what, "Unit_getWeapons") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6339,7 +6339,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_isActivated") == 0) {
+    if (strcmp(callback_what, "Unit_isActivated") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6353,7 +6353,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_isBeingBuilt") == 0) {
+    if (strcmp(callback_what, "Unit_isBeingBuilt") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6367,7 +6367,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_isCloaked") == 0) {
+    if (strcmp(callback_what, "Unit_isCloaked") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6381,7 +6381,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_isNeutral") == 0) {
+    if (strcmp(callback_what, "Unit_isNeutral") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6395,7 +6395,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "Unit_isParalyzed") == 0) {
+    if (strcmp(callback_what, "Unit_isParalyzed") == 0) {
         long unitId;
         ei_decode_long(recvbuff, &index, &unitId);
         erlang_pid from;
@@ -6409,7 +6409,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Damage_getCraterBoost") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Damage_getCraterBoost") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6423,7 +6423,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Damage_getCraterMult") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Damage_getCraterMult") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6437,7 +6437,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Damage_getImpulseBoost") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Damage_getImpulseBoost") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6451,7 +6451,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Damage_getImpulseFactor") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Damage_getImpulseFactor") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6465,7 +6465,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Damage_getParalyzeDamageTime") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Damage_getParalyzeDamageTime") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6479,7 +6479,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getAlpha") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getAlpha") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6493,7 +6493,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getForce") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getForce") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6507,7 +6507,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getInterceptType") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getInterceptType") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6521,7 +6521,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getMaxSpeed") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getMaxSpeed") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6535,7 +6535,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getPower") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getPower") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6549,7 +6549,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getPowerRegen") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getPowerRegen") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6563,7 +6563,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getPowerRegenResource") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getPowerRegenResource") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         long resourceId;
@@ -6579,7 +6579,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getRadius") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getRadius") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6593,7 +6593,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getRechargeDelay") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getRechargeDelay") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6607,7 +6607,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getResourceUse") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getResourceUse") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         long resourceId;
@@ -6623,7 +6623,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_Shield_getStartingPower") == 0) {
+    if (strcmp(callback_what, "WeaponDef_Shield_getStartingPower") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6637,7 +6637,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getAccuracy") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getAccuracy") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6651,7 +6651,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getAreaOfEffect") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getAreaOfEffect") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6665,7 +6665,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getBeamTime") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getBeamTime") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6679,7 +6679,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getBounceRebound") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getBounceRebound") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6693,7 +6693,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getBounceSlip") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getBounceSlip") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6707,7 +6707,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getCameraShake") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getCameraShake") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6721,7 +6721,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getCegTag") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getCegTag") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6735,7 +6735,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getCollisionFlags") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getCollisionFlags") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6749,7 +6749,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getCollisionSize") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getCollisionSize") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6763,7 +6763,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getCoreThickness") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getCoreThickness") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6777,7 +6777,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getCost") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getCost") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         long resourceId;
@@ -6793,7 +6793,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getCoverageRange") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getCoverageRange") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6807,7 +6807,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getCylinderTargetting") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getCylinderTargetting") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6821,7 +6821,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getDance") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getDance") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6835,7 +6835,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getDescription") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getDescription") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6849,7 +6849,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getDuration") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getDuration") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6863,7 +6863,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getDynDamageExp") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getDynDamageExp") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6877,7 +6877,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getDynDamageMin") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getDynDamageMin") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6891,7 +6891,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getDynDamageRange") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getDynDamageRange") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6905,7 +6905,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getEdgeEffectiveness") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getEdgeEffectiveness") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6919,7 +6919,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getExplosionSpeed") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getExplosionSpeed") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6933,7 +6933,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getFalloffRate") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getFalloffRate") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6947,7 +6947,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getFileName") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getFileName") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6961,7 +6961,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getFireStarter") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getFireStarter") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6975,7 +6975,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getFlightTime") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getFlightTime") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -6989,7 +6989,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getGraphicsType") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getGraphicsType") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7003,7 +7003,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getHeightBoostFactor") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getHeightBoostFactor") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7017,7 +7017,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getHeightMod") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getHeightMod") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7031,7 +7031,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getHighTrajectory") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getHighTrajectory") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7045,7 +7045,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getIntensity") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getIntensity") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7059,7 +7059,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getInterceptedByShieldType") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getInterceptedByShieldType") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7073,7 +7073,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getInterceptor") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getInterceptor") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7087,7 +7087,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getLaserFlareSize") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getLaserFlareSize") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7101,7 +7101,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getLeadBonus") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getLeadBonus") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7115,7 +7115,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getLeadLimit") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getLeadLimit") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7129,7 +7129,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getLodDistance") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getLodDistance") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7143,7 +7143,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getMaxAngle") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getMaxAngle") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7157,7 +7157,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getMaxVelocity") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getMaxVelocity") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7171,7 +7171,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getMinIntensity") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getMinIntensity") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7185,7 +7185,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getMovingAccuracy") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getMovingAccuracy") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7199,7 +7199,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getMyGravity") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getMyGravity") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7213,7 +7213,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getName") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getName") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7227,7 +7227,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getNumBounce") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getNumBounce") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7241,7 +7241,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getNumDamageTypes") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getNumDamageTypes") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->WeaponDef_getNumDamageTypes(skirmishAIId);
@@ -7253,7 +7253,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getOnlyTargetCategory") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getOnlyTargetCategory") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7267,7 +7267,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getPredictBoost") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getPredictBoost") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7281,7 +7281,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getProjectileSpeed") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getProjectileSpeed") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7295,7 +7295,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getProjectilesPerShot") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getProjectilesPerShot") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7309,7 +7309,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getProximityPriority") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getProximityPriority") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7323,7 +7323,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getRange") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getRange") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7337,7 +7337,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getReload") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getReload") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7351,7 +7351,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getSalvoDelay") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getSalvoDelay") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7365,7 +7365,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getSalvoSize") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getSalvoSize") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7379,7 +7379,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getSize") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getSize") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7393,7 +7393,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getSizeGrowth") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getSizeGrowth") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7407,7 +7407,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getSprayAngle") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getSprayAngle") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7421,7 +7421,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getStartVelocity") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getStartVelocity") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7435,7 +7435,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getStockpileTime") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getStockpileTime") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7449,7 +7449,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getTargetBorder") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getTargetBorder") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7463,7 +7463,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getTargetMoveError") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getTargetMoveError") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7477,7 +7477,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getTargetable") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getTargetable") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7491,7 +7491,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getThickness") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getThickness") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7505,7 +7505,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getTrajectoryHeight") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getTrajectoryHeight") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7519,7 +7519,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getTurnRate") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getTurnRate") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7533,7 +7533,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getType") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getType") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7547,7 +7547,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getUpTime") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getUpTime") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7561,7 +7561,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getVisibleShieldHitFrames") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getVisibleShieldHitFrames") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7575,7 +7575,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getWeaponAcceleration") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getWeaponAcceleration") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7589,7 +7589,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_getWobble") == 0) {
+    if (strcmp(callback_what, "WeaponDef_getWobble") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7603,7 +7603,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isAbleToAttackGround") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isAbleToAttackGround") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7617,7 +7617,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isAvoidFeature") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isAvoidFeature") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7631,7 +7631,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isAvoidFriendly") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isAvoidFriendly") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7645,7 +7645,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isAvoidNeutral") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isAvoidNeutral") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7659,7 +7659,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isBeamBurst") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isBeamBurst") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7673,7 +7673,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isDropped") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isDropped") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7687,7 +7687,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isDynDamageInverted") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isDynDamageInverted") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7701,7 +7701,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isExteriorShield") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isExteriorShield") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7715,7 +7715,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isFireSubmersed") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isFireSubmersed") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7729,7 +7729,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isFixedLauncher") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isFixedLauncher") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7743,7 +7743,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isGravityAffected") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isGravityAffected") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7757,7 +7757,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isGroundBounce") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isGroundBounce") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7771,7 +7771,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isImpactOnly") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isImpactOnly") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7785,7 +7785,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isLargeBeamLaser") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isLargeBeamLaser") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7799,7 +7799,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isManualFire") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isManualFire") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7813,7 +7813,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isNoAutoTarget") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isNoAutoTarget") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7827,7 +7827,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isNoExplode") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isNoExplode") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7841,7 +7841,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isNoSelfDamage") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isNoSelfDamage") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7855,7 +7855,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isOnlyForward") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isOnlyForward") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7869,7 +7869,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isParalyzer") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isParalyzer") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7883,7 +7883,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isSelfExplode") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isSelfExplode") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7897,7 +7897,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isShield") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isShield") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7911,7 +7911,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isShieldRepulser") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isShieldRepulser") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7925,7 +7925,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isSmartShield") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isSmartShield") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7939,7 +7939,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isSoundTrigger") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isSoundTrigger") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7953,7 +7953,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isStockpileable") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isStockpileable") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7967,7 +7967,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isSubMissile") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isSubMissile") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7981,7 +7981,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isSweepFire") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isSweepFire") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -7995,7 +7995,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isTracks") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isTracks") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -8009,7 +8009,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isTurret") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isTurret") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -8023,7 +8023,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isVisibleShield") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isVisibleShield") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -8037,7 +8037,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isVisibleShieldRepulse") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isVisibleShieldRepulse") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -8051,7 +8051,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isWaterBounce") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isWaterBounce") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -8065,7 +8065,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "WeaponDef_isWaterWeapon") == 0) {
+    if (strcmp(callback_what, "WeaponDef_isWaterWeapon") == 0) {
         long weaponDefId;
         ei_decode_long(recvbuff, &index, &weaponDefId);
         erlang_pid from;
@@ -8079,7 +8079,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getAllyTeams") == 0) {
+    if (strcmp(callback_what, "getAllyTeams") == 0) {
         long teamIds_sizeMax;
         ei_decode_long(recvbuff, &index, &teamIds_sizeMax);
         int teamIds[teamIds_sizeMax];
@@ -8099,7 +8099,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getEnemyTeams") == 0) {
+    if (strcmp(callback_what, "getEnemyTeams") == 0) {
         long teamIds_sizeMax;
         ei_decode_long(recvbuff, &index, &teamIds_sizeMax);
         int teamIds[teamIds_sizeMax];
@@ -8119,7 +8119,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getEnemyUnits") == 0) {
+    if (strcmp(callback_what, "getEnemyUnits") == 0) {
         long unitIds_sizeMax;
         ei_decode_long(recvbuff, &index, &unitIds_sizeMax);
         int unitIds[unitIds_sizeMax];
@@ -8139,7 +8139,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getEnemyUnitsIn") == 0) {
+    if (strcmp(callback_what, "getEnemyUnitsIn") == 0) {
         float pos_posF3[3];
         double tmp;
         ei_decode_double(recvbuff, &index, &tmp);
@@ -8169,7 +8169,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getEnemyUnitsInRadarAndLos") == 0) {
+    if (strcmp(callback_what, "getEnemyUnitsInRadarAndLos") == 0) {
         long unitIds_sizeMax;
         ei_decode_long(recvbuff, &index, &unitIds_sizeMax);
         int unitIds[unitIds_sizeMax];
@@ -8189,7 +8189,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getFeatureDefs") == 0) {
+    if (strcmp(callback_what, "getFeatureDefs") == 0) {
         long featureDefIds_sizeMax;
         ei_decode_long(recvbuff, &index, &featureDefIds_sizeMax);
         int featureDefIds[featureDefIds_sizeMax];
@@ -8209,7 +8209,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getFeatures") == 0) {
+    if (strcmp(callback_what, "getFeatures") == 0) {
         long featureIds_sizeMax;
         ei_decode_long(recvbuff, &index, &featureIds_sizeMax);
         int featureIds[featureIds_sizeMax];
@@ -8229,7 +8229,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getFeaturesIn") == 0) {
+    if (strcmp(callback_what, "getFeaturesIn") == 0) {
         float pos_posF3[3];
         double tmp;
         ei_decode_double(recvbuff, &index, &tmp);
@@ -8259,7 +8259,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getFriendlyUnits") == 0) {
+    if (strcmp(callback_what, "getFriendlyUnits") == 0) {
         long unitIds_sizeMax;
         ei_decode_long(recvbuff, &index, &unitIds_sizeMax);
         int unitIds[unitIds_sizeMax];
@@ -8279,7 +8279,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getFriendlyUnitsIn") == 0) {
+    if (strcmp(callback_what, "getFriendlyUnitsIn") == 0) {
         float pos_posF3[3];
         double tmp;
         ei_decode_double(recvbuff, &index, &tmp);
@@ -8309,7 +8309,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getGroups") == 0) {
+    if (strcmp(callback_what, "getGroups") == 0) {
         long groupIds_sizeMax;
         ei_decode_long(recvbuff, &index, &groupIds_sizeMax);
         int groupIds[groupIds_sizeMax];
@@ -8329,7 +8329,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getNeutralUnits") == 0) {
+    if (strcmp(callback_what, "getNeutralUnits") == 0) {
         long unitIds_sizeMax;
         ei_decode_long(recvbuff, &index, &unitIds_sizeMax);
         int unitIds[unitIds_sizeMax];
@@ -8349,7 +8349,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getNeutralUnitsIn") == 0) {
+    if (strcmp(callback_what, "getNeutralUnitsIn") == 0) {
         float pos_posF3[3];
         double tmp;
         ei_decode_double(recvbuff, &index, &tmp);
@@ -8379,7 +8379,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getResourceByName") == 0) {
+    if (strcmp(callback_what, "getResourceByName") == 0) {
         char* resourceName;
         ei_decode_string(recvbuff, &index, resourceName);
         erlang_pid from;
@@ -8393,7 +8393,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getResources") == 0) {
+    if (strcmp(callback_what, "getResources") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->getResources(skirmishAIId);
@@ -8405,7 +8405,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getSelectedUnits") == 0) {
+    if (strcmp(callback_what, "getSelectedUnits") == 0) {
         long unitIds_sizeMax;
         ei_decode_long(recvbuff, &index, &unitIds_sizeMax);
         int unitIds[unitIds_sizeMax];
@@ -8425,7 +8425,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getTeamUnits") == 0) {
+    if (strcmp(callback_what, "getTeamUnits") == 0) {
         long unitIds_sizeMax;
         ei_decode_long(recvbuff, &index, &unitIds_sizeMax);
         int unitIds[unitIds_sizeMax];
@@ -8445,7 +8445,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getUnitDefByName") == 0) {
+    if (strcmp(callback_what, "getUnitDefByName") == 0) {
         char* unitName;
         ei_decode_string(recvbuff, &index, unitName);
         erlang_pid from;
@@ -8459,7 +8459,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getUnitDefs") == 0) {
+    if (strcmp(callback_what, "getUnitDefs") == 0) {
         long unitDefIds_sizeMax;
         ei_decode_long(recvbuff, &index, &unitDefIds_sizeMax);
         int unitDefIds[unitDefIds_sizeMax];
@@ -8479,7 +8479,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getWeaponDefByName") == 0) {
+    if (strcmp(callback_what, "getWeaponDefByName") == 0) {
         char* weaponDefName;
         ei_decode_string(recvbuff, &index, weaponDefName);
         erlang_pid from;
@@ -8493,7 +8493,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(command, "getWeaponDefs") == 0) {
+    if (strcmp(callback_what, "getWeaponDefs") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuff, &index, &from);
         int result = callback->getWeaponDefs(skirmishAIId);
