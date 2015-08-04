@@ -291,6 +291,7 @@ int check_for_message_from_hq(int team_id) {
         erlang_pid from;
         ei_decode_pid(recvbuf.buff, &index, &from);
         send_pong(team_id, from);
+/*
     } else if (strcmp(message, "send_all_unit_ids") == 0) {
         send_all_unit_ids(team_id);
     } else if (strcmp(message, "send_unit_name") == 0) {
@@ -301,6 +302,7 @@ int check_for_message_from_hq(int team_id) {
         long id;
         ei_decode_long(recvbuf.buff, &index, &id);
         unit_pos(team_id, id);
+*/
 /*
     } else if (strcmp(message, "move") == 0) {
         long id;
@@ -313,9 +315,13 @@ int check_for_message_from_hq(int team_id) {
         fprintf(stdout, "move %li to %f/%f\n", id, pos[0], pos[2]);
         move_unit(team_id, id, pos);
 */
-    } else if (strcmp(message, "callback") == 0) {
+    }
+    if (strcmp(message, "callback") == 0) {
+        fprintf(stderr, "callback received\n");
         return handle_callback(team_id, callbacks[team_id], recvbuf.buff, index);
-    } else if (strcmp(message, "command") == 0) {
+    }
+    if (strcmp(message, "command") == 0) {
+        fprintf(stderr, "command received\n");
         return handle_command(team_id, callbacks[team_id], recvbuf.buff, index);
     }
 

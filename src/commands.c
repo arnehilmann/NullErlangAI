@@ -14,43 +14,18 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
     char command[64] = "";
     ei_decode_atom(recvbuff, &index, command);
 
-    if (strcmp(command, "COMMAND_CALL_LUA_RULES") == 0) {
-        const char* inData;
-        int inSize;
-        char* ret_outData;
-        struct SCallLuaRulesCommand command = {
-            inData,
-            inSize,
-            ret_outData,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CALL_LUA_RULES, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_CALL_LUA_UI") == 0) {
-        const char* inData;
-        int inSize;
-        char* ret_outData;
-        struct SCallLuaUICommand command = {
-            inData,
-            inSize,
-            ret_outData,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CALL_LUA_UI, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
     if (strcmp(command, "COMMAND_CHEATS_GIVE_ME_NEW_UNIT") == 0) {
-        int unitDefId;
-        float* pos_posF3;
+        long unitDefId_tmp;
+        ei_decode_long(recvbuff, &index, &unitDefId_tmp);
+        int unitDefId = (int)unitDefId_tmp;
+        float pos_posF3[3];
+        double pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[0] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[1] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[2] = (float)pos_posF3_tmp;
         int ret_newUnitId;
         struct SGiveMeNewUnitCheatCommand command = {
             unitDefId,
@@ -62,12 +37,22 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_GIVE_ME_NEW_UNIT, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 3);
+            ei_x_encode_atom(&sendbuff, "ok");
+            ei_x_encode_atom(&sendbuff, "ret_newUnitId");
+            ei_x_encode_long(&sendbuff, command.ret_newUnitId);
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_CHEATS_GIVE_ME_RESOURCE") == 0) {
-        int resourceId;
-        float amount;
+        long resourceId_tmp;
+        ei_decode_long(recvbuff, &index, &resourceId_tmp);
+        int resourceId = (int)resourceId_tmp;
+        double amount_tmp;
+        ei_decode_double(recvbuff, &index, &amount_tmp);
+        float amount = (float)amount_tmp;
         struct SGiveMeResourceCheatCommand command = {
             resourceId,
             amount,
@@ -77,11 +62,17 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_GIVE_ME_RESOURCE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_CHEATS_SET_MY_INCOME_MULTIPLIER") == 0) {
-        float factor;
+        double factor_tmp;
+        ei_decode_double(recvbuff, &index, &factor_tmp);
+        float factor = (float)factor_tmp;
         struct SSetMyIncomeMultiplierCheatCommand command = {
             factor,
         };
@@ -90,13 +81,23 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_SET_MY_INCOME_MULTIPLIER, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_LINE_ADD_POINT") == 0) {
-        int lineId;
-        float x;
-        float y;
+        long lineId_tmp;
+        ei_decode_long(recvbuff, &index, &lineId_tmp);
+        int lineId = (int)lineId_tmp;
+        double x_tmp;
+        ei_decode_double(recvbuff, &index, &x_tmp);
+        float x = (float)x_tmp;
+        double y_tmp;
+        ei_decode_double(recvbuff, &index, &y_tmp);
+        float y = (float)y_tmp;
         struct SAddPointLineGraphDrawerDebugCommand command = {
             lineId,
             x,
@@ -107,12 +108,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_ADD_POINT, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_LINE_DELETE_POINTS") == 0) {
-        int lineId;
-        int numPoints;
+        long lineId_tmp;
+        ei_decode_long(recvbuff, &index, &lineId_tmp);
+        int lineId = (int)lineId_tmp;
+        long numPoints_tmp;
+        ei_decode_long(recvbuff, &index, &numPoints_tmp);
+        int numPoints = (int)numPoints_tmp;
         struct SDeletePointsLineGraphDrawerDebugCommand command = {
             lineId,
             numPoints,
@@ -122,42 +131,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_DELETE_POINTS, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_LINE_SET_COLOR") == 0) {
-        int lineId;
-        short* color_colorS3;
-        struct SSetColorLineGraphDrawerDebugCommand command = {
-            lineId,
-            color_colorS3,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_SET_COLOR, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_LINE_SET_LABEL") == 0) {
-        int lineId;
-        const char* label;
-        struct SSetLabelLineGraphDrawerDebugCommand command = {
-            lineId,
-            label,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_SET_LABEL, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_SET_POS") == 0) {
-        float x;
-        float y;
+        double x_tmp;
+        ei_decode_double(recvbuff, &index, &x_tmp);
+        float x = (float)x_tmp;
+        double y_tmp;
+        ei_decode_double(recvbuff, &index, &y_tmp);
+        float y = (float)y_tmp;
         struct SSetPositionGraphDrawerDebugCommand command = {
             x,
             y,
@@ -167,12 +154,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_SET_POS, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_SET_SIZE") == 0) {
-        float w;
-        float h;
+        double w_tmp;
+        ei_decode_double(recvbuff, &index, &w_tmp);
+        float w = (float)w_tmp;
+        double h_tmp;
+        ei_decode_double(recvbuff, &index, &h_tmp);
+        float h = (float)h_tmp;
         struct SSetSizeGraphDrawerDebugCommand command = {
             w,
             h,
@@ -182,30 +177,17 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_SET_SIZE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_ADD") == 0) {
-        int ret_overlayTextureId;
-        const float* texData;
-        int w;
-        int h;
-        struct SAddOverlayTextureDrawerDebugCommand command = {
-            ret_overlayTextureId,
-            texData,
-            w,
-            h,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_ADD, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_DELETE") == 0) {
-        int overlayTextureId;
+        long overlayTextureId_tmp;
+        ei_decode_long(recvbuff, &index, &overlayTextureId_tmp);
+        int overlayTextureId = (int)overlayTextureId_tmp;
         struct SDeleteOverlayTextureDrawerDebugCommand command = {
             overlayTextureId,
         };
@@ -214,28 +196,23 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_DELETE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_LABEL") == 0) {
-        int overlayTextureId;
-        const char* label;
-        struct SSetLabelOverlayTextureDrawerDebugCommand command = {
-            overlayTextureId,
-            label,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_LABEL, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_POS") == 0) {
-        int overlayTextureId;
-        float x;
-        float y;
+        long overlayTextureId_tmp;
+        ei_decode_long(recvbuff, &index, &overlayTextureId_tmp);
+        int overlayTextureId = (int)overlayTextureId_tmp;
+        double x_tmp;
+        ei_decode_double(recvbuff, &index, &x_tmp);
+        float x = (float)x_tmp;
+        double y_tmp;
+        ei_decode_double(recvbuff, &index, &y_tmp);
+        float y = (float)y_tmp;
         struct SSetPositionOverlayTextureDrawerDebugCommand command = {
             overlayTextureId,
             x,
@@ -246,13 +223,23 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_POS, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_SIZE") == 0) {
-        int overlayTextureId;
-        float w;
-        float h;
+        long overlayTextureId_tmp;
+        ei_decode_long(recvbuff, &index, &overlayTextureId_tmp);
+        int overlayTextureId = (int)overlayTextureId_tmp;
+        double w_tmp;
+        ei_decode_double(recvbuff, &index, &w_tmp);
+        float w = (float)w_tmp;
+        double h_tmp;
+        ei_decode_double(recvbuff, &index, &h_tmp);
+        float h = (float)h_tmp;
         struct SSetSizeOverlayTextureDrawerDebugCommand command = {
             overlayTextureId,
             w,
@@ -263,132 +250,17 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_SIZE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_UPDATE") == 0) {
-        int overlayTextureId;
-        const float* texData;
-        int x;
-        int y;
-        int w;
-        int h;
-        struct SUpdateOverlayTextureDrawerDebugCommand command = {
-            overlayTextureId,
-            texData,
-            x,
-            y,
-            w,
-            h,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_UPDATE, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_ADD_NOTIFICATION") == 0) {
-        float* pos_posF3;
-        short* color_colorS3;
-        short alpha;
-        struct SAddNotificationDrawerCommand command = {
-            pos_posF3,
-            color_colorS3,
-            alpha,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_ADD_NOTIFICATION, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_DRAW_UNIT") == 0) {
-        int toDrawUnitDefId;
-        float* pos_posF3;
-        float rotation;
-        int lifeTime;
-        int teamId;
-        bool transparent;
-        bool drawBorder;
-        int facing;
-        struct SDrawUnitDrawerCommand command = {
-            toDrawUnitDefId,
-            pos_posF3,
-            rotation,
-            lifeTime,
-            teamId,
-            transparent,
-            drawBorder,
-            facing,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_DRAW_UNIT, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_FIGURE_CREATE_LINE") == 0) {
-        float* pos1_posF3;
-        float* pos2_posF3;
-        float width;
-        bool arrow;
-        int lifeTime;
-        int figureGroupId;
-        int ret_newFigureGroupId;
-        struct SCreateLineFigureDrawerCommand command = {
-            pos1_posF3,
-            pos2_posF3,
-            width,
-            arrow,
-            lifeTime,
-            figureGroupId,
-            ret_newFigureGroupId,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_CREATE_LINE, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_FIGURE_CREATE_SPLINE") == 0) {
-        float* pos1_posF3;
-        float* pos2_posF3;
-        float* pos3_posF3;
-        float* pos4_posF3;
-        float width;
-        bool arrow;
-        int lifeTime;
-        int figureGroupId;
-        int ret_newFigureGroupId;
-        struct SCreateSplineFigureDrawerCommand command = {
-            pos1_posF3,
-            pos2_posF3,
-            pos3_posF3,
-            pos4_posF3,
-            width,
-            arrow,
-            lifeTime,
-            figureGroupId,
-            ret_newFigureGroupId,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_CREATE_SPLINE, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DRAWER_FIGURE_DELETE") == 0) {
-        int figureGroupId;
+        long figureGroupId_tmp;
+        ei_decode_long(recvbuff, &index, &figureGroupId_tmp);
+        int figureGroupId = (int)figureGroupId_tmp;
         struct SDeleteFigureDrawerCommand command = {
             figureGroupId,
         };
@@ -397,29 +269,30 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_DELETE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_FIGURE_SET_COLOR") == 0) {
-        int figureGroupId;
-        short* color_colorS3;
-        short alpha;
-        struct SSetColorFigureDrawerCommand command = {
-            figureGroupId,
-            color_colorS3,
-            alpha,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_SET_COLOR, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DRAWER_LINE_ADD") == 0) {
-        float* posFrom_posF3;
-        float* posTo_posF3;
+        float posFrom_posF3[3];
+        double posFrom_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &posFrom_posF3_tmp);
+        posFrom_posF3[0] = (float)posFrom_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &posFrom_posF3_tmp);
+        posFrom_posF3[1] = (float)posFrom_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &posFrom_posF3_tmp);
+        posFrom_posF3[2] = (float)posFrom_posF3_tmp;
+        float posTo_posF3[3];
+        double posTo_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &posTo_posF3_tmp);
+        posTo_posF3[0] = (float)posTo_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &posTo_posF3_tmp);
+        posTo_posF3[1] = (float)posTo_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &posTo_posF3_tmp);
+        posTo_posF3[2] = (float)posTo_posF3_tmp;
         struct SAddLineDrawCommand command = {
             posFrom_posF3,
             posTo_posF3,
@@ -429,28 +302,17 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_LINE_ADD, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_PATH_BREAK") == 0) {
-        float* endPos_posF3;
-        short* color_colorS3;
-        short alpha;
-        struct SBreakPathDrawerCommand command = {
-            endPos_posF3,
-            color_colorS3,
-            alpha,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_BREAK, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DRAWER_PATH_DRAW_ICON_AT_LAST_POS") == 0) {
-        int cmdId;
+        long cmdId_tmp;
+        ei_decode_long(recvbuff, &index, &cmdId_tmp);
+        int cmdId = (int)cmdId_tmp;
         struct SDrawIconAtLastPosPathDrawerCommand command = {
             cmdId,
         };
@@ -459,105 +321,22 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_DRAW_ICON_AT_LAST_POS, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_PATH_DRAW_LINE") == 0) {
-        float* endPos_posF3;
-        short* color_colorS3;
-        short alpha;
-        struct SDrawLinePathDrawerCommand command = {
-            endPos_posF3,
-            color_colorS3,
-            alpha,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_DRAW_LINE, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_PATH_DRAW_LINE_AND_ICON") == 0) {
-        int cmdId;
-        float* endPos_posF3;
-        short* color_colorS3;
-        short alpha;
-        struct SDrawLineAndIconPathDrawerCommand command = {
-            cmdId,
-            endPos_posF3,
-            color_colorS3,
-            alpha,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_DRAW_LINE_AND_ICON, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_PATH_FINISH") == 0) {
-        bool iAmUseless;
-        struct SFinishPathDrawerCommand command = {
-            iAmUseless,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_FINISH, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_PATH_RESTART") == 0) {
-        bool sameColor;
-        struct SRestartPathDrawerCommand command = {
-            sameColor,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_RESTART, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_PATH_START") == 0) {
-        float* pos_posF3;
-        short* color_colorS3;
-        short alpha;
-        struct SStartPathDrawerCommand command = {
-            pos_posF3,
-            color_colorS3,
-            alpha,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_START, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_DRAWER_POINT_ADD") == 0) {
-        float* pos_posF3;
-        const char* label;
-        struct SAddPointDrawCommand command = {
-            pos_posF3,
-            label,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_POINT_ADD, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_DRAWER_POINT_REMOVE") == 0) {
-        float* pos_posF3;
+        float pos_posF3[3];
+        double pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[0] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[1] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[2] = (float)pos_posF3_tmp;
         struct SRemovePointDrawCommand command = {
             pos_posF3,
         };
@@ -566,7 +345,11 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_POINT_REMOVE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_GROUP_CREATE") == 0) {
@@ -579,11 +362,19 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_GROUP_CREATE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 3);
+            ei_x_encode_atom(&sendbuff, "ok");
+            ei_x_encode_atom(&sendbuff, "ret_groupId");
+            ei_x_encode_long(&sendbuff, command.ret_groupId);
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_GROUP_ERASE") == 0) {
-        int groupId;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
         struct SEraseGroupCommand command = {
             groupId,
         };
@@ -592,11 +383,17 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_GROUP_ERASE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_PATH_FREE") == 0) {
-        int pathId;
+        long pathId_tmp;
+        ei_decode_long(recvbuff, &index, &pathId_tmp);
+        int pathId = (int)pathId_tmp;
         struct SFreePathCommand command = {
             pathId,
         };
@@ -605,50 +402,36 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_FREE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_PATH_GET_APPROXIMATE_LENGTH") == 0) {
-        float* start_posF3;
-        float* end_posF3;
-        int pathType;
-        float goalRadius;
-        float ret_approximatePathLength;
-        struct SGetApproximateLengthPathCommand command = {
-            start_posF3,
-            end_posF3,
-            pathType,
-            goalRadius,
-            ret_approximatePathLength,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_GET_APPROXIMATE_LENGTH, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_PATH_GET_NEXT_WAYPOINT") == 0) {
-        int pathId;
-        float* ret_nextWaypoint_posF3_out;
-        struct SGetNextWaypointPathCommand command = {
-            pathId,
-            ret_nextWaypoint_posF3_out,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_GET_NEXT_WAYPOINT, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_PATH_INIT") == 0) {
-        float* start_posF3;
-        float* end_posF3;
-        int pathType;
-        float goalRadius;
+        float start_posF3[3];
+        double start_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &start_posF3_tmp);
+        start_posF3[0] = (float)start_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &start_posF3_tmp);
+        start_posF3[1] = (float)start_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &start_posF3_tmp);
+        start_posF3[2] = (float)start_posF3_tmp;
+        float end_posF3[3];
+        double end_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &end_posF3_tmp);
+        end_posF3[0] = (float)end_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &end_posF3_tmp);
+        end_posF3[1] = (float)end_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &end_posF3_tmp);
+        end_posF3[2] = (float)end_posF3_tmp;
+        long pathType_tmp;
+        ei_decode_long(recvbuff, &index, &pathType_tmp);
+        int pathType = (int)pathType_tmp;
+        double goalRadius_tmp;
+        ei_decode_double(recvbuff, &index, &goalRadius_tmp);
+        float goalRadius = (float)goalRadius_tmp;
         int ret_pathId;
         struct SInitPathCommand command = {
             start_posF3,
@@ -662,94 +445,24 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_INIT, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_PAUSE") == 0) {
-        bool enable;
-        const char* reason;
-        struct SPauseCommand command = {
-            enable,
-            reason,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PAUSE, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_SEND_RESOURCES") == 0) {
-        int resourceId;
-        float amount;
-        int receivingTeamId;
-        bool ret_isExecuted;
-        struct SSendResourcesCommand command = {
-            resourceId,
-            amount,
-            receivingTeamId,
-            ret_isExecuted,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_RESOURCES, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_SEND_START_POS") == 0) {
-        bool ready;
-        float* pos_posF3;
-        struct SSendStartPosCommand command = {
-            ready,
-            pos_posF3,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_START_POS, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_SEND_TEXT_MESSAGE") == 0) {
-        const char* text;
-        int zone;
-        struct SSendTextMessageCommand command = {
-            text,
-            zone,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_TEXT_MESSAGE, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_SEND_UNITS") == 0) {
-        int* unitIds;
-        int unitIds_size;
-        int receivingTeamId;
-        int ret_sentUnits;
-        struct SSendUnitsCommand command = {
-            unitIds,
-            unitIds_size,
-            receivingTeamId,
-            ret_sentUnits,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_UNITS, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 3);
+            ei_x_encode_atom(&sendbuff, "ok");
+            ei_x_encode_atom(&sendbuff, "ret_pathId");
+            ei_x_encode_long(&sendbuff, command.ret_pathId);
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_SET_LAST_POS_MESSAGE") == 0) {
-        float* pos_posF3;
+        float pos_posF3[3];
+        double pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[0] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[1] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[2] = (float)pos_posF3_tmp;
         struct SSetLastPosMessageCommand command = {
             pos_posF3,
         };
@@ -758,15 +471,37 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SET_LAST_POS_MESSAGE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_TRACE_RAY") == 0) {
-        float* rayPos_posF3;
-        float* rayDir_posF3;
-        int srcUnitId;
+        float rayPos_posF3[3];
+        double rayPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayPos_posF3_tmp);
+        rayPos_posF3[0] = (float)rayPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayPos_posF3_tmp);
+        rayPos_posF3[1] = (float)rayPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayPos_posF3_tmp);
+        rayPos_posF3[2] = (float)rayPos_posF3_tmp;
+        float rayDir_posF3[3];
+        double rayDir_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayDir_posF3_tmp);
+        rayDir_posF3[0] = (float)rayDir_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayDir_posF3_tmp);
+        rayDir_posF3[1] = (float)rayDir_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayDir_posF3_tmp);
+        rayDir_posF3[2] = (float)rayDir_posF3_tmp;
+        long srcUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &srcUnitId_tmp);
+        int srcUnitId = (int)srcUnitId_tmp;
         int ret_hitUnitId;
-        int flags;
+        long flags_tmp;
+        ei_decode_long(recvbuff, &index, &flags_tmp);
+        int flags = (int)flags_tmp;
         struct STraceRayCommand command = {
             rayPos_posF3,
             rayDir_posF3,
@@ -779,15 +514,39 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_TRACE_RAY, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 3);
+            ei_x_encode_atom(&sendbuff, "ok");
+            ei_x_encode_atom(&sendbuff, "ret_hitUnitId");
+            ei_x_encode_long(&sendbuff, command.ret_hitUnitId);
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_TRACE_RAY_FEATURE") == 0) {
-        float* rayPos_posF3;
-        float* rayDir_posF3;
-        int srcUnitId;
+        float rayPos_posF3[3];
+        double rayPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayPos_posF3_tmp);
+        rayPos_posF3[0] = (float)rayPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayPos_posF3_tmp);
+        rayPos_posF3[1] = (float)rayPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayPos_posF3_tmp);
+        rayPos_posF3[2] = (float)rayPos_posF3_tmp;
+        float rayDir_posF3[3];
+        double rayDir_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayDir_posF3_tmp);
+        rayDir_posF3[0] = (float)rayDir_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayDir_posF3_tmp);
+        rayDir_posF3[1] = (float)rayDir_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &rayDir_posF3_tmp);
+        rayDir_posF3[2] = (float)rayDir_posF3_tmp;
+        long srcUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &srcUnitId_tmp);
+        int srcUnitId = (int)srcUnitId_tmp;
         int ret_hitFeatureId;
-        int flags;
+        long flags_tmp;
+        ei_decode_long(recvbuff, &index, &flags_tmp);
+        int flags = (int)flags_tmp;
         struct SFeatureTraceRayCommand command = {
             rayPos_posF3,
             rayDir_posF3,
@@ -800,14 +559,28 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_TRACE_RAY_FEATURE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 3);
+            ei_x_encode_atom(&sendbuff, "ok");
+            ei_x_encode_atom(&sendbuff, "ret_hitFeatureId");
+            ei_x_encode_long(&sendbuff, command.ret_hitFeatureId);
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_AI_SELECT") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
         struct SAiSelectUnitCommand command = {
             unitId,
             groupId,
@@ -819,15 +592,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_AI_SELECT, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_ATTACK") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toAttackUnitId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toAttackUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &toAttackUnitId_tmp);
+        int toAttackUnitId = (int)toAttackUnitId_tmp;
         struct SAttackUnitCommand command = {
             unitId,
             groupId,
@@ -840,16 +627,37 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_ATTACK, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_ATTACK_AREA") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* toAttackPos_posF3;
-        float radius;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float toAttackPos_posF3[3];
+        double toAttackPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toAttackPos_posF3_tmp);
+        toAttackPos_posF3[0] = (float)toAttackPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toAttackPos_posF3_tmp);
+        toAttackPos_posF3[1] = (float)toAttackPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toAttackPos_posF3_tmp);
+        toAttackPos_posF3[2] = (float)toAttackPos_posF3_tmp;
+        double radius_tmp;
+        ei_decode_double(recvbuff, &index, &radius_tmp);
+        float radius = (float)radius_tmp;
         struct SAttackAreaUnitCommand command = {
             unitId,
             groupId,
@@ -863,17 +671,40 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_ATTACK_AREA, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_BUILD") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toBuildUnitDefId;
-        float* buildPos_posF3;
-        int facing;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toBuildUnitDefId_tmp;
+        ei_decode_long(recvbuff, &index, &toBuildUnitDefId_tmp);
+        int toBuildUnitDefId = (int)toBuildUnitDefId_tmp;
+        float buildPos_posF3[3];
+        double buildPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &buildPos_posF3_tmp);
+        buildPos_posF3[0] = (float)buildPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &buildPos_posF3_tmp);
+        buildPos_posF3[1] = (float)buildPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &buildPos_posF3_tmp);
+        buildPos_posF3[2] = (float)buildPos_posF3_tmp;
+        long facing_tmp;
+        ei_decode_long(recvbuff, &index, &facing_tmp);
+        int facing = (int)facing_tmp;
         struct SBuildUnitCommand command = {
             unitId,
             groupId,
@@ -888,15 +719,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_BUILD, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_CAPTURE") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toCaptureUnitId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toCaptureUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &toCaptureUnitId_tmp);
+        int toCaptureUnitId = (int)toCaptureUnitId_tmp;
         struct SCaptureUnitCommand command = {
             unitId,
             groupId,
@@ -909,16 +754,37 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CAPTURE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_CAPTURE_AREA") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* pos_posF3;
-        float radius;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float pos_posF3[3];
+        double pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[0] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[1] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[2] = (float)pos_posF3_tmp;
+        double radius_tmp;
+        ei_decode_double(recvbuff, &index, &radius_tmp);
+        float radius = (float)radius_tmp;
         struct SCaptureAreaUnitCommand command = {
             unitId,
             groupId,
@@ -932,38 +798,40 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CAPTURE_AREA, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_UNIT_CLOAK") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        bool cloak;
-        struct SCloakUnitCommand command = {
-            unitId,
-            groupId,
-            options,
-            timeOut,
-            cloak,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CLOAK, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_CUSTOM") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int cmdId;
-        float* params;
-        int params_size;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long cmdId_tmp;
+        ei_decode_long(recvbuff, &index, &cmdId_tmp);
+        int cmdId = (int)cmdId_tmp;
+        float params[3];
+        double params_tmp;
+        ei_decode_double(recvbuff, &index, &params_tmp);
+        params[0] = (float)params_tmp;
+        ei_decode_double(recvbuff, &index, &params_tmp);
+        params[1] = (float)params_tmp;
+        ei_decode_double(recvbuff, &index, &params_tmp);
+        params[2] = (float)params_tmp;
+        long params_size_tmp;
+        ei_decode_long(recvbuff, &index, &params_size_tmp);
+        int params_size = (int)params_size_tmp;
         struct SCustomUnitCommand command = {
             unitId,
             groupId,
@@ -978,15 +846,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CUSTOM, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_D_GUN") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toAttackUnitId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toAttackUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &toAttackUnitId_tmp);
+        int toAttackUnitId = (int)toAttackUnitId_tmp;
         struct SDGunUnitCommand command = {
             unitId,
             groupId,
@@ -999,15 +881,34 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_D_GUN, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_D_GUN_POS") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* pos_posF3;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float pos_posF3[3];
+        double pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[0] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[1] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[2] = (float)pos_posF3_tmp;
         struct SDGunPosUnitCommand command = {
             unitId,
             groupId,
@@ -1020,15 +921,34 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_D_GUN_POS, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_FIGHT") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* toPos_posF3;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float toPos_posF3[3];
+        double toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[0] = (float)toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[1] = (float)toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[2] = (float)toPos_posF3_tmp;
         struct SFightUnitCommand command = {
             unitId,
             groupId,
@@ -1041,15 +961,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_FIGHT, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_GROUP_ADD") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toGroupId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toGroupId_tmp;
+        ei_decode_long(recvbuff, &index, &toGroupId_tmp);
+        int toGroupId = (int)toGroupId_tmp;
         struct SGroupAddUnitCommand command = {
             unitId,
             groupId,
@@ -1062,14 +996,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GROUP_ADD, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_GROUP_CLEAR") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
         struct SGroupClearUnitCommand command = {
             unitId,
             groupId,
@@ -1081,15 +1027,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GROUP_CLEAR, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_GUARD") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toGuardUnitId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toGuardUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &toGuardUnitId_tmp);
+        int toGuardUnitId = (int)toGuardUnitId_tmp;
         struct SGuardUnitCommand command = {
             unitId,
             groupId,
@@ -1102,15 +1062,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GUARD, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_LOAD_ONTO") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int transporterUnitId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long transporterUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &transporterUnitId_tmp);
+        int transporterUnitId = (int)transporterUnitId_tmp;
         struct SLoadOntoUnitCommand command = {
             unitId,
             groupId,
@@ -1123,37 +1097,37 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_ONTO, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_UNIT_LOAD_UNITS") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int* toLoadUnitIds;
-        int toLoadUnitIds_size;
-        struct SLoadUnitsUnitCommand command = {
-            unitId,
-            groupId,
-            options,
-            toLoadUnitIds,
-            toLoadUnitIds_size,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_UNITS, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_LOAD_UNITS_AREA") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* pos_posF3;
-        float radius;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float pos_posF3[3];
+        double pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[0] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[1] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[2] = (float)pos_posF3_tmp;
+        double radius_tmp;
+        ei_decode_double(recvbuff, &index, &radius_tmp);
+        float radius = (float)radius_tmp;
         struct SLoadUnitsAreaUnitCommand command = {
             unitId,
             groupId,
@@ -1167,15 +1141,34 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_UNITS_AREA, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_MOVE") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* toPos_posF3;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float toPos_posF3[3];
+        double toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[0] = (float)toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[1] = (float)toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[2] = (float)toPos_posF3_tmp;
         struct SMoveUnitCommand command = {
             unitId,
             groupId,
@@ -1188,15 +1181,34 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_MOVE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_PATROL") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* toPos_posF3;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float toPos_posF3[3];
+        double toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[0] = (float)toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[1] = (float)toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[2] = (float)toPos_posF3_tmp;
         struct SPatrolUnitCommand command = {
             unitId,
             groupId,
@@ -1209,16 +1221,37 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_PATROL, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_RECLAIM_AREA") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* pos_posF3;
-        float radius;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float pos_posF3[3];
+        double pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[0] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[1] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[2] = (float)pos_posF3_tmp;
+        double radius_tmp;
+        ei_decode_double(recvbuff, &index, &radius_tmp);
+        float radius = (float)radius_tmp;
         struct SReclaimAreaUnitCommand command = {
             unitId,
             groupId,
@@ -1232,15 +1265,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_AREA, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_RECLAIM_FEATURE") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toReclaimFeatureId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toReclaimFeatureId_tmp;
+        ei_decode_long(recvbuff, &index, &toReclaimFeatureId_tmp);
+        int toReclaimFeatureId = (int)toReclaimFeatureId_tmp;
         struct SReclaimFeatureUnitCommand command = {
             unitId,
             groupId,
@@ -1253,15 +1300,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_FEATURE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_RECLAIM_UNIT") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toReclaimUnitId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toReclaimUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &toReclaimUnitId_tmp);
+        int toReclaimUnitId = (int)toReclaimUnitId_tmp;
         struct SReclaimUnitUnitCommand command = {
             unitId,
             groupId,
@@ -1274,15 +1335,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_UNIT, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_REPAIR") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toRepairUnitId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toRepairUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &toRepairUnitId_tmp);
+        int toRepairUnitId = (int)toRepairUnitId_tmp;
         struct SRepairUnitCommand command = {
             unitId,
             groupId,
@@ -1295,16 +1370,37 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_REPAIR, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_RESTORE_AREA") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* pos_posF3;
-        float radius;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float pos_posF3[3];
+        double pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[0] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[1] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[2] = (float)pos_posF3_tmp;
+        double radius_tmp;
+        ei_decode_double(recvbuff, &index, &radius_tmp);
+        float radius = (float)radius_tmp;
         struct SRestoreAreaUnitCommand command = {
             unitId,
             groupId,
@@ -1318,15 +1414,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESTORE_AREA, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_RESURRECT") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toResurrectFeatureId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toResurrectFeatureId_tmp;
+        ei_decode_long(recvbuff, &index, &toResurrectFeatureId_tmp);
+        int toResurrectFeatureId = (int)toResurrectFeatureId_tmp;
         struct SResurrectUnitCommand command = {
             unitId,
             groupId,
@@ -1339,16 +1449,37 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESURRECT, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_RESURRECT_AREA") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* pos_posF3;
-        float radius;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float pos_posF3[3];
+        double pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[0] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[1] = (float)pos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &pos_posF3_tmp);
+        pos_posF3[2] = (float)pos_posF3_tmp;
+        double radius_tmp;
+        ei_decode_double(recvbuff, &index, &radius_tmp);
+        float radius = (float)radius_tmp;
         struct SResurrectAreaUnitCommand command = {
             unitId,
             groupId,
@@ -1362,14 +1493,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESURRECT_AREA, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_SELF_DESTROY") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
         struct SSelfDestroyUnitCommand command = {
             unitId,
             groupId,
@@ -1381,15 +1524,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SELF_DESTROY, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_AUTO_REPAIR_LEVEL") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int autoRepairLevel;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long autoRepairLevel_tmp;
+        ei_decode_long(recvbuff, &index, &autoRepairLevel_tmp);
+        int autoRepairLevel = (int)autoRepairLevel_tmp;
         struct SSetAutoRepairLevelUnitCommand command = {
             unitId,
             groupId,
@@ -1402,15 +1559,34 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_AUTO_REPAIR_LEVEL, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_BASE") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* basePos_posF3;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float basePos_posF3[3];
+        double basePos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &basePos_posF3_tmp);
+        basePos_posF3[0] = (float)basePos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &basePos_posF3_tmp);
+        basePos_posF3[1] = (float)basePos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &basePos_posF3_tmp);
+        basePos_posF3[2] = (float)basePos_posF3_tmp;
         struct SSetBaseUnitCommand command = {
             unitId,
             groupId,
@@ -1423,15 +1599,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_BASE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_FIRE_STATE") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int fireState;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long fireState_tmp;
+        ei_decode_long(recvbuff, &index, &fireState_tmp);
+        int fireState = (int)fireState_tmp;
         struct SSetFireStateUnitCommand command = {
             unitId,
             groupId,
@@ -1444,15 +1634,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_FIRE_STATE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_IDLE_MODE") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int idleMode;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long idleMode_tmp;
+        ei_decode_long(recvbuff, &index, &idleMode_tmp);
+        int idleMode = (int)idleMode_tmp;
         struct SSetIdleModeUnitCommand command = {
             unitId,
             groupId,
@@ -1465,15 +1669,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_IDLE_MODE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_MOVE_STATE") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int moveState;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long moveState_tmp;
+        ei_decode_long(recvbuff, &index, &moveState_tmp);
+        int moveState = (int)moveState_tmp;
         struct SSetMoveStateUnitCommand command = {
             unitId,
             groupId,
@@ -1486,57 +1704,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_MOVE_STATE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_UNIT_SET_ON_OFF") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        bool on;
-        struct SSetOnOffUnitCommand command = {
-            unitId,
-            groupId,
-            options,
-            timeOut,
-            on,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_ON_OFF, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
-        }
-    }
-    if (strcmp(command, "COMMAND_UNIT_SET_REPEAT") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        bool repeat;
-        struct SSetRepeatUnitCommand command = {
-            unitId,
-            groupId,
-            options,
-            timeOut,
-            repeat,
-        };
-        erlang_pid from;
-        ei_decode_pid(recvbuff, &index, &from);
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_REPEAT, &command) < 0) {;
-            answer_error(team_id, &from);
-        } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_TRAJECTORY") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int trajectory;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long trajectory_tmp;
+        ei_decode_long(recvbuff, &index, &trajectory_tmp);
+        int trajectory = (int)trajectory_tmp;
         struct SSetTrajectoryUnitCommand command = {
             unitId,
             groupId,
@@ -1549,15 +1739,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_TRAJECTORY, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_WANTED_MAX_SPEED") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float wantedMaxSpeed;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        double wantedMaxSpeed_tmp;
+        ei_decode_double(recvbuff, &index, &wantedMaxSpeed_tmp);
+        float wantedMaxSpeed = (float)wantedMaxSpeed_tmp;
         struct SSetWantedMaxSpeedUnitCommand command = {
             unitId,
             groupId,
@@ -1570,14 +1774,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_WANTED_MAX_SPEED, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_STOCKPILE") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
         struct SStockpileUnitCommand command = {
             unitId,
             groupId,
@@ -1589,14 +1805,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_STOCKPILE, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_STOP") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
         struct SStopUnitCommand command = {
             unitId,
             groupId,
@@ -1608,16 +1836,37 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_STOP, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_UNLOAD_UNIT") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* toPos_posF3;
-        int toUnloadUnitId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float toPos_posF3[3];
+        double toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[0] = (float)toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[1] = (float)toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[2] = (float)toPos_posF3_tmp;
+        long toUnloadUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &toUnloadUnitId_tmp);
+        int toUnloadUnitId = (int)toUnloadUnitId_tmp;
         struct SUnloadUnitCommand command = {
             unitId,
             groupId,
@@ -1631,16 +1880,37 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_UNLOAD_UNIT, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_UNLOAD_UNITS_AREA") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        float* toPos_posF3;
-        float radius;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        float toPos_posF3[3];
+        double toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[0] = (float)toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[1] = (float)toPos_posF3_tmp;
+        ei_decode_double(recvbuff, &index, &toPos_posF3_tmp);
+        toPos_posF3[2] = (float)toPos_posF3_tmp;
+        double radius_tmp;
+        ei_decode_double(recvbuff, &index, &radius_tmp);
+        float radius = (float)radius_tmp;
         struct SUnloadUnitsAreaUnitCommand command = {
             unitId,
             groupId,
@@ -1654,14 +1924,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_UNLOAD_UNITS_AREA, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_WAIT") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
         struct SWaitUnitCommand command = {
             unitId,
             groupId,
@@ -1673,15 +1955,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_WAIT_DEATH") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int toDieUnitId;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long toDieUnitId_tmp;
+        ei_decode_long(recvbuff, &index, &toDieUnitId_tmp);
+        int toDieUnitId = (int)toDieUnitId_tmp;
         struct SDeathWaitUnitCommand command = {
             unitId,
             groupId,
@@ -1694,14 +1990,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_DEATH, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_WAIT_GATHER") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
         struct SGatherWaitUnitCommand command = {
             unitId,
             groupId,
@@ -1713,15 +2021,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_GATHER, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_WAIT_SQUAD") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int numUnits;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long numUnits_tmp;
+        ei_decode_long(recvbuff, &index, &numUnits_tmp);
+        int numUnits = (int)numUnits_tmp;
         struct SSquadWaitUnitCommand command = {
             unitId,
             groupId,
@@ -1734,15 +2056,29 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_SQUAD, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
     if (strcmp(command, "COMMAND_UNIT_WAIT_TIME") == 0) {
-        int unitId;
-        int groupId;
-        short options;
-        int timeOut;
-        int time;
+        long unitId_tmp;
+        ei_decode_long(recvbuff, &index, &unitId_tmp);
+        int unitId = (int)unitId_tmp;
+        long groupId_tmp;
+        ei_decode_long(recvbuff, &index, &groupId_tmp);
+        int groupId = (int)groupId_tmp;
+        long options_tmp;
+        ei_decode_long(recvbuff, &index, &options_tmp);
+        short options = (short)options_tmp;
+        long timeOut_tmp;
+        ei_decode_long(recvbuff, &index, &timeOut_tmp);
+        int timeOut = (int)timeOut_tmp;
+        long time_tmp;
+        ei_decode_long(recvbuff, &index, &time_tmp);
+        int time = (int)time_tmp;
         struct STimeWaitUnitCommand command = {
             unitId,
             groupId,
@@ -1755,7 +2091,11 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
         if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_TIME, &command) < 0) {;
             answer_error(team_id, &from);
         } else {
-            answer_ok(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "ok");
+            send_to_pid(team_id, &from, sendbuff);
         }
     }
 }
