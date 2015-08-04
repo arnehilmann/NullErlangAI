@@ -1,10 +1,14 @@
 
 /* GENERATED FILE, DO NOT EDIT DIRECTLY */
 
+#include "commands.h"
+
 #include <string.h>
 #include "ei.h"
-#include "rts/ExternalAI/Interface/SSkirmishAICallback.h"
+
 #include "rts/ExternalAI/Interface/AISCommands.h"
+
+#include "send_to.h"
 
 int handle_command(int team_id, const struct SSkirmishAICallback* callback, char* recvbuff, int index) {
     char command[64] = "";
@@ -19,7 +23,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             inSize,
             ret_outData,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CALL_LUA_RULES, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CALL_LUA_RULES, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_CALL_LUA_UI") == 0) {
         const char* inData;
@@ -30,7 +40,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             inSize,
             ret_outData,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CALL_LUA_UI, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CALL_LUA_UI, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_CHEATS_GIVE_ME_NEW_UNIT") == 0) {
         int unitDefId;
@@ -41,7 +57,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             pos_posF3,
             ret_newUnitId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_GIVE_ME_NEW_UNIT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_GIVE_ME_NEW_UNIT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_CHEATS_GIVE_ME_RESOURCE") == 0) {
         int resourceId;
@@ -50,14 +72,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             resourceId,
             amount,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_GIVE_ME_RESOURCE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_GIVE_ME_RESOURCE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_CHEATS_SET_MY_INCOME_MULTIPLIER") == 0) {
         float factor;
         struct SSetMyIncomeMultiplierCheatCommand command = {
             factor,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_SET_MY_INCOME_MULTIPLIER, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_SET_MY_INCOME_MULTIPLIER, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_LINE_ADD_POINT") == 0) {
         int lineId;
@@ -68,7 +102,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             x,
             y,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_ADD_POINT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_ADD_POINT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_LINE_DELETE_POINTS") == 0) {
         int lineId;
@@ -77,7 +117,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             lineId,
             numPoints,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_DELETE_POINTS, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_DELETE_POINTS, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_LINE_SET_COLOR") == 0) {
         int lineId;
@@ -86,7 +132,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             lineId,
             color_colorS3,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_SET_COLOR, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_SET_COLOR, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_LINE_SET_LABEL") == 0) {
         int lineId;
@@ -95,7 +147,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             lineId,
             label,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_SET_LABEL, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_SET_LABEL, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_SET_POS") == 0) {
         float x;
@@ -104,7 +162,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             x,
             y,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_SET_POS, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_SET_POS, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_GRAPH_SET_SIZE") == 0) {
         float w;
@@ -113,7 +177,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             w,
             h,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_SET_SIZE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_SET_SIZE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_ADD") == 0) {
         int ret_overlayTextureId;
@@ -126,14 +196,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             w,
             h,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_ADD, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_ADD, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_DELETE") == 0) {
         int overlayTextureId;
         struct SDeleteOverlayTextureDrawerDebugCommand command = {
             overlayTextureId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_DELETE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_DELETE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_LABEL") == 0) {
         int overlayTextureId;
@@ -142,7 +224,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             overlayTextureId,
             label,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_LABEL, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_LABEL, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_POS") == 0) {
         int overlayTextureId;
@@ -153,7 +241,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             x,
             y,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_POS, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_POS, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_SIZE") == 0) {
         int overlayTextureId;
@@ -164,7 +258,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             w,
             h,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_SIZE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_SIZE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_UPDATE") == 0) {
         int overlayTextureId;
@@ -181,7 +281,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             w,
             h,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_UPDATE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_UPDATE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_ADD_NOTIFICATION") == 0) {
         float* pos_posF3;
@@ -192,7 +298,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             color_colorS3,
             alpha,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_ADD_NOTIFICATION, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_ADD_NOTIFICATION, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_DRAW_UNIT") == 0) {
         int toDrawUnitDefId;
@@ -213,7 +325,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             drawBorder,
             facing,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_DRAW_UNIT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_DRAW_UNIT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_FIGURE_CREATE_LINE") == 0) {
         float* pos1_posF3;
@@ -232,7 +350,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             figureGroupId,
             ret_newFigureGroupId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_CREATE_LINE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_CREATE_LINE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_FIGURE_CREATE_SPLINE") == 0) {
         float* pos1_posF3;
@@ -255,14 +379,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             figureGroupId,
             ret_newFigureGroupId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_CREATE_SPLINE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_CREATE_SPLINE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_FIGURE_DELETE") == 0) {
         int figureGroupId;
         struct SDeleteFigureDrawerCommand command = {
             figureGroupId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_DELETE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_DELETE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_FIGURE_SET_COLOR") == 0) {
         int figureGroupId;
@@ -273,7 +409,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             color_colorS3,
             alpha,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_SET_COLOR, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_SET_COLOR, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_LINE_ADD") == 0) {
         float* posFrom_posF3;
@@ -282,7 +424,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             posFrom_posF3,
             posTo_posF3,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_LINE_ADD, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_LINE_ADD, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_PATH_BREAK") == 0) {
         float* endPos_posF3;
@@ -293,14 +441,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             color_colorS3,
             alpha,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_BREAK, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_BREAK, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_PATH_DRAW_ICON_AT_LAST_POS") == 0) {
         int cmdId;
         struct SDrawIconAtLastPosPathDrawerCommand command = {
             cmdId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_DRAW_ICON_AT_LAST_POS, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_DRAW_ICON_AT_LAST_POS, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_PATH_DRAW_LINE") == 0) {
         float* endPos_posF3;
@@ -311,7 +471,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             color_colorS3,
             alpha,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_DRAW_LINE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_DRAW_LINE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_PATH_DRAW_LINE_AND_ICON") == 0) {
         int cmdId;
@@ -324,21 +490,39 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             color_colorS3,
             alpha,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_DRAW_LINE_AND_ICON, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_DRAW_LINE_AND_ICON, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_PATH_FINISH") == 0) {
         bool iAmUseless;
         struct SFinishPathDrawerCommand command = {
             iAmUseless,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_FINISH, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_FINISH, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_PATH_RESTART") == 0) {
         bool sameColor;
         struct SRestartPathDrawerCommand command = {
             sameColor,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_RESTART, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_RESTART, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_PATH_START") == 0) {
         float* pos_posF3;
@@ -349,7 +533,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             color_colorS3,
             alpha,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_START, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_START, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_POINT_ADD") == 0) {
         float* pos_posF3;
@@ -358,35 +548,65 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             pos_posF3,
             label,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_POINT_ADD, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_POINT_ADD, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_DRAWER_POINT_REMOVE") == 0) {
         float* pos_posF3;
         struct SRemovePointDrawCommand command = {
             pos_posF3,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_POINT_REMOVE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_POINT_REMOVE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_GROUP_CREATE") == 0) {
         int ret_groupId;
         struct SCreateGroupCommand command = {
             ret_groupId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_GROUP_CREATE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_GROUP_CREATE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_GROUP_ERASE") == 0) {
         int groupId;
         struct SEraseGroupCommand command = {
             groupId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_GROUP_ERASE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_GROUP_ERASE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_PATH_FREE") == 0) {
         int pathId;
         struct SFreePathCommand command = {
             pathId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_FREE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_FREE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_PATH_GET_APPROXIMATE_LENGTH") == 0) {
         float* start_posF3;
@@ -401,7 +621,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             goalRadius,
             ret_approximatePathLength,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_GET_APPROXIMATE_LENGTH, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_GET_APPROXIMATE_LENGTH, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_PATH_GET_NEXT_WAYPOINT") == 0) {
         int pathId;
@@ -410,7 +636,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             pathId,
             ret_nextWaypoint_posF3_out,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_GET_NEXT_WAYPOINT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_GET_NEXT_WAYPOINT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_PATH_INIT") == 0) {
         float* start_posF3;
@@ -425,7 +657,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             goalRadius,
             ret_pathId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_INIT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_INIT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_PAUSE") == 0) {
         bool enable;
@@ -434,7 +672,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             enable,
             reason,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PAUSE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PAUSE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_SEND_RESOURCES") == 0) {
         int resourceId;
@@ -447,7 +691,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             receivingTeamId,
             ret_isExecuted,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_RESOURCES, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_RESOURCES, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_SEND_START_POS") == 0) {
         bool ready;
@@ -456,7 +706,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             ready,
             pos_posF3,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_START_POS, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_START_POS, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_SEND_TEXT_MESSAGE") == 0) {
         const char* text;
@@ -465,7 +721,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             text,
             zone,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_TEXT_MESSAGE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_TEXT_MESSAGE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_SEND_UNITS") == 0) {
         int* unitIds;
@@ -478,14 +740,26 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             receivingTeamId,
             ret_sentUnits,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_UNITS, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SEND_UNITS, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_SET_LAST_POS_MESSAGE") == 0) {
         float* pos_posF3;
         struct SSetLastPosMessageCommand command = {
             pos_posF3,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SET_LAST_POS_MESSAGE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SET_LAST_POS_MESSAGE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_TRACE_RAY") == 0) {
         float* rayPos_posF3;
@@ -500,7 +774,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             ret_hitUnitId,
             flags,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_TRACE_RAY, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_TRACE_RAY, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_TRACE_RAY_FEATURE") == 0) {
         float* rayPos_posF3;
@@ -515,7 +795,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             ret_hitFeatureId,
             flags,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_TRACE_RAY_FEATURE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_TRACE_RAY_FEATURE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_AI_SELECT") == 0) {
         int unitId;
@@ -528,7 +814,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             options,
             timeOut,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_AI_SELECT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_AI_SELECT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_ATTACK") == 0) {
         int unitId;
@@ -543,7 +835,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toAttackUnitId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_ATTACK, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_ATTACK, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_ATTACK_AREA") == 0) {
         int unitId;
@@ -560,7 +858,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             toAttackPos_posF3,
             radius,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_ATTACK_AREA, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_ATTACK_AREA, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_BUILD") == 0) {
         int unitId;
@@ -579,7 +883,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             buildPos_posF3,
             facing,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_BUILD, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_BUILD, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_CAPTURE") == 0) {
         int unitId;
@@ -594,7 +904,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toCaptureUnitId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CAPTURE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CAPTURE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_CAPTURE_AREA") == 0) {
         int unitId;
@@ -611,7 +927,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             pos_posF3,
             radius,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CAPTURE_AREA, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CAPTURE_AREA, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_CLOAK") == 0) {
         int unitId;
@@ -626,7 +948,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             cloak,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CLOAK, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CLOAK, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_CUSTOM") == 0) {
         int unitId;
@@ -645,7 +973,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             params,
             params_size,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CUSTOM, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CUSTOM, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_D_GUN") == 0) {
         int unitId;
@@ -660,7 +994,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toAttackUnitId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_D_GUN, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_D_GUN, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_D_GUN_POS") == 0) {
         int unitId;
@@ -675,7 +1015,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             pos_posF3,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_D_GUN_POS, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_D_GUN_POS, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_FIGHT") == 0) {
         int unitId;
@@ -690,7 +1036,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toPos_posF3,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_FIGHT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_FIGHT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_GROUP_ADD") == 0) {
         int unitId;
@@ -705,7 +1057,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toGroupId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GROUP_ADD, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GROUP_ADD, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_GROUP_CLEAR") == 0) {
         int unitId;
@@ -718,7 +1076,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             options,
             timeOut,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GROUP_CLEAR, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GROUP_CLEAR, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_GUARD") == 0) {
         int unitId;
@@ -733,7 +1097,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toGuardUnitId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GUARD, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GUARD, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_LOAD_ONTO") == 0) {
         int unitId;
@@ -748,7 +1118,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             transporterUnitId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_ONTO, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_ONTO, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_LOAD_UNITS") == 0) {
         int unitId;
@@ -763,7 +1139,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             toLoadUnitIds,
             toLoadUnitIds_size,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_UNITS, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_UNITS, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_LOAD_UNITS_AREA") == 0) {
         int unitId;
@@ -780,7 +1162,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             pos_posF3,
             radius,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_UNITS_AREA, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_UNITS_AREA, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_MOVE") == 0) {
         int unitId;
@@ -795,7 +1183,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toPos_posF3,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_MOVE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_MOVE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_PATROL") == 0) {
         int unitId;
@@ -810,7 +1204,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toPos_posF3,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_PATROL, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_PATROL, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_RECLAIM_AREA") == 0) {
         int unitId;
@@ -827,7 +1227,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             pos_posF3,
             radius,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_AREA, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_AREA, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_RECLAIM_FEATURE") == 0) {
         int unitId;
@@ -842,7 +1248,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toReclaimFeatureId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_FEATURE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_FEATURE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_RECLAIM_UNIT") == 0) {
         int unitId;
@@ -857,7 +1269,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toReclaimUnitId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_UNIT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_UNIT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_REPAIR") == 0) {
         int unitId;
@@ -872,7 +1290,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toRepairUnitId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_REPAIR, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_REPAIR, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_RESTORE_AREA") == 0) {
         int unitId;
@@ -889,7 +1313,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             pos_posF3,
             radius,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESTORE_AREA, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESTORE_AREA, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_RESURRECT") == 0) {
         int unitId;
@@ -904,7 +1334,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toResurrectFeatureId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESURRECT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESURRECT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_RESURRECT_AREA") == 0) {
         int unitId;
@@ -921,7 +1357,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             pos_posF3,
             radius,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESURRECT_AREA, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESURRECT_AREA, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_SELF_DESTROY") == 0) {
         int unitId;
@@ -934,7 +1376,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             options,
             timeOut,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SELF_DESTROY, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SELF_DESTROY, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_AUTO_REPAIR_LEVEL") == 0) {
         int unitId;
@@ -949,7 +1397,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             autoRepairLevel,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_AUTO_REPAIR_LEVEL, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_AUTO_REPAIR_LEVEL, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_BASE") == 0) {
         int unitId;
@@ -964,7 +1418,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             basePos_posF3,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_BASE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_BASE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_FIRE_STATE") == 0) {
         int unitId;
@@ -979,7 +1439,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             fireState,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_FIRE_STATE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_FIRE_STATE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_IDLE_MODE") == 0) {
         int unitId;
@@ -994,7 +1460,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             idleMode,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_IDLE_MODE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_IDLE_MODE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_MOVE_STATE") == 0) {
         int unitId;
@@ -1009,7 +1481,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             moveState,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_MOVE_STATE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_MOVE_STATE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_ON_OFF") == 0) {
         int unitId;
@@ -1024,7 +1502,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             on,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_ON_OFF, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_ON_OFF, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_REPEAT") == 0) {
         int unitId;
@@ -1039,7 +1523,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             repeat,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_REPEAT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_REPEAT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_TRAJECTORY") == 0) {
         int unitId;
@@ -1054,7 +1544,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             trajectory,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_TRAJECTORY, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_TRAJECTORY, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_SET_WANTED_MAX_SPEED") == 0) {
         int unitId;
@@ -1069,7 +1565,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             wantedMaxSpeed,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_WANTED_MAX_SPEED, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_WANTED_MAX_SPEED, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_STOCKPILE") == 0) {
         int unitId;
@@ -1082,7 +1584,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             options,
             timeOut,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_STOCKPILE, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_STOCKPILE, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_STOP") == 0) {
         int unitId;
@@ -1095,7 +1603,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             options,
             timeOut,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_STOP, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_STOP, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_UNLOAD_UNIT") == 0) {
         int unitId;
@@ -1112,7 +1626,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             toPos_posF3,
             toUnloadUnitId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_UNLOAD_UNIT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_UNLOAD_UNIT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_UNLOAD_UNITS_AREA") == 0) {
         int unitId;
@@ -1129,7 +1649,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             toPos_posF3,
             radius,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_UNLOAD_UNITS_AREA, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_UNLOAD_UNITS_AREA, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_WAIT") == 0) {
         int unitId;
@@ -1142,7 +1668,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             options,
             timeOut,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_WAIT_DEATH") == 0) {
         int unitId;
@@ -1157,7 +1689,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             toDieUnitId,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_DEATH, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_DEATH, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_WAIT_GATHER") == 0) {
         int unitId;
@@ -1170,7 +1708,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             options,
             timeOut,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_GATHER, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_GATHER, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_WAIT_SQUAD") == 0) {
         int unitId;
@@ -1185,7 +1729,13 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             numUnits,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_SQUAD, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_SQUAD, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
     if (strcmp(command, "COMMAND_UNIT_WAIT_TIME") == 0) {
         int unitId;
@@ -1200,6 +1750,12 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, char
             timeOut,
             time,
         };
-        int result = callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_TIME, &command);
+        erlang_pid from;
+        ei_decode_pid(recvbuff, &index, &from);
+        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_TIME, &command) < 0) {;
+            answer_error(team_id, &from);
+        } else {
+            answer_ok(team_id, &from);
+        }
     }
 }

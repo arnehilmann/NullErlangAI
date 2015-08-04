@@ -1,6 +1,7 @@
 #include "AIExport.h"
+
 #include "ExternalAI/Interface/SSkirmishAICallback.h"
-#include "ExternalAI/Interface/AISCommands.h"
+//#include "ExternalAI/Interface/AISCommands.h"
 #include "send_to.h"
 #include "events.h"
 #include "callbacks.h"
@@ -118,6 +119,20 @@ EXPORT(int) send_to_pid(int team_id, erlang_pid* pid, ei_x_buff buff) {
     return result;
 }
 
+EXPORT(int) answer(int team_id, erlang_pid* pid, char* what) {
+    ei_x_buff sendbuff;
+    ei_x_new_with_version(&sendbuff);
+    ei_x_encode_atom(&sendbuff, what);
+    return send_to_pid(team_id, pid, sendbuff);
+}
+
+EXPORT(int) answer_ok(int team_id, erlang_pid* pid) {
+    return answer(team_id, pid, "ok");
+}
+
+EXPORT(int) answer_error(int team_id, erlang_pid* pid) {
+    return answer(team_id, pid, "error");
+}
 
 int send_event(int team_id, int topic, const void* data) {
     int uplink = uplinks[team_id];
@@ -218,6 +233,7 @@ int unit_pos(int team_id, int unit_id) {
 }
 
 
+/*
 int move_unit(int team_id, int unit_id, float* pos) {
     struct SMoveUnitCommand move_command = {
         unit_id,
@@ -228,6 +244,7 @@ int move_unit(int team_id, int unit_id, float* pos) {
     };
     callbacks[team_id]->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_MOVE, &move_command);
 }
+*/
 
 
 int check_for_message_from_hq(int team_id) {
@@ -284,6 +301,7 @@ int check_for_message_from_hq(int team_id) {
         long id;
         ei_decode_long(recvbuf.buff, &index, &id);
         unit_pos(team_id, id);
+/*
     } else if (strcmp(message, "move") == 0) {
         long id;
         ei_decode_long(recvbuf.buff, &index, &id);
@@ -294,6 +312,7 @@ int check_for_message_from_hq(int team_id) {
         float pos[3] = {(float)x, (float)y, (float)z};
         fprintf(stdout, "move %li to %f/%f\n", id, pos[0], pos[2]);
         move_unit(team_id, id, pos);
+*/
     } else if (strcmp(message, "callback") == 0) {
         return handle_callback(team_id, callbacks[team_id], recvbuf.buff, index);
     } else if (strcmp(message, "command") == 0) {

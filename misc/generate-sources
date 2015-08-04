@@ -68,10 +68,14 @@ class SourceGeneratorCommands(object):
             commandgen_file.write(dedent("""
                 /* GENERATED FILE, DO NOT EDIT DIRECTLY */
 
+                #include "commands.h"
+
                 #include <string.h>
                 #include "ei.h"
-                #include "rts/ExternalAI/Interface/SSkirmishAICallback.h"
+
                 #include "rts/ExternalAI/Interface/AISCommands.h"
+
+                #include "send_to.h"
 
                 int handle_command(int team_id, const struct SSkirmishAICallback* callback, char* recvbuff, int index) {
                     char command[64] = "";
@@ -88,7 +92,13 @@ class SourceGeneratorCommands(object):
                 for arg_name, arg_type in args:
                     lines.append(indent(3, '%s,' % arg_name))
                 lines.append(indent(2, '};'))
-                lines.append(indent(2, 'int result = callback->Engine_handleCommand(team_id, team_id, -1, %s, &command);' % name))
+                lines.append(indent(2, 'erlang_pid from;'))
+                lines.append(indent(2, 'ei_decode_pid(recvbuff, &index, &from);'))
+                lines.append(indent(2, 'if (callback->Engine_handleCommand(team_id, team_id, -1, %s, &command) < 0) {;' % name))
+                lines.append(indent(3, "answer_error(team_id, &from);"))
+                lines.append(indent(2, "} else {"))
+                lines.append(indent(3, "answer_ok(team_id, &from);"))
+                lines.append(indent(2, "}"))
                 lines.append(indent(1, "}"))
                 lines.append("")
                 commandgen_file.write("\n".join(lines))
