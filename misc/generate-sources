@@ -132,8 +132,6 @@ class SourceGeneratorCommands(object):
                 #include "send_to.h"
 
                 int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x_buff buff) {
-                    char command[64] = "";
-                    ei_decode_atom(recvbuff, &index, command);
 
                 """))
 
@@ -153,22 +151,11 @@ class SourceGeneratorCommands(object):
                         nr_out_args += 1
                     else:
                         if arg_type in ("int", "short"):
-                            lines.append(indent(2, 'long %s_tmp;' % arg_name))
-                            lines.append(indent(2, 'ei_decode_long(recvbuff, &index, &%s_tmp);' % arg_name))
-                            lines.append(indent(2, '%s %s = (%s)%s_tmp;' % (arg_type, arg_name, arg_type, arg_name)))
+                            lines.extend(render_decode_call(2, arg_name, arg_type, "long", "long"))
                         elif arg_type == "float":
-                            lines.append(indent(2, 'double %s_tmp;' % arg_name))
-                            lines.append(indent(2, 'ei_decode_double(recvbuff, &index, &%s_tmp);' % arg_name))
-                            lines.append(indent(2, '%s %s = (float)%s_tmp;' % (arg_type, arg_name, arg_name)))
+                            lines.extend(render_decode_call(2, arg_name, arg_type, "double", "double"))
                         elif arg_type == "float*":
-                            lines.append(indent(2, 'float %s[3];' % arg_name))
-                            lines.append(indent(2, 'double %s_tmp;' % arg_name))
-                            lines.append(indent(2, 'ei_decode_double(recvbuff, &index, &%s_tmp);' % arg_name))
-                            lines.append(indent(2, '%s[0] = (float)%s_tmp;' % (arg_name, arg_name)))
-                            lines.append(indent(2, 'ei_decode_double(recvbuff, &index, &%s_tmp);' % arg_name))
-                            lines.append(indent(2, '%s[1] = (float)%s_tmp;' % (arg_name, arg_name)))
-                            lines.append(indent(2, 'ei_decode_double(recvbuff, &index, &%s_tmp);' % arg_name))
-                            lines.append(indent(2, '%s[2] = (float)%s_tmp;' % (arg_name, arg_name)))
+                            lines.extend(render_decode_posf3_call(2, arg_name))
                         else:
                             print("%s: unknown arg_type %s" % (name, arg_type))
                             ok = False
@@ -178,10 +165,13 @@ class SourceGeneratorCommands(object):
                 for arg_name, arg_type in args:
                     lines.append(indent(3, '%s,' % arg_name))
                 lines.append(indent(2, '};'))
-                lines.append(indent(2, 'erlang_pid from;'))
-                lines.append(indent(2, 'ei_decode_pid(recvbuff, &index, &from);'))
+
+                lines.extend(render_decode_call(2, "from", "erlang_pid", "erlang_pid", "pid"))
+                #lines.append(indent(2, 'erlang_pid from;'))
+                #lines.append(indent(2, 'ei_decode_pid(recvbuff, &index, &from);'))
+
                 lines.append(indent(2, 'if (callback->Engine_handleCommand(team_id, team_id, -1, %s, &command) < 0) {;' % name))
-                lines.append(indent(3, 'answer_error(team_id, &from);'))
+                lines.append(indent(3, 'return answer_error(team_id, &from);'))
                 lines.append(indent(2, '} else {'))
                 lines.append(indent(3, 'ei_x_buff sendbuff;'))
                 lines.append(indent(3, 'ei_x_new_with_version(&sendbuff);'))
@@ -197,7 +187,7 @@ class SourceGeneratorCommands(object):
                             ok = False
                 if not ok:
                     continue
-                lines.append(indent(3, "send_to_pid(team_id, &from, sendbuff);"))
+                lines.append(indent(3, "return send_to_pid(team_id, &from, sendbuff);"))
                 lines.append(indent(2, "}"))
                 lines.append(indent(1, "}"))
                 lines.append("")
