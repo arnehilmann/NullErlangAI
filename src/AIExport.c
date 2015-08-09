@@ -261,7 +261,7 @@ int check_for_message_from_hq(int team_id) {
 
     int got = ei_xreceive_msg_tmo(uplink, &msg, &recvbuf, COMM_TMO);
     char message[24] = "";
-    int index, version, arity;
+    int version, arity;
 
     if (got == ERL_TICK) {
         // ignore
@@ -280,16 +280,16 @@ int check_for_message_from_hq(int team_id) {
                 break;
         }
     } else {
-        index = 0;
-        ei_decode_version(recvbuf.buff, &index, &version);
-        ei_decode_tuple_header(recvbuf.buff, &index, &arity);
-        ei_decode_atom(recvbuf.buff, &index, message);
+        recvbuf.index = 0;
+        ei_decode_version(recvbuf.buff, &recvbuf.index, &version);
+        ei_decode_tuple_header(recvbuf.buff, &recvbuf.index, &arity);
+        ei_decode_atom(recvbuf.buff, &recvbuf.index, message);
 
         fprintf(stdout, "\treceive: %s <--[%i]-- /%i, 0:'%s'\n", msg.toname, uplink, arity, message);
     }
     if (strcmp(message, "ping") == 0) {
         erlang_pid from;
-        ei_decode_pid(recvbuf.buff, &index, &from);
+        ei_decode_pid(recvbuf.buff, &recvbuf.index, &from);
         send_pong(team_id, from);
 /*
     } else if (strcmp(message, "send_all_unit_ids") == 0) {
@@ -318,11 +318,11 @@ int check_for_message_from_hq(int team_id) {
     }
     if (strcmp(message, "callback") == 0) {
         fprintf(stderr, "callback received\n");
-        return handle_callback(team_id, callbacks[team_id], recvbuf.buff, index);
+        return handle_callback(team_id, callbacks[team_id], recvbuf);
     }
     if (strcmp(message, "command") == 0) {
         fprintf(stderr, "command received\n");
-        return handle_command(team_id, callbacks[team_id], recvbuf.buff, index);
+        return handle_command(team_id, callbacks[team_id], recvbuf);
     }
 
     return 0;

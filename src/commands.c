@@ -10,10 +10,19 @@
 
 #include "send_to.h"
 
-int handle_command(int team_id, const struct SSkirmishAICallback* callback, char* recvbuff, int index) {
+int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x_buff buff) {
     char command[64] = "";
     ei_decode_atom(recvbuff, &index, command);
 
+    char command[64] = "";
+    {
+        int result = ei_decode_atom(buff.buff, &buff.index, command);
+        if (result != 0) {
+            fprintf(stderr, "[ERROR] cannot decode 'command' as 'char*', error code %i\n", result);
+            ei_x_free(&buff);
+            return result;
+        }
+    }
     if (strcmp(command, "COMMAND_CHEATS_GIVE_ME_NEW_UNIT") == 0) {
         long unitDefId_tmp;
         ei_decode_long(recvbuff, &index, &unitDefId_tmp);
