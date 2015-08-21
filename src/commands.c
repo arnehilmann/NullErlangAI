@@ -36,6 +36,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -576,6 +590,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
     if (strcmp(command, "COMMAND_DRAWER_LINE_ADD") == 0) {
         float posFrom_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -597,6 +625,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
         }
         float posTo_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -679,6 +721,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
     if (strcmp(command, "COMMAND_DRAWER_POINT_REMOVE") == 0) {
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -823,6 +879,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
     if (strcmp(command, "COMMAND_PATH_INIT") == 0) {
         float start_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -844,6 +914,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
         }
         float end_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -920,6 +1004,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
     if (strcmp(command, "COMMAND_SET_LAST_POS_MESSAGE") == 0) {
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -965,6 +1063,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
     if (strcmp(command, "COMMAND_TRACE_RAY") == 0) {
         float rayPos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -986,6 +1098,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
         }
         float rayDir_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -1062,6 +1188,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
     if (strcmp(command, "COMMAND_TRACE_RAY_FEATURE") == 0) {
         float rayPos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -1083,6 +1223,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
         }
         float rayDir_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -1370,6 +1524,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float toAttackPos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -1492,6 +1660,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float buildPos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -1691,6 +1873,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -1813,6 +2009,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float params[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -2012,6 +2222,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -2109,6 +2333,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float toPos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -2545,6 +2783,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -2655,6 +2907,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float toPos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -2752,6 +3018,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float toPos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -2849,6 +3129,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -3223,6 +3517,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -3421,6 +3729,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -3694,6 +4016,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float basePos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -4381,6 +4717,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float toPos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -4491,6 +4841,20 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
 
         float toPos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;

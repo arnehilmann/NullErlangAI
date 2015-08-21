@@ -285,43 +285,17 @@ int check_for_message_from_hq(int team_id) {
         ei_decode_tuple_header(recvbuf.buff, &recvbuf.index, &arity);
         ei_decode_atom(recvbuf.buff, &recvbuf.index, message);
 
-        fprintf(stdout, "\treceive: %s <--[%i]-- /%i, 0:'%s'\n", msg.toname, uplink, arity, message);
+        printf("received: %s <--[%i]-- /%i, 0:'%s'\n", msg.toname, uplink, arity, message);
     }
     if (strcmp(message, "ping") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuf.buff, &recvbuf.index, &from);
         send_pong(team_id, from);
-/*
-    } else if (strcmp(message, "send_all_unit_ids") == 0) {
-        send_all_unit_ids(team_id);
-    } else if (strcmp(message, "send_unit_name") == 0) {
-        long id;
-        ei_decode_long(recvbuf.buff, &index, &id);
-        send_unit_name(team_id, id);
-    } else if (strcmp(message, "unit_pos") == 0) {
-        long id;
-        ei_decode_long(recvbuf.buff, &index, &id);
-        unit_pos(team_id, id);
-*/
-/*
-    } else if (strcmp(message, "move") == 0) {
-        long id;
-        ei_decode_long(recvbuf.buff, &index, &id);
-        double x, y, z;
-        ei_decode_double(recvbuf.buff, &index, &x);
-        ei_decode_double(recvbuf.buff, &index, &y);
-        ei_decode_double(recvbuf.buff, &index, &z);
-        float pos[3] = {(float)x, (float)y, (float)z};
-        fprintf(stdout, "move %li to %f/%f\n", id, pos[0], pos[2]);
-        move_unit(team_id, id, pos);
-*/
     }
     if (strcmp(message, "callback") == 0) {
-        fprintf(stderr, "callback received\n");
         return handle_callback(team_id, callbacks[team_id], recvbuf);
     }
     if (strcmp(message, "command") == 0) {
-        fprintf(stderr, "command received\n");
         return handle_command(team_id, callbacks[team_id], recvbuf);
     }
 
@@ -338,7 +312,7 @@ EXPORT(int) handleEvent(int team_id, int topic, const void* data) {
         if (frame % 6000 == 0) {
             send_tick(team_id, frame);
         }
-        if (frame % 60 == 0) {
+        if (frame % 10 == 0) {
             return check_for_message_from_hq(team_id);
         }
         return 0;

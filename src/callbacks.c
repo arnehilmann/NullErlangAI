@@ -17,7 +17,8 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
             return result;
         }
     }
-    if (strcmp(callback_what, "Cheats_isEnabled") == 0) {
+
+    printf("\tcallback: %s\n", callback_what);    if (strcmp(callback_what, "Cheats_isEnabled") == 0) {
         erlang_pid from;
         {
             int result = ei_decode_pid(buff.buff, &buff.index, &from);
@@ -1726,12 +1727,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Feature_getReclaimLeft") == 0) {
@@ -3277,12 +3277,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Gui_Camera_getPosition") == 0) {
@@ -3303,12 +3302,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Gui_getScreenX") == 0) {
@@ -3478,12 +3476,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_Line_getSecondPosition") == 0) {
@@ -3516,12 +3513,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_Point_getLabel") == 0) {
@@ -3585,12 +3581,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_findClosestBuildSite") == 0) {
@@ -3608,6 +3603,20 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
 
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -3680,12 +3689,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_getChecksum") == 0) {
@@ -4030,12 +4038,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_getName") == 0) {
@@ -4132,6 +4139,20 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
 
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -4168,12 +4189,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_getResourceMapSpotsPositions") == 0) {
@@ -4191,6 +4211,20 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
 
         float spots_AposF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -4258,12 +4292,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_getTidalStrength") == 0) {
@@ -4326,6 +4359,20 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
     if (strcmp(callback_what, "Map_isPosInCamera") == 0) {
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -4390,6 +4437,20 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
 
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -5797,12 +5858,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "UnitDef_FlankingBonus_getMax") == 0) {
@@ -6627,12 +6687,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "UnitDef_WeaponMount_getMaxAngleDif") == 0) {
@@ -7914,12 +7973,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "UnitDef_getFlareEfficiency") == 0) {
@@ -14106,12 +14164,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Unit_getPower") == 0) {
@@ -14549,12 +14606,11 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
         int i = 0;
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Unit_getWeapon") == 0) {
@@ -18613,6 +18669,20 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
     if (strcmp(callback_what, "getEnemyUnitsIn") == 0) {
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -18794,6 +18864,20 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
     if (strcmp(callback_what, "getFeaturesIn") == 0) {
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -18901,6 +18985,20 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
     if (strcmp(callback_what, "getFriendlyUnitsIn") == 0) {
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;
@@ -19045,6 +19143,20 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
     if (strcmp(callback_what, "getNeutralUnitsIn") == 0) {
         float pos_posF3[3];
         {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
             int i = 0;
             for (; i < 3; i++) {
                 double try1;

@@ -79,6 +79,20 @@ def render_decode_posf3_call(level, arg):
     lines = []
     lines.append(indent(level, 'float %s[3];' % arg))
     lines.append(indent(level, '{'))
+    lines.append(indent(level + 1, 'int arity = -1;'))
+    lines.append(indent(level + 1, '{'))
+    lines.append(indent(level + 2, 'int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);'))
+    lines.append(indent(level + 2, 'if (result != 0) {'))
+    lines.append(indent(level + 3, 'fprintf(stderr, "[ERROR] no tuple found for posf3 argument\\n");'))
+    lines.append(indent(level + 3, 'ei_x_free(&buff);'))
+    lines.append(indent(level + 3, 'return result;'))
+    lines.append(indent(level + 2, '}'))
+    lines.append(indent(level + 2, 'if (arity != 3) {'))
+    lines.append(indent(level + 3, 'fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\\n", arity);'))
+    lines.append(indent(level + 3, 'ei_x_free(&buff);'))
+    lines.append(indent(level + 3, 'return -1;'))
+    lines.append(indent(level + 2, '}'))
+    lines.append(indent(level + 1, '}'))
     lines.append(indent(level + 1, 'int i = 0;'))
     lines.append(indent(level + 1, 'for (; i < 3; i++) {'))
     lines.append(indent(level + 2, 'double try1;'))
@@ -115,8 +129,6 @@ class SourceGeneratorCommands(object):
     def generate(self):
         with open(self.commanddef_filename) as commanddef_file:
             self.commands = find_all_structs(commanddef_file, "struct", "}; //$ ")
-            #import json
-            #print(json.dumps(self.commands, indent=4))
 
         with open(self.commandgen_filename, "w") as commandgen_file:
             commandgen_file.write(dedent("""
@@ -307,7 +319,7 @@ class SourceGeneratorEvents(object):
 
 
 class SourceGeneratorCallbacks(object):
-    def __init__(self, cw):
+    def __init__(self, cw, elixir_callback_filename=None, elixir_toppackage=None):
         self.cbdef_filename = os.path.join(cw,
                                         "../../../../rts/ExternalAI/Interface/SSkirmishAICallback.h")
         self.cbdef_filename = os.path.abspath(self.cbdef_filename)
@@ -320,9 +332,13 @@ class SourceGeneratorCallbacks(object):
 
         self.cbs = {}
 
+        self.elixir_callback_filename = elixir_callback_filename
+        self.elixir_toppackage = elixir_toppackage
+
     def generate(self):
         self._find_all_callback_definitions()
         self._render_c_source()
+        self._render_elixir_source()
 
     def _find_all_callback_definitions(self):
         with open(self.cbdef_filename) as cbdef_file:
@@ -372,10 +388,48 @@ class SourceGeneratorCallbacks(object):
                                   "out_arg_size": out_arg_size
                                   }
 
+    @staticmethod
+    def _ensure_first_letter_lowercase(s):
+        return s[:1].lower() + s[1:] if s else ''
+
+    def _render_elixir_source(self):
+        if not self.elixir_callback_filename:
+            print("[WARN] cannot generate elixir sources: no filename specified!\n")
+            return
+        if not self.elixir_toppackage:
+            print("[WARN] cannot generate elixir sources: no top package specified!\n")
+            return
+        with open(self.elixir_callback_filename, "w") as callback_file:
+            callback_file.write(dedent("""
+                defmodule {0}.Callbacks do
+                    import {0}, only: [cnode: 0]
+                    import {0}.Callbacks.Helper, only: :functions
+                """.format(self.elixir_toppackage)))
+            for name in sorted(self.cbs):
+                cb = self.cbs[name]
+                lines = []
+
+                call_args = []
+                send_args = [':callback', ':%s' % name]
+                for arg in cb["in_args"]:
+                    arg_type, arg_name = arg
+                    if "sizeMax" in arg_name:
+                        call_args.append("%s \\\\ 100" % arg_name)
+                    else:
+                        call_args.append(arg_name)
+                    send_args.append(arg_name)
+                send_args.append('self()')
+                lines.append("    def %s(%s) do" % (self._ensure_first_letter_lowercase(name), ", ".join(call_args)))
+                lines.append("        send cnode, {%s}" % ", ".join(send_args))
+                lines.append("        receive_response")
+                lines.append("    end")
+                lines.append("")
+                callback_file.write("\n".join(lines))
+            callback_file.write(dedent("""
+                end
+                """))
 
     def _render_c_source(self):
-        import json
-        print(json.dumps(self.cbs, indent=4, sort_keys=True))
         with open(self.cbgen_filename, "w") as cbgen_file:
             with open(self.docs_filename, "w") as doc_file:
                 cbgen_file.write(dedent("""
@@ -391,6 +445,7 @@ class SourceGeneratorCallbacks(object):
                 """))
 
                 lines = render_decode_call(1, "callback_what", "char*", "char*", "atom", 'char callback_what[64] = "";')
+                lines.append(indent(1, 'printf("\\tcallback: %s\\n", callback_what);'))
                 cbgen_file.write("\n".join(lines))
 
                 for name in sorted(self.cbs):
@@ -451,18 +506,25 @@ class SourceGeneratorCallbacks(object):
                     #docs.append(":%s" % cb["name"])
                     if cb["out_arg"]:
                         fetched_type, fetched_name = cb["out_arg"]
-                        lines.append(indent(2, 'ei_x_encode_list_header(&sendbuff, result);'))
-                        lines.append(indent(2, 'int i = 0;'))
-                        lines.append(indent(2, 'for (; i < result; i++) {'))
-                        if fetched_type == "int*":
-                            lines.append(indent(3, 'ei_x_encode_long(&sendbuff, %s[i]);' % fetched_name))
-                        elif fetched_type == "float*":
+                        if fetched_type == "float*" and "pos" in fetched_name:
+                            lines.append(indent(2, 'ei_x_encode_tuple_header(&sendbuff, result);'))
+                            lines.append(indent(2, 'int i = 0;'))
+                            lines.append(indent(2, 'for (; i < result; i++) {'))
                             lines.append(indent(3, 'ei_x_encode_double(&sendbuff, %s[i]);' % fetched_name))
+                            lines.append(indent(2, '}'))
                         else:
-                            print("%s: unknown fetch type %s\n" % (name, fetched_type))
-                            continue;
-                        lines.append(indent(2, '}'))
-                        lines.append(indent(2, 'ei_x_encode_empty_list(&sendbuff);'))
+                            lines.append(indent(2, 'ei_x_encode_list_header(&sendbuff, result);'))
+                            lines.append(indent(2, 'int i = 0;'))
+                            lines.append(indent(2, 'for (; i < result; i++) {'))
+                            if fetched_type == "int*":
+                                lines.append(indent(3, 'ei_x_encode_long(&sendbuff, %s[i]);' % fetched_name))
+                            elif fetched_type == "float*":
+                                lines.append(indent(3, 'ei_x_encode_double(&sendbuff, %s[i]);' % fetched_name))
+                            else:
+                                print("%s: unknown fetch type %s\n" % (name, fetched_type))
+                                continue;
+                            lines.append(indent(2, '}'))
+                            lines.append(indent(2, 'ei_x_encode_empty_list(&sendbuff);'))
                         docs.append("%s[%s]" % (fetched_name, fetched_type))
                     else:
                         if cb["returns"] == "const char*":
@@ -485,7 +547,6 @@ class SourceGeneratorCallbacks(object):
                             continue
                         docs.append("result[%s]" % (cb["returns"]))
 
-                    print("%s: rendering" % name)
                     lines.append(indent(2, 'return send_to_pid(skirmishAIId, &from, sendbuff);'))
                     lines.append(indent(1, '}'))
                     lines.append("")
@@ -497,8 +558,10 @@ class SourceGeneratorCallbacks(object):
 
 if __name__ == "__main__":
     misc_dirname = os.path.dirname(os.path.abspath(__file__))
+    elixir_callback_filename = sys.argv[1] if len(sys.argv) > 1 else ''
+    elixir_toppackage = sys.argv[2] if len(sys.argv) > 2 else ''
 
-    SourceGeneratorCallbacks(misc_dirname).generate()
+    SourceGeneratorCallbacks(misc_dirname, elixir_callback_filename, elixir_toppackage).generate()
     SourceGeneratorEvents(misc_dirname).generate()
     SourceGeneratorCommands(misc_dirname).generate()
 
