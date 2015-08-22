@@ -21,6 +21,10 @@ def wrap_encode(i, value, c_type, encode_type):
     return "\n".join(lines)
 
 
+def _ensure_first_letter_lowercase(s):
+    return s[:1].lower() + s[1:] if s else ''
+
+
 def find_all_structs(f, start_token, end_token):
     result = {}
     parsing = False
@@ -116,7 +120,7 @@ def render_decode_posf3_call(level, arg):
 
 
 class SourceGeneratorCommands(object):
-    def __init__(self, cwd):
+    def __init__(self, cwd, elixir_dir=None):
         self.commanddef_filename = os.path.join(cwd,
                                                 "../../../../rts/ExternalAI/Interface/AISCommands.h")
         self.commanddef_filename = os.path.abspath(self.commanddef_filename)
@@ -125,6 +129,8 @@ class SourceGeneratorCommands(object):
         self.commandgen_filename = os.path.abspath(self.commandgen_filename)
 
         self.commands = {}
+
+        self.elixir_dir = elixir_dir
 
     def generate(self):
         with open(self.commanddef_filename) as commanddef_file:
@@ -148,6 +154,7 @@ class SourceGeneratorCommands(object):
                 """))
 
             commandgen_file.write("\n".join(render_decode_call(1, "command", "char*", "char*", "atom", 'char command[64] = "";')))
+            commandgen_file.write('    printf("\\tcommand: %s\\n", command);\n')
 
             for name in sorted(self.commands):
                 #if "PATH_INIT" not in name:
@@ -171,6 +178,7 @@ class SourceGeneratorCommands(object):
                         else:
                             print("%s: unknown arg_type %s" % (name, arg_type))
                             ok = False
+                    lines.append('        printf("\\targ: %s\\n");' % arg_name)
                 if not ok:
                     continue
                 lines.append(indent(2, '%s command = {' % struct))
@@ -206,7 +214,85 @@ class SourceGeneratorCommands(object):
                 commandgen_file.write("\n".join(lines))
 
             commandgen_file.write("}")
+        self._render_elixir_source()
 
+    def _render_elixir_source(self):
+        filename = os.path.join(self.elixir_dir, "springrts", "skirmishai", "commands.ex")
+        try:
+            os.makedirs(os.path.dirname(filename))
+        except Exception as e:
+            print(e)
+        with open(filename, "w") as f:
+            f.write("defmodule SpringRTS.SkirmishAI.Commands do\n")
+            f.write("    import SpringRTS.SkirmishAI.Helper, only: [receive_response: 0]\n")
+            f.write("    import TccAI, only: [cnode: 0]\n")
+            for name in sorted(self.commands):
+                lines = []
+                struct, args = self.commands[name]
+                fun_name = name.lower().replace("command_", "")
+
+#                lines.append(indent(1, 'if (strcmp(command, "%s") == 0) {' % name))
+#                ok = True
+#                nr_out_args = 0
+#                for arg_name, arg_type in args:
+#                    if "ret_" in arg_name:
+#                        lines.append(indent(2, '%s %s;' % (arg_type, arg_name)))
+#                        nr_out_args += 1
+#                    else:
+#                        if arg_type in ("int", "short"):
+#                            lines.extend(render_decode_call(2, arg_name, arg_type, "long", "long"))
+#                        elif arg_type == "float":
+#                            lines.extend(render_decode_call(2, arg_name, arg_type, "double", "double"))
+#                        elif arg_type == "float*":
+#                            lines.extend(render_decode_posf3_call(2, arg_name))
+#                        else:
+#                            print("%s: unknown arg_type %s" % (name, arg_type))
+#                            ok = False
+#                if not ok:
+#                    continue
+                in_args = []
+                for arg_name, arg_type in args:
+                    if "ret_" in arg_name:
+                        continue
+                    in_args.append(arg_name)
+
+                lines.append("    def %s(%s) do" % (fun_name, ", ".join(in_args)))
+                in_args.append("self()")
+                lines.append("        send cnode, {:command, :%s, %s}" % (name, ", ".join(in_args)))
+                lines.append("        receive_response")
+#                lines.append(indent(2, '%s command = {' % struct))
+#                for arg_name, arg_type in args:
+#                    lines.append(indent(3, '%s,' % arg_name))
+#                lines.append(indent(2, '};'))
+#
+#                lines.extend(render_decode_call(2, "from", "erlang_pid", "erlang_pid", "pid"))
+#                #lines.append(indent(2, 'erlang_pid from;'))
+#                #lines.append(indent(2, 'ei_decode_pid(recvbuff, &index, &from);'))
+#
+#                lines.append(indent(2, 'if (callback->Engine_handleCommand(team_id, team_id, -1, %s, &command) < 0) {;' % name))
+#                lines.append(indent(3, 'return answer_error(team_id, &from);'))
+#                lines.append(indent(2, '} else {'))
+#                lines.append(indent(3, 'ei_x_buff sendbuff;'))
+#                lines.append(indent(3, 'ei_x_new_with_version(&sendbuff);'))
+#                lines.append(indent(3, 'ei_x_encode_tuple_header(&sendbuff, %i);' % (1 + 2 * nr_out_args)))
+#                lines.append(indent(3, 'ei_x_encode_atom(&sendbuff, "ok");'))
+#                for arg_name, arg_type in args:
+#                    if "ret_" in arg_name:
+#                        lines.append(indent(3, 'ei_x_encode_atom(&sendbuff, "%s");' % arg_name))
+#                        if arg_type == "int":
+#                            lines.append(indent(3, 'ei_x_encode_long(&sendbuff, command.%s);' % arg_name))
+#                        else:
+#                            print("%s: unknown ret_ arg_type %s", name, arg_type);
+#                            ok = False
+#                if not ok:
+#                    continue
+#                lines.append(indent(3, "return send_to_pid(team_id, &from, sendbuff);"))
+#                lines.append(indent(2, "}"))
+#                lines.append(indent(1, "}"))
+                lines.append("    end")
+                lines.append("")
+                f.write("\n".join(lines))
+            f.write("end\n")
 
 #int move_unit(int team_id, int unit_id, float* pos) {
     #struct SMoveUnitCommand move_command = {
@@ -319,7 +405,7 @@ class SourceGeneratorEvents(object):
 
 
 class SourceGeneratorCallbacks(object):
-    def __init__(self, cw, elixir_callback_filename=None, elixir_toppackage=None):
+    def __init__(self, cw, elixir_dir=None):
         self.cbdef_filename = os.path.join(cw,
                                         "../../../../rts/ExternalAI/Interface/SSkirmishAICallback.h")
         self.cbdef_filename = os.path.abspath(self.cbdef_filename)
@@ -332,8 +418,7 @@ class SourceGeneratorCallbacks(object):
 
         self.cbs = {}
 
-        self.elixir_callback_filename = elixir_callback_filename
-        self.elixir_toppackage = elixir_toppackage
+        self.elixir_dir = elixir_dir
 
     def generate(self):
         self._find_all_callback_definitions()
@@ -388,23 +473,19 @@ class SourceGeneratorCallbacks(object):
                                   "out_arg_size": out_arg_size
                                   }
 
-    @staticmethod
-    def _ensure_first_letter_lowercase(s):
-        return s[:1].lower() + s[1:] if s else ''
-
     def _render_elixir_source(self):
-        if not self.elixir_callback_filename:
+        if not self.elixir_dir:
             print("[WARN] cannot generate elixir sources: no filename specified!\n")
             return
-        if not self.elixir_toppackage:
-            print("[WARN] cannot generate elixir sources: no top package specified!\n")
-            return
-        with open(self.elixir_callback_filename, "w") as callback_file:
-            callback_file.write(dedent("""
-                defmodule {0}.Callbacks do
-                    import {0}, only: [cnode: 0]
-                    import {0}.Callbacks.Helper, only: :functions
-                """.format(self.elixir_toppackage)))
+        filename = os.path.join(self.elixir_dir, "springrts", "skirmishai", "callbacks.ex")
+        try:
+            os.makedirs(os.path.dirname(filename))
+        except Exception as e:
+            print(e)
+        with open(filename, "w") as f:
+            f.write("defmodule SpringRTS.SkirmishAI.Callbacks do\n")
+            f.write("    import SpringRTS.SkirmishAI.Helper, only: [receive_response: 0]\n")
+            f.write("    import TccAI, only: [cnode: 0]\n")
             for name in sorted(self.cbs):
                 cb = self.cbs[name]
                 lines = []
@@ -419,15 +500,13 @@ class SourceGeneratorCallbacks(object):
                         call_args.append(arg_name)
                     send_args.append(arg_name)
                 send_args.append('self()')
-                lines.append("    def %s(%s) do" % (self._ensure_first_letter_lowercase(name), ", ".join(call_args)))
+                lines.append("    def %s(%s) do" % (_ensure_first_letter_lowercase(name), ", ".join(call_args)))
                 lines.append("        send cnode, {%s}" % ", ".join(send_args))
                 lines.append("        receive_response")
                 lines.append("    end")
                 lines.append("")
-                callback_file.write("\n".join(lines))
-            callback_file.write(dedent("""
-                end
-                """))
+                f.write("\n".join(lines))
+            f.write("end\n")
 
     def _render_c_source(self):
         with open(self.cbgen_filename, "w") as cbgen_file:
@@ -446,6 +525,7 @@ class SourceGeneratorCallbacks(object):
 
                 lines = render_decode_call(1, "callback_what", "char*", "char*", "atom", 'char callback_what[64] = "";')
                 lines.append(indent(1, 'printf("\\tcallback: %s\\n", callback_what);'))
+                lines.append("")
                 cbgen_file.write("\n".join(lines))
 
                 for name in sorted(self.cbs):
@@ -558,10 +638,9 @@ class SourceGeneratorCallbacks(object):
 
 if __name__ == "__main__":
     misc_dirname = os.path.dirname(os.path.abspath(__file__))
-    elixir_callback_filename = sys.argv[1] if len(sys.argv) > 1 else ''
-    elixir_toppackage = sys.argv[2] if len(sys.argv) > 2 else ''
+    elixir_dir = sys.argv[1] if len(sys.argv) > 1 else ''
 
-    SourceGeneratorCallbacks(misc_dirname, elixir_callback_filename, elixir_toppackage).generate()
+    SourceGeneratorCallbacks(misc_dirname, elixir_dir).generate()
     SourceGeneratorEvents(misc_dirname).generate()
-    SourceGeneratorCommands(misc_dirname).generate()
+    SourceGeneratorCommands(misc_dirname, elixir_dir).generate()
 
