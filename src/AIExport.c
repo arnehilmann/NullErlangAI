@@ -69,18 +69,18 @@ EXPORT(int) init(int team_id, const struct SSkirmishAICallback* new_callback) {
 
 int check_uplink(int team_id) {
     int uplink = uplinks[team_id];
-    ei_cnode ec = ecs[team_id];
-    char* hq_node = hq_nodes[team_id];
     if (uplink <= 0) {
+        ei_cnode ec = ecs[team_id];
+        char* hq_node = hq_nodes[team_id];
         uplink = ei_connect_tmo(&ec, hq_node, COMM_TMO);
+        printf("uplink after 1st connect: %i\n", uplink);
         if (uplink <= 0) {
             if (frame % 600 == 0) {
                 fprintf(stderr, "uplink still not available\n");
             }
             return -1;
-        } else {
-            fprintf(stdout, "uplink established on channel %i\n", uplink);
         }
+        fprintf(stdout, "uplink established on channel %i\n", uplink);
         uplinks[team_id] = uplink;
     }
     return 0;
@@ -163,10 +163,13 @@ int send_pong(int team_id, erlang_pid pid) {
 
 
 int send_tick(int team_id, int frame) {
+    ei_cnode ec = ecs[team_id];
     ei_x_buff buff;
     ei_x_new_with_version(&buff);
+    ei_x_encode_tuple_header(&buff, 3);
     ei_x_encode_atom(&buff, "tick");
     ei_x_encode_long(&buff, frame);
+    ei_x_encode_pid(&buff, ei_self(&ec));
     return send_to_hq(team_id, buff);
 }
 
@@ -309,8 +312,8 @@ EXPORT(int) handleEvent(int team_id, int topic, const void* data) {
         if (frame == 1) {
             fprintf(stdout, "\n                LET THE WAR BEGIN!\n\n");
         }
-        if (frame % 6000 == 0) {
-            send_tick(team_id, frame);
+        if (frame % 600 == 0) {
+            return send_tick(team_id, frame);
         }
         if (frame % 10 == 0) {
             return check_for_message_from_hq(team_id);
