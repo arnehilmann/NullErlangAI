@@ -191,6 +191,7 @@ class SourceGeneratorCommands(object):
                 #lines.append(indent(2, 'ei_decode_pid(recvbuff, &index, &from);'))
 
                 lines.append(indent(2, 'if (callback->Engine_handleCommand(team_id, team_id, -1, %s, &command) < 0) {;' % name))
+                lines.append(indent(3, 'fprintf(stderr, "cannot execute command!\\n");'))
                 lines.append(indent(3, 'return answer_error(team_id, &from);'))
                 lines.append(indent(2, '} else {'))
                 lines.append(indent(3, 'ei_x_buff sendbuff;'))
@@ -217,93 +218,34 @@ class SourceGeneratorCommands(object):
         self._render_elixir_source()
 
     def _render_elixir_source(self):
-        filename = os.path.join(self.elixir_dir, "springrts", "skirmishai", "commands.ex")
+        filename = os.path.join(self.elixir_dir, "springrts", "commands.ex")
         try:
             os.makedirs(os.path.dirname(filename))
         except Exception as e:
             print(e)
         with open(filename, "w") as f:
-            f.write("defmodule SpringRTS.SkirmishAI.Commands do\n")
-            f.write("    import SpringRTS.SkirmishAI.Helper, only: [receive_response: 0]\n")
-            f.write("    import TccAI, only: [cnode: 0]\n")
+            f.write("defmodule SpringRTS.Commands do\n    import SpringRTS.Helper, only: :functions\n")
             for name in sorted(self.commands):
                 lines = []
                 struct, args = self.commands[name]
                 fun_name = name.lower().replace("command_", "")
 
-#                lines.append(indent(1, 'if (strcmp(command, "%s") == 0) {' % name))
-#                ok = True
-#                nr_out_args = 0
-#                for arg_name, arg_type in args:
-#                    if "ret_" in arg_name:
-#                        lines.append(indent(2, '%s %s;' % (arg_type, arg_name)))
-#                        nr_out_args += 1
-#                    else:
-#                        if arg_type in ("int", "short"):
-#                            lines.extend(render_decode_call(2, arg_name, arg_type, "long", "long"))
-#                        elif arg_type == "float":
-#                            lines.extend(render_decode_call(2, arg_name, arg_type, "double", "double"))
-#                        elif arg_type == "float*":
-#                            lines.extend(render_decode_posf3_call(2, arg_name))
-#                        else:
-#                            print("%s: unknown arg_type %s" % (name, arg_type))
-#                            ok = False
-#                if not ok:
-#                    continue
-                in_args = []
+                common_args = []
                 for arg_name, arg_type in args:
                     if "ret_" in arg_name:
                         continue
-                    in_args.append(arg_name)
+                    common_args.append(arg_name)
 
-                lines.append("    def %s(%s) do" % (fun_name, ", ".join(in_args)))
-                in_args.append("self()")
-                lines.append("        send cnode, {:command, :%s, %s}" % (name, ", ".join(in_args)))
+                fun_args = ["engine"] + common_args
+                in_args = common_args + ["self()"]
+
+                lines.append("    def %s(%s) do" % (fun_name, ", ".join(fun_args)))
+                lines.append("        send engine, {:command, :%s, %s}" % (name, ", ".join(in_args)))
                 lines.append("        receive_response")
-#                lines.append(indent(2, '%s command = {' % struct))
-#                for arg_name, arg_type in args:
-#                    lines.append(indent(3, '%s,' % arg_name))
-#                lines.append(indent(2, '};'))
-#
-#                lines.extend(render_decode_call(2, "from", "erlang_pid", "erlang_pid", "pid"))
-#                #lines.append(indent(2, 'erlang_pid from;'))
-#                #lines.append(indent(2, 'ei_decode_pid(recvbuff, &index, &from);'))
-#
-#                lines.append(indent(2, 'if (callback->Engine_handleCommand(team_id, team_id, -1, %s, &command) < 0) {;' % name))
-#                lines.append(indent(3, 'return answer_error(team_id, &from);'))
-#                lines.append(indent(2, '} else {'))
-#                lines.append(indent(3, 'ei_x_buff sendbuff;'))
-#                lines.append(indent(3, 'ei_x_new_with_version(&sendbuff);'))
-#                lines.append(indent(3, 'ei_x_encode_tuple_header(&sendbuff, %i);' % (1 + 2 * nr_out_args)))
-#                lines.append(indent(3, 'ei_x_encode_atom(&sendbuff, "ok");'))
-#                for arg_name, arg_type in args:
-#                    if "ret_" in arg_name:
-#                        lines.append(indent(3, 'ei_x_encode_atom(&sendbuff, "%s");' % arg_name))
-#                        if arg_type == "int":
-#                            lines.append(indent(3, 'ei_x_encode_long(&sendbuff, command.%s);' % arg_name))
-#                        else:
-#                            print("%s: unknown ret_ arg_type %s", name, arg_type);
-#                            ok = False
-#                if not ok:
-#                    continue
-#                lines.append(indent(3, "return send_to_pid(team_id, &from, sendbuff);"))
-#                lines.append(indent(2, "}"))
-#                lines.append(indent(1, "}"))
                 lines.append("    end")
                 lines.append("")
                 f.write("\n".join(lines))
             f.write("end\n")
-
-#int move_unit(int team_id, int unit_id, float* pos) {
-    #struct SMoveUnitCommand move_command = {
-        #unit_id,
-        #-1,
-        #0,
-        #INT_MAX,
-        #pos
-    #};
-    #callbacks[team_id]->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_MOVE, &move_command);
-#}
 
 
 class SourceGeneratorEvents(object):
@@ -477,20 +419,18 @@ class SourceGeneratorCallbacks(object):
         if not self.elixir_dir:
             print("[WARN] cannot generate elixir sources: no filename specified!\n")
             return
-        filename = os.path.join(self.elixir_dir, "springrts", "skirmishai", "callbacks.ex")
+        filename = os.path.join(self.elixir_dir, "springrts", "callbacks.ex")
         try:
             os.makedirs(os.path.dirname(filename))
         except Exception as e:
             print(e)
         with open(filename, "w") as f:
-            f.write("defmodule SpringRTS.SkirmishAI.Callbacks do\n")
-            f.write("    import SpringRTS.SkirmishAI.Helper, only: [receive_response: 0]\n")
-            f.write("    import TccAI, only: [cnode: 0]\n")
+            f.write("defmodule SpringRTS.Callbacks do\n    import SpringRTS.Helper, only: :functions\n")
             for name in sorted(self.cbs):
                 cb = self.cbs[name]
                 lines = []
 
-                call_args = []
+                call_args = ["engine"]
                 send_args = [':callback', ':%s' % name]
                 for arg in cb["in_args"]:
                     arg_type, arg_name = arg
@@ -501,7 +441,7 @@ class SourceGeneratorCallbacks(object):
                     send_args.append(arg_name)
                 send_args.append('self()')
                 lines.append("    def %s(%s) do" % (_ensure_first_letter_lowercase(name), ", ".join(call_args)))
-                lines.append("        send cnode, {%s}" % ", ".join(send_args))
+                lines.append("        send engine, {%s}" % ", ".join(send_args))
                 lines.append("        receive_response")
                 lines.append("    end")
                 lines.append("")
