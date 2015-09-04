@@ -16,8 +16,13 @@ ln -sf $ERL_INTERFACE_DIR erl_interface
 (
     cd ../../..
     cmake -DCMAKE_INSTALL_PREFIX=~/spring .
+    make install
 )
 
-mkdir -p $SPRING_DIR/games $SPRING_DIR/maps
+(
+    cd $SPRING_DIR/share/games/spring
+    ln -sf $SCRIPT_DIR/res/maps .
+    ln -sf $SCRIPT_DIR/res/games .
+)
 
 make install
