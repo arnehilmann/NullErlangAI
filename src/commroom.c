@@ -22,23 +22,46 @@
 #define BUFSIZE 1000
 #define COMM_TMO 10
 
-#define HQ_NODE "hq"
-#define COMMROOM "commroom"
 #define NODE_NAME_PREFIX "erlang_ai"
 #define COOKIE_PREFIX "erlang_ai"
+#define PORT 7766
 
 #define MAX_TEAM_COUNT 4
 
 
 int frame = -1;
 char node_names[MAX_TEAM_COUNT][100];
-
 char cookies[MAX_TEAM_COUNT][100];
 
 ei_cnode ecs[MAX_TEAM_COUNT];
-char hq_nodes[MAX_TEAM_COUNT][100];
+erlang_pid hq[MAX_TEAM_COUNT];
+int listen_fd[MAX_TEAM_COUNT];
+ErlConnect conns[MAX_TEAM_COUNT];
 int uplinks[MAX_TEAM_COUNT];
 const struct SSkirmishAICallback* callbacks[MAX_TEAM_COUNT];
+
+
+int my_listen(int port) {
+    int listen_fd;
+    struct sockaddr_in addr;
+    int on = 1;
+
+    if ((listen_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        return (-1);
+
+    setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+
+    memset((void*) &addr, 0, (size_t) sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    if (bind(listen_fd, (struct sockaddr*) &addr, sizeof(addr)) < 0)
+        return (-1);
+
+    listen(listen_fd, 5);
+    return listen_fd;
+}
 
 
 EXPORT(int) init(int team_id, const struct SSkirmishAICallback* new_callback) {
@@ -56,44 +79,33 @@ EXPORT(int) init(int team_id, const struct SSkirmishAICallback* new_callback) {
         exit(-1);
     }
 
-    sprintf(hq_nodes[team_id], "%s%i@%s", HQ_NODE, team_id, ei_thishostname(&ecs[team_id]));
-
     fprintf(stdout, "this node: %s\n", ei_thisnodename(&ecs[team_id]));
-    // fprintf(stdout, "host: %s\n", ei_thishostname(&ec));
-    fprintf(stdout, "  hq node: %s\n", hq_nodes[team_id]);
     fprintf(stdout, "   cookie: %s\n", cookies[team_id]);
 
-    return 0;
-}
-
-
-int check_uplink(int team_id) {
-    int uplink = uplinks[team_id];
-    if (uplink <= 0) {
-        ei_cnode ec = ecs[team_id];
-        char* hq_node = hq_nodes[team_id];
-        uplink = ei_connect_tmo(&ec, hq_node, COMM_TMO);
-        printf("uplink after 1st connect: %i\n", uplink);
-        if (uplink <= 0) {
-            if (frame % 600 == 0) {
-                fprintf(stderr, "uplink still not available\n");
-            }
-            return -1;
-        }
-        fprintf(stdout, "uplink established on channel %i\n", uplink);
-        uplinks[team_id] = uplink;
+    int i=0;
+    for (; i < MAX_TEAM_COUNT; i++) {
+        uplinks[i] = -1;
     }
+
+    if ((listen_fd[team_id] = my_listen(PORT)) <= 0) {
+        fprintf(stderr, "cannot open listen port on %i\n", PORT);
+        exit(-1);
+    }
+
+    if (ei_publish(&ecs[team_id], PORT) == -1) {
+        fprintf(stderr, "cannot reach epmd\n");
+        exit(1);
+    }
+
     return 0;
 }
 
 
 EXPORT(int) send_to_hq(int team_id, ei_x_buff buff) {
     int result = 0;
-    if (check_uplink(team_id) >= 0) {
-        //fprintf(stdout, "[%s] --[%i]--> hq\n", ei_thishostname(&ec), uplink);
-        int uplink = uplinks[team_id];
-        ei_cnode ec = ecs[team_id];
-        if (ei_reg_send_tmo(&ec, uplink, COMMROOM, buff.buff, buff.index, COMM_TMO) < 0) {
+    int uplink = uplinks[team_id];
+    if (uplink > 0) {
+        if (ei_send_tmo(uplink, &hq[team_id], buff.buff, buff.index, COMM_TMO) < 0) {
             fprintf(stderr, "\tsend failed: %i\n", erl_errno);
             result = -1;
         }
@@ -106,8 +118,8 @@ EXPORT(int) send_to_hq(int team_id, ei_x_buff buff) {
 
 EXPORT(int) send_to_pid(int team_id, erlang_pid* pid, ei_x_buff buff) {
     int result = 0;
-    if (check_uplink(team_id) >= 0) {
-        int uplink = uplinks[team_id];
+    int uplink = uplinks[team_id];
+    if (uplink > 0) {
         if (ei_send_tmo(uplink, pid, buff.buff, buff.index, COMM_TMO) < 0) {
             fprintf(stderr, "\tsend failed: %i\n", erl_errno);
             result = -1;
@@ -119,24 +131,13 @@ EXPORT(int) send_to_pid(int team_id, erlang_pid* pid, ei_x_buff buff) {
     return result;
 }
 
-EXPORT(int) answer(int team_id, erlang_pid* pid, char* what) {
-    ei_x_buff sendbuff;
-    ei_x_new_with_version(&sendbuff);
-    ei_x_encode_atom(&sendbuff, what);
-    return send_to_pid(team_id, pid, sendbuff);
-}
-
-EXPORT(int) answer_ok(int team_id, erlang_pid* pid) {
-    return answer(team_id, pid, "ok");
-}
-
-EXPORT(int) answer_error(int team_id, erlang_pid* pid) {
-    return answer(team_id, pid, "error");
-}
-
 int send_event(int team_id, int topic, const void* data) {
     int uplink = uplinks[team_id];
-    fprintf(stdout, "[%s] topic %i --[%i]--> %s\n", cookies[team_id], topic, uplink, hq_nodes[team_id]);
+    if (uplink < 0) {
+        fprintf(stderr, "cannot send event, dropping it...\n");
+        return 0;
+    }
+    fprintf(stdout, "[%s] topic %i --[%i]--> %s\n", cookies[team_id], topic, uplink, hq[team_id]);
 
     erl_errno = 0;
     ei_x_buff sendbuf;
@@ -175,11 +176,15 @@ int send_tick(int team_id, int frame) {
 
 
 int check_for_message_from_hq(int team_id) {
-    if (check_uplink(team_id) < 0) {
-        return 0;
-    }
-
     int uplink = uplinks[team_id];
+    if (uplink < 0) {
+        uplinks[team_id] = ei_accept_tmo(&ecs[team_id], listen_fd[team_id], &conns[team_id], 1000);
+        if (uplinks[team_id] < 0) {
+            fprintf(stderr, "no one tried to connect, yielding...\n");
+            return 0;
+        }
+        printf("connected to %s\n", conns[team_id].nodename);
+    }
 
     erl_errno = 0;
     erlang_msg msg;
@@ -218,6 +223,11 @@ int check_for_message_from_hq(int team_id) {
         erlang_pid from;
         ei_decode_pid(recvbuf.buff, &recvbuf.index, &from);
         send_pong(team_id, from);
+    }
+    if (strcmp(message, "register") == 0) {
+        erlang_pid from;
+        ei_decode_pid(recvbuf.buff, &recvbuf.index, &from);
+        hq[team_id] = from;
     }
     if (strcmp(message, "callback") == 0) {
         return handle_callback(team_id, callbacks[team_id], recvbuf);
