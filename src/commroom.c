@@ -1,4 +1,4 @@
-#include "AIExport.h"
+#include "commroom.h"
 
 #include "ExternalAI/Interface/SSkirmishAICallback.h"
 //#include "ExternalAI/Interface/AISCommands.h"

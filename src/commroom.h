@@ -1,7 +1,7 @@
 /* This file is part of the Spring engine (GPL v2 or later), see LICENSE.html */
 
-#ifndef _AIEXPORT_H
-#define _AIEXPORT_H
+#ifndef _COMMROOM_H
+#define _COMMROOM_H
 
 // check if the correct defines are set by the build system
 #if !defined BUILDING_SKIRMISH_AI
@@ -42,4 +42,4 @@ EXPORT(int) handleEvent(int skirmishAIId, int topic, const void* data);
 
 //EXPORT(int) send_to_hq(ei_x_buff buff);
 
-#endif // _AIEXPORT_H
+#endif // _COMMROOM_H
