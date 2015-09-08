@@ -102,6 +102,7 @@ EXPORT(int) init(int team_id, const struct SSkirmishAICallback* new_callback) {
 
 
 EXPORT(int) send_to_hq(int team_id, ei_x_buff buff) {
+    printf("send_to_hq\n");
     int result = 0;
     int uplink = uplinks[team_id];
     if (uplink > 0) {
@@ -137,7 +138,7 @@ int send_event(int team_id, int topic, const void* data) {
         fprintf(stderr, "cannot send event, dropping it...\n");
         return 0;
     }
-    fprintf(stdout, "[%s] topic %i --[%i]--> %s\n", cookies[team_id], topic, uplink, hq[team_id]);
+    fprintf(stdout, "[%s] topic %i --[%i]--> hq\n", cookies[team_id], topic, uplink);
 
     erl_errno = 0;
     ei_x_buff sendbuf;
@@ -151,7 +152,7 @@ int send_event(int team_id, int topic, const void* data) {
         return 1;
     }
 
-    return send_to_hq(team_id, sendbuf);
+    return send_to_pid(team_id, &hq[team_id], sendbuf);
 }
 
 
@@ -219,15 +220,21 @@ int check_for_message_from_hq(int team_id) {
 
         printf("received: %s <--[%i]-- /%i, 0:'%s'\n", msg.toname, uplink, arity, message);
     }
-    if (strcmp(message, "ping") == 0) {
-        erlang_pid from;
-        ei_decode_pid(recvbuf.buff, &recvbuf.index, &from);
-        send_pong(team_id, from);
-    }
+//    if (strcmp(message, "ping") == 0) {
+//        erlang_pid from;
+//        ei_decode_pid(recvbuf.buff, &recvbuf.index, &from);
+//        send_pong(team_id, from);
+//    }
     if (strcmp(message, "register") == 0) {
         erlang_pid from;
         ei_decode_pid(recvbuf.buff, &recvbuf.index, &from);
         hq[team_id] = from;
+        ei_x_buff sendbuf;
+        ei_x_new_with_version(&sendbuf);
+        ei_x_encode_tuple_header(&sendbuf, 2);
+        ei_x_encode_atom(&sendbuf, "ok");
+        ei_x_encode_pid(&sendbuf, ei_self(&ecs[team_id]));
+        return send_to_pid(team_id, &hq[team_id], sendbuf);
     }
     if (strcmp(message, "callback") == 0) {
         return handle_callback(team_id, callbacks[team_id], recvbuf);
@@ -246,9 +253,9 @@ EXPORT(int) handleEvent(int team_id, int topic, const void* data) {
         if (frame == 1) {
             fprintf(stdout, "\n                LET THE WAR BEGIN!\n\n");
         }
-        if (frame % 600 == 0) {
-            return send_tick(team_id, frame);
-        }
+        //if (frame % 600 == 0) {
+            //return send_tick(team_id, frame);
+        //}
         if (frame % 10 == 0) {
             return check_for_message_from_hq(team_id);
         }
