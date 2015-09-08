@@ -89,9 +89,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_GIVE_ME_NEW_UNIT, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_CHEATS_GIVE_ME_NEW_UNIT, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -143,9 +148,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_GIVE_ME_RESOURCE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_CHEATS_GIVE_ME_RESOURCE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -181,9 +191,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_CHEATS_SET_MY_INCOME_MULTIPLIER, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_CHEATS_SET_MY_INCOME_MULTIPLIER, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -247,9 +262,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_ADD_POINT, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_ADD_POINT, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -299,9 +319,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_DELETE_POINTS, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DEBUG_DRAWER_GRAPH_LINE_DELETE_POINTS, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -351,9 +376,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_SET_POS, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DEBUG_DRAWER_GRAPH_SET_POS, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -403,9 +433,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_GRAPH_SET_SIZE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DEBUG_DRAWER_GRAPH_SET_SIZE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -441,9 +476,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_DELETE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_DELETE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -507,9 +547,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_POS, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_POS, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -573,9 +618,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_SIZE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DEBUG_DRAWER_OVERLAYTEXTURE_SET_SIZE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -611,9 +661,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_FIGURE_DELETE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DRAWER_FIGURE_DELETE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -709,9 +764,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_LINE_ADD, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DRAWER_LINE_ADD, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -747,9 +807,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_PATH_DRAW_ICON_AT_LAST_POS, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DRAWER_PATH_DRAW_ICON_AT_LAST_POS, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -808,9 +873,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_DRAWER_POINT_REMOVE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_DRAWER_POINT_REMOVE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -835,9 +905,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_GROUP_CREATE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_GROUP_CREATE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -875,9 +950,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_GROUP_ERASE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_GROUP_ERASE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -913,9 +993,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_FREE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_PATH_FREE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -1042,9 +1127,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_PATH_INIT, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_PATH_INIT, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -1105,9 +1195,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_SET_LAST_POS_MESSAGE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_SET_LAST_POS_MESSAGE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -1234,9 +1329,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_TRACE_RAY, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_TRACE_RAY, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -1365,9 +1465,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_TRACE_RAY_FEATURE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_TRACE_RAY_FEATURE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -1447,9 +1552,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_AI_SELECT, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_AI_SELECT, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -1541,9 +1651,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_ATTACK, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_ATTACK, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -1672,9 +1787,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_ATTACK_AREA, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_ATTACK_AREA, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -1817,9 +1937,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_BUILD, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_BUILD, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -1911,9 +2036,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CAPTURE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_CAPTURE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -2042,9 +2172,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CAPTURE_AREA, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_CAPTURE_AREA, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -2187,9 +2322,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_CUSTOM, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_CUSTOM, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -2281,9 +2421,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_D_GUN, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_D_GUN, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -2398,9 +2543,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_D_GUN_POS, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_D_GUN_POS, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -2515,9 +2665,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_FIGHT, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_FIGHT, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -2609,9 +2764,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GROUP_ADD, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_GROUP_ADD, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -2689,9 +2849,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GROUP_CLEAR, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_GROUP_CLEAR, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -2783,9 +2948,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_GUARD, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_GUARD, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -2877,9 +3047,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_ONTO, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_LOAD_ONTO, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -3008,9 +3183,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_LOAD_UNITS_AREA, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_LOAD_UNITS_AREA, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -3125,9 +3305,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_MOVE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_MOVE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -3242,9 +3427,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_PATROL, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_PATROL, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -3373,9 +3563,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_AREA, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_RECLAIM_AREA, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -3467,9 +3662,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_FEATURE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_RECLAIM_FEATURE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -3561,9 +3761,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RECLAIM_UNIT, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_RECLAIM_UNIT, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -3655,9 +3860,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_REPAIR, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_REPAIR, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -3786,9 +3996,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESTORE_AREA, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_RESTORE_AREA, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -3880,9 +4095,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESURRECT, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_RESURRECT, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4011,9 +4231,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_RESURRECT_AREA, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_RESURRECT_AREA, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4091,9 +4316,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SELF_DESTROY, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_SELF_DESTROY, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4185,9 +4415,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_AUTO_REPAIR_LEVEL, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_SET_AUTO_REPAIR_LEVEL, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4302,9 +4537,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_BASE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_SET_BASE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4396,9 +4636,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_FIRE_STATE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_SET_FIRE_STATE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4490,9 +4735,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_IDLE_MODE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_SET_IDLE_MODE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4584,9 +4834,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_MOVE_STATE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_SET_MOVE_STATE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4678,9 +4933,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_TRAJECTORY, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_SET_TRAJECTORY, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4772,9 +5032,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_SET_WANTED_MAX_SPEED, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_SET_WANTED_MAX_SPEED, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4852,9 +5117,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_STOCKPILE, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_STOCKPILE, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -4932,9 +5202,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_STOP, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_STOP, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -5063,9 +5338,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_UNLOAD_UNIT, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_UNLOAD_UNIT, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -5194,9 +5474,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_UNLOAD_UNITS_AREA, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_UNLOAD_UNITS_AREA, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -5274,9 +5559,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_WAIT, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -5368,9 +5658,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_DEATH, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_WAIT_DEATH, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -5448,9 +5743,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_GATHER, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_WAIT_GATHER, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -5542,9 +5842,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_SQUAD, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_WAIT_SQUAD, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);
@@ -5636,9 +5941,14 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             }
         }
 
-        if (callback->Engine_handleCommand(team_id, team_id, -1, COMMAND_UNIT_WAIT_TIME, &command) < 0) {;
+        ei_x_free(&buff);
+        if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, COMMAND_UNIT_WAIT_TIME, &command) < 0) {;
             fprintf(stderr, "cannot execute command!\n");
-            return answer_error(team_id, &from);
+            ei_x_buff sendbuff;
+            ei_x_new_with_version(&sendbuff);
+            ei_x_encode_tuple_header(&sendbuff, 1);
+            ei_x_encode_atom(&sendbuff, "error");
+            return send_to_pid(team_id, &from, sendbuff);
         } else {
             ei_x_buff sendbuff;
             ei_x_new_with_version(&sendbuff);

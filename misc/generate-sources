@@ -187,12 +187,15 @@ class SourceGeneratorCommands(object):
                 lines.append(indent(2, '};'))
 
                 lines.extend(render_decode_call(2, "from", "erlang_pid", "erlang_pid", "pid"))
-                #lines.append(indent(2, 'erlang_pid from;'))
-                #lines.append(indent(2, 'ei_decode_pid(recvbuff, &index, &from);'))
+                lines.append(indent(2, 'ei_x_free(&buff);'))
 
-                lines.append(indent(2, 'if (callback->Engine_handleCommand(team_id, team_id, -1, %s, &command) < 0) {;' % name))
+                lines.append(indent(2, 'if (callback->Engine_handleCommand(team_id, COMMAND_TO_ID_ENGINE, -1, %s, &command) < 0) {;' % name))
                 lines.append(indent(3, 'fprintf(stderr, "cannot execute command!\\n");'))
-                lines.append(indent(3, 'return answer_error(team_id, &from);'))
+                lines.append(indent(3, 'ei_x_buff sendbuff;'))
+                lines.append(indent(3, 'ei_x_new_with_version(&sendbuff);'))
+                lines.append(indent(3, 'ei_x_encode_tuple_header(&sendbuff, 1);'))
+                lines.append(indent(3, 'ei_x_encode_atom(&sendbuff, "error");'))
+                lines.append(indent(3, "return send_to_pid(team_id, &from, sendbuff);"))
                 lines.append(indent(2, '} else {'))
                 lines.append(indent(3, 'ei_x_buff sendbuff;'))
                 lines.append(indent(3, 'ei_x_new_with_version(&sendbuff);'))
@@ -225,6 +228,7 @@ class SourceGeneratorCommands(object):
             print(e)
         with open(filename, "w") as f:
             f.write("defmodule SpringRTS.Commands do\n    import SpringRTS.Helper, only: :functions\n")
+            f.write("    defp engine do\n        Application.get_env(SpringRTS, :engine)\n    end\n\n")
             for name in sorted(self.commands):
                 lines = []
                 struct, args = self.commands[name]
@@ -236,11 +240,11 @@ class SourceGeneratorCommands(object):
                         continue
                     common_args.append(arg_name)
 
-                fun_args = ["engine"] + common_args
+                fun_args = common_args
                 in_args = common_args + ["self()"]
 
                 lines.append("    def %s(%s) do" % (fun_name, ", ".join(fun_args)))
-                lines.append("        send engine, {:command, :%s, %s}" % (name, ", ".join(in_args)))
+                lines.append("        send engine(), {:command, :%s, %s}" % (name, ", ".join(in_args)))
                 lines.append("        receive_response")
                 lines.append("    end")
                 lines.append("")
@@ -426,11 +430,12 @@ class SourceGeneratorCallbacks(object):
             print(e)
         with open(filename, "w") as f:
             f.write("defmodule SpringRTS.Callbacks do\n    import SpringRTS.Helper, only: :functions\n")
+            f.write("    defp engine do\n        Application.get_env(SpringRTS, :engine)\n    end\n\n")
             for name in sorted(self.cbs):
                 cb = self.cbs[name]
                 lines = []
 
-                call_args = ["engine"]
+                call_args = []
                 send_args = [':callback', ':%s' % name]
                 for arg in cb["in_args"]:
                     arg_type, arg_name = arg
@@ -441,7 +446,7 @@ class SourceGeneratorCallbacks(object):
                     send_args.append(arg_name)
                 send_args.append('self()')
                 lines.append("    def %s(%s) do" % (_ensure_first_letter_lowercase(name), ", ".join(call_args)))
-                lines.append("        send engine, {%s}" % ", ".join(send_args))
+                lines.append("        send engine(), {%s}" % ", ".join(send_args))
                 lines.append("        receive_response")
                 lines.append("    end")
                 lines.append("")
