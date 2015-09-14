@@ -21,7 +21,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             return result;
         }
     }
-    printf("\tcommand: %s\n", command);
     if (strcmp(command, "COMMAND_CHEATS_GIVE_ME_NEW_UNIT") == 0) {
         int unitDefId;
         {
@@ -35,7 +34,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitDefId = (int)tmp;
         }
 
-        printf("\targ: unitDefId\n");
         float pos_posF3[3];
         {
             int arity = -1;
@@ -71,9 +69,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: pos_posF3\n");
         int ret_newUnitId;
-        printf("\targ: ret_newUnitId\n");
         struct SGiveMeNewUnitCheatCommand command = {
             unitDefId,
             pos_posF3,
@@ -120,7 +116,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             resourceId = (int)tmp;
         }
 
-        printf("\targ: resourceId\n");
         float amount;
         {
             double tmp;
@@ -133,7 +128,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             amount = (float)tmp;
         }
 
-        printf("\targ: amount\n");
         struct SGiveMeResourceCheatCommand command = {
             resourceId,
             amount,
@@ -177,7 +171,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             factor = (float)tmp;
         }
 
-        printf("\targ: factor\n");
         struct SSetMyIncomeMultiplierCheatCommand command = {
             factor,
         };
@@ -220,7 +213,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             lineId = (int)tmp;
         }
 
-        printf("\targ: lineId\n");
         float x;
         {
             double tmp;
@@ -233,7 +225,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             x = (float)tmp;
         }
 
-        printf("\targ: x\n");
         float y;
         {
             double tmp;
@@ -246,7 +237,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             y = (float)tmp;
         }
 
-        printf("\targ: y\n");
         struct SAddPointLineGraphDrawerDebugCommand command = {
             lineId,
             x,
@@ -291,7 +281,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             lineId = (int)tmp;
         }
 
-        printf("\targ: lineId\n");
         int numPoints;
         {
             long tmp;
@@ -304,7 +293,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             numPoints = (int)tmp;
         }
 
-        printf("\targ: numPoints\n");
         struct SDeletePointsLineGraphDrawerDebugCommand command = {
             lineId,
             numPoints,
@@ -348,7 +336,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             x = (float)tmp;
         }
 
-        printf("\targ: x\n");
         float y;
         {
             double tmp;
@@ -361,7 +348,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             y = (float)tmp;
         }
 
-        printf("\targ: y\n");
         struct SSetPositionGraphDrawerDebugCommand command = {
             x,
             y,
@@ -405,7 +391,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             w = (float)tmp;
         }
 
-        printf("\targ: w\n");
         float h;
         {
             double tmp;
@@ -418,7 +403,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             h = (float)tmp;
         }
 
-        printf("\targ: h\n");
         struct SSetSizeGraphDrawerDebugCommand command = {
             w,
             h,
@@ -462,7 +446,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             overlayTextureId = (int)tmp;
         }
 
-        printf("\targ: overlayTextureId\n");
         struct SDeleteOverlayTextureDrawerDebugCommand command = {
             overlayTextureId,
         };
@@ -505,7 +488,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             overlayTextureId = (int)tmp;
         }
 
-        printf("\targ: overlayTextureId\n");
         float x;
         {
             double tmp;
@@ -518,7 +500,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             x = (float)tmp;
         }
 
-        printf("\targ: x\n");
         float y;
         {
             double tmp;
@@ -531,7 +512,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             y = (float)tmp;
         }
 
-        printf("\targ: y\n");
         struct SSetPositionOverlayTextureDrawerDebugCommand command = {
             overlayTextureId,
             x,
@@ -576,7 +556,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             overlayTextureId = (int)tmp;
         }
 
-        printf("\targ: overlayTextureId\n");
         float w;
         {
             double tmp;
@@ -589,7 +568,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             w = (float)tmp;
         }
 
-        printf("\targ: w\n");
         float h;
         {
             double tmp;
@@ -602,7 +580,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             h = (float)tmp;
         }
 
-        printf("\targ: h\n");
         struct SSetSizeOverlayTextureDrawerDebugCommand command = {
             overlayTextureId,
             w,
@@ -647,7 +624,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             figureGroupId = (int)tmp;
         }
 
-        printf("\targ: figureGroupId\n");
         struct SDeleteFigureDrawerCommand command = {
             figureGroupId,
         };
@@ -713,7 +689,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: posFrom_posF3\n");
         float posTo_posF3[3];
         {
             int arity = -1;
@@ -749,7 +724,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: posTo_posF3\n");
         struct SAddLineDrawCommand command = {
             posFrom_posF3,
             posTo_posF3,
@@ -793,7 +767,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             cmdId = (int)tmp;
         }
 
-        printf("\targ: cmdId\n");
         struct SDrawIconAtLastPosPathDrawerCommand command = {
             cmdId,
         };
@@ -859,7 +832,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: pos_posF3\n");
         struct SRemovePointDrawCommand command = {
             pos_posF3,
         };
@@ -891,7 +863,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
     }
     if (strcmp(command, "COMMAND_GROUP_CREATE") == 0) {
         int ret_groupId;
-        printf("\targ: ret_groupId\n");
         struct SCreateGroupCommand command = {
             ret_groupId,
         };
@@ -936,7 +907,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         struct SEraseGroupCommand command = {
             groupId,
         };
@@ -979,7 +949,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             pathId = (int)tmp;
         }
 
-        printf("\targ: pathId\n");
         struct SFreePathCommand command = {
             pathId,
         };
@@ -1045,7 +1014,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: start_posF3\n");
         float end_posF3[3];
         {
             int arity = -1;
@@ -1081,7 +1049,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: end_posF3\n");
         int pathType;
         {
             long tmp;
@@ -1094,7 +1061,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             pathType = (int)tmp;
         }
 
-        printf("\targ: pathType\n");
         float goalRadius;
         {
             double tmp;
@@ -1107,9 +1073,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             goalRadius = (float)tmp;
         }
 
-        printf("\targ: goalRadius\n");
         int ret_pathId;
-        printf("\targ: ret_pathId\n");
         struct SInitPathCommand command = {
             start_posF3,
             end_posF3,
@@ -1181,7 +1145,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: pos_posF3\n");
         struct SSetLastPosMessageCommand command = {
             pos_posF3,
         };
@@ -1247,7 +1210,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: rayPos_posF3\n");
         float rayDir_posF3[3];
         {
             int arity = -1;
@@ -1283,7 +1245,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: rayDir_posF3\n");
         int srcUnitId;
         {
             long tmp;
@@ -1296,9 +1257,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             srcUnitId = (int)tmp;
         }
 
-        printf("\targ: srcUnitId\n");
         int ret_hitUnitId;
-        printf("\targ: ret_hitUnitId\n");
         int flags;
         {
             long tmp;
@@ -1311,7 +1270,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             flags = (int)tmp;
         }
 
-        printf("\targ: flags\n");
         struct STraceRayCommand command = {
             rayPos_posF3,
             rayDir_posF3,
@@ -1383,7 +1341,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: rayPos_posF3\n");
         float rayDir_posF3[3];
         {
             int arity = -1;
@@ -1419,7 +1376,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: rayDir_posF3\n");
         int srcUnitId;
         {
             long tmp;
@@ -1432,9 +1388,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             srcUnitId = (int)tmp;
         }
 
-        printf("\targ: srcUnitId\n");
         int ret_hitFeatureId;
-        printf("\targ: ret_hitFeatureId\n");
         int flags;
         {
             long tmp;
@@ -1447,7 +1401,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             flags = (int)tmp;
         }
 
-        printf("\targ: flags\n");
         struct SFeatureTraceRayCommand command = {
             rayPos_posF3,
             rayDir_posF3,
@@ -1496,7 +1449,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -1509,7 +1461,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -1522,7 +1473,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -1535,7 +1485,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         struct SAiSelectUnitCommand command = {
             unitId,
             groupId,
@@ -1581,7 +1530,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -1594,7 +1542,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -1607,7 +1554,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -1620,7 +1566,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toAttackUnitId;
         {
             long tmp;
@@ -1633,7 +1578,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toAttackUnitId = (int)tmp;
         }
 
-        printf("\targ: toAttackUnitId\n");
         struct SAttackUnitCommand command = {
             unitId,
             groupId,
@@ -1680,7 +1624,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -1693,7 +1636,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -1706,7 +1648,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -1719,7 +1660,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float toAttackPos_posF3[3];
         {
             int arity = -1;
@@ -1755,7 +1695,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: toAttackPos_posF3\n");
         float radius;
         {
             double tmp;
@@ -1768,7 +1707,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             radius = (float)tmp;
         }
 
-        printf("\targ: radius\n");
         struct SAttackAreaUnitCommand command = {
             unitId,
             groupId,
@@ -1816,7 +1754,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -1829,7 +1766,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -1842,7 +1778,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -1855,7 +1790,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toBuildUnitDefId;
         {
             long tmp;
@@ -1868,7 +1802,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toBuildUnitDefId = (int)tmp;
         }
 
-        printf("\targ: toBuildUnitDefId\n");
         float buildPos_posF3[3];
         {
             int arity = -1;
@@ -1904,7 +1837,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: buildPos_posF3\n");
         int facing;
         {
             long tmp;
@@ -1917,7 +1849,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             facing = (int)tmp;
         }
 
-        printf("\targ: facing\n");
         struct SBuildUnitCommand command = {
             unitId,
             groupId,
@@ -1966,7 +1897,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -1979,7 +1909,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -1992,7 +1921,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -2005,7 +1933,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toCaptureUnitId;
         {
             long tmp;
@@ -2018,7 +1945,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toCaptureUnitId = (int)tmp;
         }
 
-        printf("\targ: toCaptureUnitId\n");
         struct SCaptureUnitCommand command = {
             unitId,
             groupId,
@@ -2065,7 +1991,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -2078,7 +2003,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -2091,7 +2015,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -2104,7 +2027,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float pos_posF3[3];
         {
             int arity = -1;
@@ -2140,7 +2062,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: pos_posF3\n");
         float radius;
         {
             double tmp;
@@ -2153,7 +2074,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             radius = (float)tmp;
         }
 
-        printf("\targ: radius\n");
         struct SCaptureAreaUnitCommand command = {
             unitId,
             groupId,
@@ -2201,7 +2121,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -2214,7 +2133,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -2227,7 +2145,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -2240,7 +2157,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int cmdId;
         {
             long tmp;
@@ -2253,7 +2169,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             cmdId = (int)tmp;
         }
 
-        printf("\targ: cmdId\n");
         float params[3];
         {
             int arity = -1;
@@ -2289,7 +2204,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: params\n");
         int params_size;
         {
             long tmp;
@@ -2302,7 +2216,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             params_size = (int)tmp;
         }
 
-        printf("\targ: params_size\n");
         struct SCustomUnitCommand command = {
             unitId,
             groupId,
@@ -2351,7 +2264,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -2364,7 +2276,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -2377,7 +2288,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -2390,7 +2300,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toAttackUnitId;
         {
             long tmp;
@@ -2403,7 +2312,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toAttackUnitId = (int)tmp;
         }
 
-        printf("\targ: toAttackUnitId\n");
         struct SDGunUnitCommand command = {
             unitId,
             groupId,
@@ -2450,7 +2358,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -2463,7 +2370,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -2476,7 +2382,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -2489,7 +2394,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float pos_posF3[3];
         {
             int arity = -1;
@@ -2525,7 +2429,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: pos_posF3\n");
         struct SDGunPosUnitCommand command = {
             unitId,
             groupId,
@@ -2572,7 +2475,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -2585,7 +2487,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -2598,7 +2499,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -2611,7 +2511,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float toPos_posF3[3];
         {
             int arity = -1;
@@ -2647,7 +2546,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: toPos_posF3\n");
         struct SFightUnitCommand command = {
             unitId,
             groupId,
@@ -2694,7 +2592,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -2707,7 +2604,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -2720,7 +2616,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -2733,7 +2628,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toGroupId;
         {
             long tmp;
@@ -2746,7 +2640,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toGroupId = (int)tmp;
         }
 
-        printf("\targ: toGroupId\n");
         struct SGroupAddUnitCommand command = {
             unitId,
             groupId,
@@ -2793,7 +2686,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -2806,7 +2698,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -2819,7 +2710,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -2832,7 +2722,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         struct SGroupClearUnitCommand command = {
             unitId,
             groupId,
@@ -2878,7 +2767,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -2891,7 +2779,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -2904,7 +2791,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -2917,7 +2803,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toGuardUnitId;
         {
             long tmp;
@@ -2930,7 +2815,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toGuardUnitId = (int)tmp;
         }
 
-        printf("\targ: toGuardUnitId\n");
         struct SGuardUnitCommand command = {
             unitId,
             groupId,
@@ -2977,7 +2861,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -2990,7 +2873,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -3003,7 +2885,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -3016,7 +2897,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int transporterUnitId;
         {
             long tmp;
@@ -3029,7 +2909,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             transporterUnitId = (int)tmp;
         }
 
-        printf("\targ: transporterUnitId\n");
         struct SLoadOntoUnitCommand command = {
             unitId,
             groupId,
@@ -3076,7 +2955,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -3089,7 +2967,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -3102,7 +2979,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -3115,7 +2991,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float pos_posF3[3];
         {
             int arity = -1;
@@ -3151,7 +3026,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: pos_posF3\n");
         float radius;
         {
             double tmp;
@@ -3164,7 +3038,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             radius = (float)tmp;
         }
 
-        printf("\targ: radius\n");
         struct SLoadUnitsAreaUnitCommand command = {
             unitId,
             groupId,
@@ -3212,7 +3085,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -3225,7 +3097,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -3238,7 +3109,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -3251,7 +3121,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float toPos_posF3[3];
         {
             int arity = -1;
@@ -3287,7 +3156,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: toPos_posF3\n");
         struct SMoveUnitCommand command = {
             unitId,
             groupId,
@@ -3334,7 +3202,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -3347,7 +3214,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -3360,7 +3226,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -3373,7 +3238,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float toPos_posF3[3];
         {
             int arity = -1;
@@ -3409,7 +3273,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: toPos_posF3\n");
         struct SPatrolUnitCommand command = {
             unitId,
             groupId,
@@ -3456,7 +3319,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -3469,7 +3331,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -3482,7 +3343,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -3495,7 +3355,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float pos_posF3[3];
         {
             int arity = -1;
@@ -3531,7 +3390,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: pos_posF3\n");
         float radius;
         {
             double tmp;
@@ -3544,7 +3402,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             radius = (float)tmp;
         }
 
-        printf("\targ: radius\n");
         struct SReclaimAreaUnitCommand command = {
             unitId,
             groupId,
@@ -3592,7 +3449,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -3605,7 +3461,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -3618,7 +3473,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -3631,7 +3485,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toReclaimFeatureId;
         {
             long tmp;
@@ -3644,7 +3497,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toReclaimFeatureId = (int)tmp;
         }
 
-        printf("\targ: toReclaimFeatureId\n");
         struct SReclaimFeatureUnitCommand command = {
             unitId,
             groupId,
@@ -3691,7 +3543,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -3704,7 +3555,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -3717,7 +3567,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -3730,7 +3579,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toReclaimUnitId;
         {
             long tmp;
@@ -3743,7 +3591,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toReclaimUnitId = (int)tmp;
         }
 
-        printf("\targ: toReclaimUnitId\n");
         struct SReclaimUnitUnitCommand command = {
             unitId,
             groupId,
@@ -3790,7 +3637,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -3803,7 +3649,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -3816,7 +3661,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -3829,7 +3673,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toRepairUnitId;
         {
             long tmp;
@@ -3842,7 +3685,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toRepairUnitId = (int)tmp;
         }
 
-        printf("\targ: toRepairUnitId\n");
         struct SRepairUnitCommand command = {
             unitId,
             groupId,
@@ -3889,7 +3731,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -3902,7 +3743,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -3915,7 +3755,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -3928,7 +3767,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float pos_posF3[3];
         {
             int arity = -1;
@@ -3964,7 +3802,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: pos_posF3\n");
         float radius;
         {
             double tmp;
@@ -3977,7 +3814,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             radius = (float)tmp;
         }
 
-        printf("\targ: radius\n");
         struct SRestoreAreaUnitCommand command = {
             unitId,
             groupId,
@@ -4025,7 +3861,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -4038,7 +3873,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -4051,7 +3885,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -4064,7 +3897,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toResurrectFeatureId;
         {
             long tmp;
@@ -4077,7 +3909,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toResurrectFeatureId = (int)tmp;
         }
 
-        printf("\targ: toResurrectFeatureId\n");
         struct SResurrectUnitCommand command = {
             unitId,
             groupId,
@@ -4124,7 +3955,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -4137,7 +3967,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -4150,7 +3979,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -4163,7 +3991,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float pos_posF3[3];
         {
             int arity = -1;
@@ -4199,7 +4026,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: pos_posF3\n");
         float radius;
         {
             double tmp;
@@ -4212,7 +4038,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             radius = (float)tmp;
         }
 
-        printf("\targ: radius\n");
         struct SResurrectAreaUnitCommand command = {
             unitId,
             groupId,
@@ -4260,7 +4085,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -4273,7 +4097,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -4286,7 +4109,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -4299,7 +4121,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         struct SSelfDestroyUnitCommand command = {
             unitId,
             groupId,
@@ -4345,7 +4166,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -4358,7 +4178,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -4371,7 +4190,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -4384,7 +4202,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int autoRepairLevel;
         {
             long tmp;
@@ -4397,7 +4214,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             autoRepairLevel = (int)tmp;
         }
 
-        printf("\targ: autoRepairLevel\n");
         struct SSetAutoRepairLevelUnitCommand command = {
             unitId,
             groupId,
@@ -4444,7 +4260,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -4457,7 +4272,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -4470,7 +4284,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -4483,7 +4296,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float basePos_posF3[3];
         {
             int arity = -1;
@@ -4519,7 +4331,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: basePos_posF3\n");
         struct SSetBaseUnitCommand command = {
             unitId,
             groupId,
@@ -4566,7 +4377,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -4579,7 +4389,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -4592,7 +4401,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -4605,7 +4413,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int fireState;
         {
             long tmp;
@@ -4618,7 +4425,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             fireState = (int)tmp;
         }
 
-        printf("\targ: fireState\n");
         struct SSetFireStateUnitCommand command = {
             unitId,
             groupId,
@@ -4665,7 +4471,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -4678,7 +4483,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -4691,7 +4495,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -4704,7 +4507,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int idleMode;
         {
             long tmp;
@@ -4717,7 +4519,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             idleMode = (int)tmp;
         }
 
-        printf("\targ: idleMode\n");
         struct SSetIdleModeUnitCommand command = {
             unitId,
             groupId,
@@ -4764,7 +4565,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -4777,7 +4577,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -4790,7 +4589,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -4803,7 +4601,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int moveState;
         {
             long tmp;
@@ -4816,7 +4613,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             moveState = (int)tmp;
         }
 
-        printf("\targ: moveState\n");
         struct SSetMoveStateUnitCommand command = {
             unitId,
             groupId,
@@ -4863,7 +4659,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -4876,7 +4671,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -4889,7 +4683,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -4902,7 +4695,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int trajectory;
         {
             long tmp;
@@ -4915,7 +4707,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             trajectory = (int)tmp;
         }
 
-        printf("\targ: trajectory\n");
         struct SSetTrajectoryUnitCommand command = {
             unitId,
             groupId,
@@ -4962,7 +4753,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -4975,7 +4765,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -4988,7 +4777,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -5001,7 +4789,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float wantedMaxSpeed;
         {
             double tmp;
@@ -5014,7 +4801,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             wantedMaxSpeed = (float)tmp;
         }
 
-        printf("\targ: wantedMaxSpeed\n");
         struct SSetWantedMaxSpeedUnitCommand command = {
             unitId,
             groupId,
@@ -5061,7 +4847,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -5074,7 +4859,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -5087,7 +4871,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -5100,7 +4883,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         struct SStockpileUnitCommand command = {
             unitId,
             groupId,
@@ -5146,7 +4928,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -5159,7 +4940,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -5172,7 +4952,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -5185,7 +4964,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         struct SStopUnitCommand command = {
             unitId,
             groupId,
@@ -5231,7 +5009,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -5244,7 +5021,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -5257,7 +5033,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -5270,7 +5045,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float toPos_posF3[3];
         {
             int arity = -1;
@@ -5306,7 +5080,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: toPos_posF3\n");
         int toUnloadUnitId;
         {
             long tmp;
@@ -5319,7 +5092,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toUnloadUnitId = (int)tmp;
         }
 
-        printf("\targ: toUnloadUnitId\n");
         struct SUnloadUnitCommand command = {
             unitId,
             groupId,
@@ -5367,7 +5139,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -5380,7 +5151,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -5393,7 +5163,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -5406,7 +5175,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         float toPos_posF3[3];
         {
             int arity = -1;
@@ -5442,7 +5210,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                 }
             }
         }
-        printf("\targ: toPos_posF3\n");
         float radius;
         {
             double tmp;
@@ -5455,7 +5222,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             radius = (float)tmp;
         }
 
-        printf("\targ: radius\n");
         struct SUnloadUnitsAreaUnitCommand command = {
             unitId,
             groupId,
@@ -5503,7 +5269,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -5516,7 +5281,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -5529,7 +5293,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -5542,7 +5305,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         struct SWaitUnitCommand command = {
             unitId,
             groupId,
@@ -5588,7 +5350,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -5601,7 +5362,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -5614,7 +5374,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -5627,7 +5386,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int toDieUnitId;
         {
             long tmp;
@@ -5640,7 +5398,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             toDieUnitId = (int)tmp;
         }
 
-        printf("\targ: toDieUnitId\n");
         struct SDeathWaitUnitCommand command = {
             unitId,
             groupId,
@@ -5687,7 +5444,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -5700,7 +5456,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -5713,7 +5468,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -5726,7 +5480,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         struct SGatherWaitUnitCommand command = {
             unitId,
             groupId,
@@ -5772,7 +5525,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -5785,7 +5537,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -5798,7 +5549,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -5811,7 +5561,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int numUnits;
         {
             long tmp;
@@ -5824,7 +5573,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             numUnits = (int)tmp;
         }
 
-        printf("\targ: numUnits\n");
         struct SSquadWaitUnitCommand command = {
             unitId,
             groupId,
@@ -5871,7 +5619,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             unitId = (int)tmp;
         }
 
-        printf("\targ: unitId\n");
         int groupId;
         {
             long tmp;
@@ -5884,7 +5631,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             groupId = (int)tmp;
         }
 
-        printf("\targ: groupId\n");
         short options;
         {
             long tmp;
@@ -5897,7 +5643,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             options = (short)tmp;
         }
 
-        printf("\targ: options\n");
         int timeOut;
         {
             long tmp;
@@ -5910,7 +5655,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             timeOut = (int)tmp;
         }
 
-        printf("\targ: timeOut\n");
         int time;
         {
             long tmp;
@@ -5923,7 +5667,6 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
             time = (int)tmp;
         }
 
-        printf("\targ: time\n");
         struct STimeWaitUnitCommand command = {
             unitId,
             groupId,

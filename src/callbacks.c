@@ -18,7 +18,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         }
     }
 
-    printf("\tcallback: %s\n", callback_what);
     if (strcmp(callback_what, "Cheats_isEnabled") == 0) {
         erlang_pid from;
         {

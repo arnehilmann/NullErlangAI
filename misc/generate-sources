@@ -154,7 +154,7 @@ class SourceGeneratorCommands(object):
                 """))
 
             commandgen_file.write("\n".join(render_decode_call(1, "command", "char*", "char*", "atom", 'char command[64] = "";')))
-            commandgen_file.write('    printf("\\tcommand: %s\\n", command);\n')
+            #commandgen_file.write('    printf("\\tcommand: %s\\n", command);\n')
 
             for name in sorted(self.commands):
                 #if "PATH_INIT" not in name:
@@ -178,7 +178,7 @@ class SourceGeneratorCommands(object):
                         else:
                             print("%s: unknown arg_type %s" % (name, arg_type))
                             ok = False
-                    lines.append('        printf("\\targ: %s\\n");' % arg_name)
+                    #lines.append('        printf("\\targ: %s\\n");' % arg_name)
                 if not ok:
                     continue
                 lines.append(indent(2, '%s command = {' % struct))
@@ -469,7 +469,7 @@ class SourceGeneratorCallbacks(object):
                 """))
 
                 lines = render_decode_call(1, "callback_what", "char*", "char*", "atom", 'char callback_what[64] = "";')
-                lines.append(indent(1, 'printf("\\tcallback: %s\\n", callback_what);'))
+                #lines.append(indent(1, 'printf("\\tcallback: %s\\n", callback_what);'))
                 lines.append("")
                 cbgen_file.write("\n".join(lines))
 
