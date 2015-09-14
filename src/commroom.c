@@ -1,13 +1,5 @@
 #include "commroom.h"
 
-#include "ExternalAI/Interface/SSkirmishAICallback.h"
-//#include "ExternalAI/Interface/AISCommands.h"
-#include "send_to.h"
-#include "events.h"
-#include "callbacks.h"
-#include "commands.h"
-
-
 #include <string.h>
 #include <limits.h>
 #include <stdio.h>
@@ -18,6 +10,11 @@
 
 #include "erl_interface.h"
 #include "ei.h"
+
+#include "send_to.h"
+#include "events.h"
+#include "callbacks.h"
+#include "commands.h"
 
 #define BUFSIZE 1000
 #define COMM_TMO 10
@@ -179,9 +176,11 @@ int send_tick(int team_id, int frame) {
 int check_for_message_from_hq(int team_id) {
     int uplink = uplinks[team_id];
     if (uplink < 0) {
-        uplinks[team_id] = ei_accept_tmo(&ecs[team_id], listen_fd[team_id], &conns[team_id], 1000);
+        uplinks[team_id] = ei_accept_tmo(&ecs[team_id], listen_fd[team_id], &conns[team_id], 1);
         if (uplinks[team_id] < 0) {
-            fprintf(stderr, "no one tried to connect, yielding...\n");
+            if (frame % 30 == 0) {
+                fprintf(stderr, "no one tried to connect, yielding...\n");
+            }
             return 0;
         }
         printf("connected to %s\n", conns[team_id].nodename);
@@ -253,13 +252,11 @@ EXPORT(int) handleEvent(int team_id, int topic, const void* data) {
         if (frame == 1) {
             fprintf(stdout, "\n                LET THE WAR BEGIN!\n\n");
         }
-        //if (frame % 600 == 0) {
-            //return send_tick(team_id, frame);
+        //if (frame % 10 == 0) {
+        //    return check_for_message_from_hq(team_id);
         //}
-        if (frame % 10 == 0) {
-            return check_for_message_from_hq(team_id);
-        }
-        return 0;
+        //return 0;
+        return check_for_message_from_hq(team_id);
     }
 
     return send_event(team_id, topic, data);
