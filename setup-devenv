@@ -15,7 +15,7 @@ ln -sf $ERL_INTERFACE_DIR erl_interface
 
 (
     cd ../../..
-    cmake -DCMAKE_INSTALL_PREFIX=~/spring .
+    cmake -DCMAKE_INSTALL_PREFIX=$SPRING_DIR -DAI_TYPES="NATIVE" .
     make install
 )
 
