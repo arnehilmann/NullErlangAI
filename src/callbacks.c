@@ -3827,6 +3827,25 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Map_getHardness") == 0) {
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        float result = callback->Map_getHardness(skirmishAIId);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_double(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Map_getHash") == 0) {
         erlang_pid from;
         {
@@ -4356,6 +4375,25 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Map_isDeformable") == 0) {
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        bool result = callback->Map_isDeformable(skirmishAIId);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_boolean(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Map_isPosInCamera") == 0) {
         float pos_posF3[3];
         {
@@ -4498,25 +4536,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_boolean(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Mod_getAirLosMul") == 0) {
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        float result = callback->Mod_getAirLosMul(skirmishAIId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Mod_getAirMipLevel") == 0) {
@@ -4783,25 +4802,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Mod_getLosMul") == 0) {
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        float result = callback->Mod_getLosMul(skirmishAIId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Mod_getMultiReclaim") == 0) {
@@ -6600,49 +6600,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "UnitDef_WeaponMount_getFuelUsage") == 0) {
-        int unitDefId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitDefId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitDefId = (int)tmp;
-        }
-
-        int weaponMountId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'weaponMountId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            weaponMountId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        float result = callback->UnitDef_WeaponMount_getFuelUsage(skirmishAIId, unitDefId, weaponMountId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "UnitDef_WeaponMount_getMainDir") == 0) {
@@ -8767,37 +8724,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(callback_what, "UnitDef_getMaxFuel") == 0) {
-        int unitDefId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitDefId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitDefId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        float result = callback->UnitDef_getMaxFuel(skirmishAIId, unitDefId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_double(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
     if (strcmp(callback_what, "UnitDef_getMaxHeightDif") == 0) {
         int unitDefId;
         {
@@ -9039,37 +8965,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         }
 
         float result = callback->UnitDef_getMaxWeaponRange(skirmishAIId, unitDefId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_double(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "UnitDef_getMinAirBasePower") == 0) {
-        int unitDefId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitDefId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitDefId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        float result = callback->UnitDef_getMinAirBasePower(skirmishAIId, unitDefId);
         ei_x_buff sendbuff;
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
@@ -9442,37 +9337,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         }
 
         float result = callback->UnitDef_getReclaimSpeed(skirmishAIId, unitDefId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_double(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "UnitDef_getRefuelTime") == 0) {
-        int unitDefId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitDefId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitDefId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        float result = callback->UnitDef_getRefuelTime(skirmishAIId, unitDefId);
         ei_x_buff sendbuff;
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
@@ -13693,6 +13557,92 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Unit_Weapon_getShieldPower") == 0) {
+        int unitId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            unitId = (int)tmp;
+        }
+
+        int weaponId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'weaponId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            weaponId = (int)tmp;
+        }
+
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        float result = callback->Unit_Weapon_getShieldPower(skirmishAIId, unitId, weaponId);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_double(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Unit_Weapon_isShieldEnabled") == 0) {
+        int unitId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            unitId = (int)tmp;
+        }
+
+        int weaponId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'weaponId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            weaponId = (int)tmp;
+        }
+
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        bool result = callback->Unit_Weapon_isShieldEnabled(skirmishAIId, unitId, weaponId);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_boolean(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Unit_getAiHint") == 0) {
         int unitId;
         {
@@ -13815,37 +13765,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Unit_getCurrentFuel") == 0) {
-        int unitId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        float result = callback->Unit_getCurrentFuel(skirmishAIId, unitId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Unit_getDef") == 0) {
