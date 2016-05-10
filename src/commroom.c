@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "erl_interface.h"
 #include "ei.h"
@@ -24,6 +25,10 @@
 #define PORT 7766
 
 #define MAX_TEAM_COUNT 4
+
+
+#define HOST_NAME "engine.spring"
+#define NODE_NAME "erlang_ai0@engine.spring"
 
 
 int frame = -1;
@@ -71,13 +76,34 @@ EXPORT(int) init(int team_id, const struct SSkirmishAICallback* new_callback) {
     sprintf(node_names[team_id], "%s%i", NODE_NAME_PREFIX, team_id);
     sprintf(cookies[team_id], "%s%i", COOKIE_PREFIX, team_id);
 
+/*
     if (ei_connect_init(&ecs[team_id], node_names[team_id], cookies[team_id], team_id) < 0) {
         fprintf(stderr, "ERROR when initializing: %d", erl_errno);
         exit(-1);
     }
+*/
+/*
+*/
+    struct in_addr addr;
+    addr.s_addr = inet_addr("172.18.0.3");
+    if (ei_connect_xinit(&ecs[team_id], 
+                         HOST_NAME,
+                         node_names[team_id], 
+                         NODE_NAME,
+			 &addr,
+                         cookies[team_id], 
+                         team_id) < 0) {
+        fprintf(stderr, "ERROR when initializing: %d", erl_errno);
+        exit(-1);
+    }
+    fprintf(stderr, "connected with ei_connect_xinit(..)\n");
+/*
+*/
 
     fprintf(stdout, "this node: %s\n", ei_thisnodename(&ecs[team_id]));
     fprintf(stdout, "   cookie: %s\n", cookies[team_id]);
+
+    // ei_set_tracelevel(1);
 
     int i=0;
     for (; i < MAX_TEAM_COUNT; i++) {
@@ -176,20 +202,24 @@ int send_tick(int team_id, int frame) {
 int check_for_message_from_hq(int team_id) {
     int uplink = uplinks[team_id];
     if (uplink < 0) {
-        uplinks[team_id] = ei_accept_tmo(&ecs[team_id], listen_fd[team_id], &conns[team_id], 1);
-        if (uplinks[team_id] < 0) {
+        uplink = uplinks[team_id] = ei_accept_tmo(&ecs[team_id], listen_fd[team_id], &conns[team_id], 10);
+        if (uplink < 0) {
+/*
             if (frame % 30 == 0) {
                 fprintf(stderr, "no one tried to connect, yielding...\n");
             }
+*/
             return 0;
+        } else {
+	    printf("connected to uplink %i, %s\n", uplink, conns[team_id].nodename);
         }
-        printf("connected to %s\n", conns[team_id].nodename);
     }
 
     erl_errno = 0;
     erlang_msg msg;
     ei_x_buff recvbuf;
-    ei_x_new(&recvbuf);
+    // ei_x_new(&recvbuf);
+    ei_x_new_with_version(&recvbuf);
 
     int got = ei_xreceive_msg_tmo(uplink, &msg, &recvbuf, COMM_TMO);
     char message[24] = "";
@@ -202,7 +232,8 @@ int check_for_message_from_hq(int team_id) {
             case EAGAIN:
                 break;
             case EMSGSIZE:
-                erl_err_quit("msgsize!");
+                // erl_err_quit("msgsize!");
+                fprintf(stderr, "erl error: EMSGSIZE!?\n");
                 break;
             case EIO:
                 fprintf(stderr, "IO-Error?!\n");

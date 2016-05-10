@@ -92,7 +92,7 @@ def render_decode_posf3_call(level, arg):
     lines.append(indent(level + 3, 'return result;'))
     lines.append(indent(level + 2, '}'))
     lines.append(indent(level + 2, 'if (arity != 3) {'))
-    lines.append(indent(level + 3, 'fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\\n", arity);'))
+    lines.append(indent(level + 3, 'fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\\n", arity);'))
     lines.append(indent(level + 3, 'ei_x_free(&buff);'))
     lines.append(indent(level + 3, 'return -1;'))
     lines.append(indent(level + 2, '}'))
@@ -115,6 +115,46 @@ def render_decode_posf3_call(level, arg):
     lines.append(indent(level + 3, '}'))
     lines.append(indent(level + 2, '}'))
     lines.append(indent(level + 1, '}'))
+    lines.append(indent(level, '}'))
+    return lines
+
+
+def render_decode_short3_call(level, arg):
+    lines = []
+    lines.append(indent(level, 'short %s[3];' % arg))
+    lines.append(indent(level, '{'))
+    lines.append(indent(level, '    int arity = -1;'))
+    lines.append(indent(level, '    {'))
+    lines.append(indent(level, '        int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);'))
+    lines.append(indent(level, '        if (result != 0) {'))
+    lines.append(indent(level, '            fprintf(stderr, "[ERROR] no tuple found for short3 argument\\n");'))
+    lines.append(indent(level, '            ei_x_free(&buff);'))
+    lines.append(indent(level, '            return result;'))
+    lines.append(indent(level, '        }'))
+    lines.append(indent(level, '        if (arity != 3) {'))
+    lines.append(indent(level, '            fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\\n", arity);'))
+    lines.append(indent(level, '            ei_x_free(&buff);'))
+    lines.append(indent(level, '            return -1;'))
+    lines.append(indent(level, '        }'))
+    lines.append(indent(level, '    }'))
+    lines.append(indent(level, '    int i = 0;'))
+    lines.append(indent(level, '    for (; i < 3; i++) {'))
+    lines.append(indent(level, '        double try1;'))
+    lines.append(indent(level, '        int result = ei_decode_double(buff.buff, &buff.index, &try1);'))
+    lines.append(indent(level, '        if (result == 0) {'))
+    lines.append(indent(level, '            %s[i] = (short) try1;' % arg))
+    lines.append(indent(level, '        } else {'))
+    lines.append(indent(level, '            long try2;'))
+    lines.append(indent(level, '            result = ei_decode_long(buff.buff, &buff.index, &try2);'))
+    lines.append(indent(level, '            if (result == 0) {'))
+    lines.append(indent(level, '                %s[i] = (short) try2;' % arg))
+    lines.append(indent(level, '            } else {'))
+    lines.append(indent(level, '                fprintf(stderr, "[ERROR] cannot decode %s as short3 on pos %%i, error code %%i\\n", i, result);' % arg))
+    lines.append(indent(level, '                ei_x_free(&buff);'))
+    lines.append(indent(level, '                return result;'))
+    lines.append(indent(level, '            }'))
+    lines.append(indent(level, '        }'))
+    lines.append(indent(level, '    }'))
     lines.append(indent(level, '}'))
     return lines
 
@@ -207,7 +247,7 @@ class SourceGeneratorCommands(object):
                         if arg_type == "int":
                             lines.append(indent(3, 'ei_x_encode_long(&sendbuff, command.%s);' % arg_name))
                         else:
-                            print("%s: unknown ret_ arg_type %s", name, arg_type);
+                            print("%s: unknown ret_ arg_type %s" % (name, arg_type))
                             ok = False
                 if not ok:
                     continue
@@ -225,7 +265,8 @@ class SourceGeneratorCommands(object):
         try:
             os.makedirs(os.path.dirname(filename))
         except Exception as e:
-            print(e)
+            pass
+            # print(e)
         with open(filename, "w") as f:
             f.write("defmodule SpringRTS.Commands do\n    import SpringRTS.Helper, only: :functions\n")
             f.write("    defp engine do\n        Application.get_env(SpringRTS, :engine)\n    end\n\n")
@@ -390,7 +431,7 @@ class SourceGeneratorCallbacks(object):
                 meta = match.group(4)
                 fetched = "____"
                 fetched_maxsize = "____"
-                if "MULTI" in meta:
+                if "MULTI" in meta or "ARRAY" in meta:
                     fetched = meta.split(":")[-1]
                     fetched = fetched.split("->")[0]
                     fetched_maxsize = fetched + "_sizeMax"
@@ -420,9 +461,9 @@ class SourceGeneratorCallbacks(object):
                                   }
 
     def _render_elixir_source(self):
-        if not self.elixir_dir:
-            print("[WARN] cannot generate elixir sources: no filename specified!\n")
-            return
+        # if not self.elixir_dir:
+            # print("[WARN] cannot generate elixir sources: no filename specified!\n")
+            # return
         filename = os.path.join(self.elixir_dir, "springrts", "callbacks.ex")
         try:
             os.makedirs(os.path.dirname(filename))
@@ -500,11 +541,13 @@ class SourceGeneratorCallbacks(object):
                             #lines.append(indent(2, 'ei_decode_string(recvbuff, &index, %s);' % arg_name))
                         elif "posF3" in arg_name and arg_type == "float*":
                             lines.extend(render_decode_posf3_call(2, arg_name))
+                        elif "S3" in arg_name and arg_type == "short*":
+                            lines.extend(render_decode_short3_call(2, arg_name))
                         else:
                             print("%s:%s: unknown arg type %s" % (name, arg_name, arg_type))
                             ok = False
                     if not ok:
-                        print("%s: skipping due to previous errors" % name)
+                        # print("%s: skipping due to previous errors" % name)
                         continue
                     if cb["out_arg"]:
                         fetched_type, fetched_name = cb["out_arg"]
@@ -554,6 +597,8 @@ class SourceGeneratorCallbacks(object):
                     else:
                         if cb["returns"] == "const char*":
                             lines.append(indent(2, 'ei_x_encode_string(&sendbuff, result);'))
+                        elif cb["returns"] == "char*":
+                            lines.append(indent(2, 'ei_x_encode_string(&sendbuff, result);'))
                         elif cb["returns"] == "char":
                             lines.append(indent(2, 'ei_x_encode_char(&sendbuff, result);'))
                         elif cb["returns"] == "int":
@@ -565,7 +610,7 @@ class SourceGeneratorCallbacks(object):
                         elif cb["returns"] == "short":
                             lines.append(indent(2, 'ei_x_encode_long(&sendbuff, result);'))
                         elif cb["returns"] == "void":
-                            print("uh, void as return value: %s" % name)
+                            # print("uh, void as return value: %s" % name)
                             pass
                         else:
                             print("%s: unknown return type '%s'\n" % (name, cb["returns"]))
@@ -583,7 +628,7 @@ class SourceGeneratorCallbacks(object):
 
 if __name__ == "__main__":
     misc_dirname = os.path.dirname(os.path.abspath(__file__))
-    elixir_dir = sys.argv[1] if len(sys.argv) > 1 else ''
+    elixir_dir = sys.argv[1] if len(sys.argv) > 1 else 'elixir_generated'
 
     SourceGeneratorCallbacks(misc_dirname, elixir_dir).generate()
     SourceGeneratorEvents(misc_dirname).generate()

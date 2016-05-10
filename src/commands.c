@@ -45,7 +45,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -665,7 +665,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -700,7 +700,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -808,7 +808,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -990,7 +990,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -1025,7 +1025,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -1121,7 +1121,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -1186,7 +1186,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -1221,7 +1221,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -1317,7 +1317,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -1352,7 +1352,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -1671,7 +1671,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -1813,7 +1813,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -2038,7 +2038,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -2180,7 +2180,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -2405,7 +2405,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -2522,7 +2522,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -3002,7 +3002,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -3132,7 +3132,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -3249,7 +3249,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -3366,7 +3366,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -3778,7 +3778,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -4002,7 +4002,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -4307,7 +4307,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -5056,7 +5056,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -5186,7 +5186,7 @@ int handle_command(int team_id, const struct SSkirmishAICallback* callback, ei_x
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }

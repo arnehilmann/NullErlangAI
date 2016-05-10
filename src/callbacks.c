@@ -114,6 +114,65 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "DataDirs_Roots_allocatePath") == 0) {
+        char* relPath;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, relPath);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'relPath' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int writeable;
+        {
+            int result = ei_decode_boolean(buff.buff, &buff.index, &writeable);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'writeable' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int create;
+        {
+            int result = ei_decode_boolean(buff.buff, &buff.index, &create);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'create' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int dir;
+        {
+            int result = ei_decode_boolean(buff.buff, &buff.index, &dir);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'dir' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        char* result = callback->DataDirs_Roots_allocatePath(skirmishAIId, relPath, writeable, create, dir);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_string(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "DataDirs_Roots_getDir") == 0) {
         char* path;
         {
@@ -265,6 +324,75 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_boolean(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "DataDirs_allocatePath") == 0) {
+        char* relPath;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, relPath);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'relPath' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int writeable;
+        {
+            int result = ei_decode_boolean(buff.buff, &buff.index, &writeable);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'writeable' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int create;
+        {
+            int result = ei_decode_boolean(buff.buff, &buff.index, &create);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'create' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int dir;
+        {
+            int result = ei_decode_boolean(buff.buff, &buff.index, &dir);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'dir' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int common;
+        {
+            int result = ei_decode_boolean(buff.buff, &buff.index, &common);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'common' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        char* result = callback->DataDirs_allocatePath(skirmishAIId, relPath, writeable, create, dir, common);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "DataDirs_getConfigDir") == 0) {
@@ -2290,6 +2418,72 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Game_getTeamColor") == 0) {
+        int otherTeamId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'otherTeamId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            otherTeamId = (int)tmp;
+        }
+
+        short return_colorS3_out[3];
+        {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for short3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
+            int i = 0;
+            for (; i < 3; i++) {
+                double try1;
+                int result = ei_decode_double(buff.buff, &buff.index, &try1);
+                if (result == 0) {
+                    return_colorS3_out[i] = (short) try1;
+                } else {
+                    long try2;
+                    result = ei_decode_long(buff.buff, &buff.index, &try2);
+                    if (result == 0) {
+                        return_colorS3_out[i] = (short) try2;
+                    } else {
+                        fprintf(stderr, "[ERROR] cannot decode return_colorS3_out as short3 on pos %i, error code %i\n", i, result);
+                        ei_x_free(&buff);
+                        return result;
+                    }
+                }
+            }
+        }
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        callback->Game_getTeamColor(skirmishAIId, otherTeamId, return_colorS3_out);
+        int result = 3;
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Game_getTeamIncomeMultiplier") == 0) {
         int otherTeamId;
         {
@@ -2920,6 +3114,55 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Group_OrderPreview_getParams") == 0) {
+        int groupId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'groupId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            groupId = (int)tmp;
+        }
+
+        int params_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'params_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            params_sizeMax = (int)tmp;
+        }
+
+        float params[params_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Group_OrderPreview_getParams(skirmishAIId, groupId, params, params_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_double(&sendbuff, params[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Group_OrderPreview_getTag") == 0) {
         int groupId;
         {
@@ -3446,6 +3689,72 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_atom(&sendbuff, "ok");
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Map_Line_getColor") == 0) {
+        int lineId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'lineId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            lineId = (int)tmp;
+        }
+
+        short return_colorS3_out[3];
+        {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for short3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
+            int i = 0;
+            for (; i < 3; i++) {
+                double try1;
+                int result = ei_decode_double(buff.buff, &buff.index, &try1);
+                if (result == 0) {
+                    return_colorS3_out[i] = (short) try1;
+                } else {
+                    long try2;
+                    result = ei_decode_long(buff.buff, &buff.index, &try2);
+                    if (result == 0) {
+                        return_colorS3_out[i] = (short) try2;
+                    } else {
+                        fprintf(stderr, "[ERROR] cannot decode return_colorS3_out as short3 on pos %i, error code %i\n", i, result);
+                        ei_x_free(&buff);
+                        return result;
+                    }
+                }
+            }
+        }
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        callback->Map_Line_getColor(skirmishAIId, lineId, return_colorS3_out);
+        int result = 3;
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Map_Line_getFirstPosition") == 0) {
         int lineId;
         {
@@ -3518,6 +3827,72 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         for (; i < result; i++) {
             ei_x_encode_double(&sendbuff, return_posF3_out[i]);
         }
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Map_Point_getColor") == 0) {
+        int pointId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'pointId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            pointId = (int)tmp;
+        }
+
+        short return_colorS3_out[3];
+        {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for short3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
+            int i = 0;
+            for (; i < 3; i++) {
+                double try1;
+                int result = ei_decode_double(buff.buff, &buff.index, &try1);
+                if (result == 0) {
+                    return_colorS3_out[i] = (short) try1;
+                } else {
+                    long try2;
+                    result = ei_decode_long(buff.buff, &buff.index, &try2);
+                    if (result == 0) {
+                        return_colorS3_out[i] = (short) try2;
+                    } else {
+                        fprintf(stderr, "[ERROR] cannot decode return_colorS3_out as short3 on pos %i, error code %i\n", i, result);
+                        ei_x_free(&buff);
+                        return result;
+                    }
+                }
+            }
+        }
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        callback->Map_Point_getColor(skirmishAIId, pointId, return_colorS3_out);
+        int result = 3;
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_Point_getLabel") == 0) {
@@ -3612,7 +3987,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -3696,6 +4071,43 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         }
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Map_getAirLosMap") == 0) {
+        int airLosValues_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'airLosValues_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            airLosValues_sizeMax = (int)tmp;
+        }
+
+        int airLosValues[airLosValues_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getAirLosMap(skirmishAIId, airLosValues, airLosValues_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_long(&sendbuff, airLosValues[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Map_getChecksum") == 0) {
         erlang_pid from;
         {
@@ -3713,6 +4125,43 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_long(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Map_getCornersHeightMap") == 0) {
+        int cornerHeights_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'cornerHeights_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            cornerHeights_sizeMax = (int)tmp;
+        }
+
+        float cornerHeights[cornerHeights_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getCornersHeightMap(skirmishAIId, cornerHeights, cornerHeights_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_double(&sendbuff, cornerHeights[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_getCurWind") == 0) {
@@ -3846,6 +4295,43 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Map_getHardnessModMap") == 0) {
+        int hardMods_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'hardMods_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            hardMods_sizeMax = (int)tmp;
+        }
+
+        float hardMods[hardMods_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getHardnessModMap(skirmishAIId, hardMods, hardMods_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_double(&sendbuff, hardMods[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Map_getHash") == 0) {
         erlang_pid from;
         {
@@ -3884,6 +4370,43 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Map_getHeightMap") == 0) {
+        int heights_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'heights_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            heights_sizeMax = (int)tmp;
+        }
+
+        float heights[heights_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getHeightMap(skirmishAIId, heights, heights_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_double(&sendbuff, heights[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Map_getHumanName") == 0) {
         erlang_pid from;
         {
@@ -3901,6 +4424,43 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_string(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Map_getJammerMap") == 0) {
+        int jammerValues_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'jammerValues_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            jammerValues_sizeMax = (int)tmp;
+        }
+
+        int jammerValues[jammerValues_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getJammerMap(skirmishAIId, jammerValues, jammerValues_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_long(&sendbuff, jammerValues[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_getLines") == 0) {
@@ -3930,6 +4490,43 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_long(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Map_getLosMap") == 0) {
+        int losValues_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'losValues_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            losValues_sizeMax = (int)tmp;
+        }
+
+        int losValues[losValues_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getLosMap(skirmishAIId, losValues, losValues_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_long(&sendbuff, losValues[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_getMaxHeight") == 0) {
@@ -4112,6 +4709,43 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Map_getRadarMap") == 0) {
+        int radarValues_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'radarValues_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            radarValues_sizeMax = (int)tmp;
+        }
+
+        int radarValues[radarValues_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getRadarMap(skirmishAIId, radarValues, radarValues_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_long(&sendbuff, radarValues[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Map_getResourceMapSpotsAverageIncome") == 0) {
         int resourceId;
         {
@@ -4167,7 +4801,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -4228,41 +4862,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
             resourceId = (int)tmp;
         }
 
-        float spots_AposF3[3];
-        {
-            int arity = -1;
-            {
-                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
-                if (result != 0) {
-                    fprintf(stderr, "[ERROR] no tuple found for posf3 argument\n");
-                    ei_x_free(&buff);
-                    return result;
-                }
-                if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
-                    ei_x_free(&buff);
-                    return -1;
-                }
-            }
-            int i = 0;
-            for (; i < 3; i++) {
-                double try1;
-                int result = ei_decode_double(buff.buff, &buff.index, &try1);
-                if (result == 0) {
-                    spots_AposF3[i] = (float) try1;
-                } else {
-                    long try2;
-                    result = ei_decode_long(buff.buff, &buff.index, &try2);
-                    if (result == 0) {
-                        spots_AposF3[i] = (float) try2;
-                    } else {
-                        fprintf(stderr, "[ERROR] cannot decode spots_AposF3 as posF3 on pos %i, error code %i\n", i, result);
-                        ei_x_free(&buff);
-                        return result;
-                    }
-                }
-            }
-        }
         int spots_AposF3_sizeMax;
         {
             long tmp;
@@ -4275,6 +4874,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
             spots_AposF3_sizeMax = (int)tmp;
         }
 
+        float spots_AposF3[spots_AposF3_sizeMax];
         erlang_pid from;
         {
             int result = ei_decode_pid(buff.buff, &buff.index, &from);
@@ -4290,7 +4890,208 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_long(&sendbuff, result);
+        ei_x_encode_tuple_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_double(&sendbuff, spots_AposF3[i]);
+        }
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Map_getSeismicMap") == 0) {
+        int seismicValues_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'seismicValues_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            seismicValues_sizeMax = (int)tmp;
+        }
+
+        int seismicValues[seismicValues_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getSeismicMap(skirmishAIId, seismicValues, seismicValues_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_long(&sendbuff, seismicValues[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Map_getSlopeMap") == 0) {
+        int slopes_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'slopes_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            slopes_sizeMax = (int)tmp;
+        }
+
+        float slopes[slopes_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getSlopeMap(skirmishAIId, slopes, slopes_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_double(&sendbuff, slopes[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Map_getSonarJammerMap") == 0) {
+        int sonarJammerValues_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'sonarJammerValues_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            sonarJammerValues_sizeMax = (int)tmp;
+        }
+
+        int sonarJammerValues[sonarJammerValues_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getSonarJammerMap(skirmishAIId, sonarJammerValues, sonarJammerValues_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_long(&sendbuff, sonarJammerValues[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Map_getSonarMap") == 0) {
+        int sonarValues_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'sonarValues_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            sonarValues_sizeMax = (int)tmp;
+        }
+
+        int sonarValues[sonarValues_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getSonarMap(skirmishAIId, sonarValues, sonarValues_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_long(&sendbuff, sonarValues[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Map_getSpeedModMap") == 0) {
+        int speedModClass;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'speedModClass' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            speedModClass = (int)tmp;
+        }
+
+        int speedMods_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'speedMods_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            speedMods_sizeMax = (int)tmp;
+        }
+
+        float speedMods[speedMods_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Map_getSpeedModMap(skirmishAIId, speedModClass, speedMods, speedMods_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_double(&sendbuff, speedMods[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Map_getStartPos") == 0) {
@@ -4406,7 +5207,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -4484,7 +5285,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -12924,6 +13725,67 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Unit_CurrentCommand_getParams") == 0) {
+        int unitId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            unitId = (int)tmp;
+        }
+
+        int commandId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'commandId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            commandId = (int)tmp;
+        }
+
+        int params_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'params_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            params_sizeMax = (int)tmp;
+        }
+
+        float params[params_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Unit_CurrentCommand_getParams(skirmishAIId, unitId, commandId, params, params_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_double(&sendbuff, params[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Unit_CurrentCommand_getTag") == 0) {
         int unitId;
         {
@@ -14916,6 +15778,55 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "WeaponDef_Damage_getTypes") == 0) {
+        int weaponDefId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'weaponDefId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            weaponDefId = (int)tmp;
+        }
+
+        int types_sizeMax;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'types_sizeMax' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            types_sizeMax = (int)tmp;
+        }
+
+        float types[types_sizeMax];
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->WeaponDef_Damage_getTypes(skirmishAIId, weaponDefId, types, types_sizeMax);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_list_header(&sendbuff, result);
+        int i = 0;
+        for (; i < result; i++) {
+            ei_x_encode_double(&sendbuff, types[i]);
+        }
+        ei_x_encode_empty_list(&sendbuff);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "WeaponDef_Shield_getAlpha") == 0) {
         int weaponDefId;
         {
@@ -14947,6 +15858,72 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "WeaponDef_Shield_getBadColor") == 0) {
+        int weaponDefId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'weaponDefId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            weaponDefId = (int)tmp;
+        }
+
+        short return_colorS3_out[3];
+        {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for short3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
+            int i = 0;
+            for (; i < 3; i++) {
+                double try1;
+                int result = ei_decode_double(buff.buff, &buff.index, &try1);
+                if (result == 0) {
+                    return_colorS3_out[i] = (short) try1;
+                } else {
+                    long try2;
+                    result = ei_decode_long(buff.buff, &buff.index, &try2);
+                    if (result == 0) {
+                        return_colorS3_out[i] = (short) try2;
+                    } else {
+                        fprintf(stderr, "[ERROR] cannot decode return_colorS3_out as short3 on pos %i, error code %i\n", i, result);
+                        ei_x_free(&buff);
+                        return result;
+                    }
+                }
+            }
+        }
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        callback->WeaponDef_Shield_getBadColor(skirmishAIId, weaponDefId, return_colorS3_out);
+        int result = 3;
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "WeaponDef_Shield_getForce") == 0) {
         int weaponDefId;
         {
@@ -14976,6 +15953,72 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_double(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "WeaponDef_Shield_getGoodColor") == 0) {
+        int weaponDefId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'weaponDefId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            weaponDefId = (int)tmp;
+        }
+
+        short return_colorS3_out[3];
+        {
+            int arity = -1;
+            {
+                int result = ei_decode_tuple_header(buff.buff, &buff.index, &arity);
+                if (result != 0) {
+                    fprintf(stderr, "[ERROR] no tuple found for short3 argument\n");
+                    ei_x_free(&buff);
+                    return result;
+                }
+                if (arity != 3) {
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
+                    ei_x_free(&buff);
+                    return -1;
+                }
+            }
+            int i = 0;
+            for (; i < 3; i++) {
+                double try1;
+                int result = ei_decode_double(buff.buff, &buff.index, &try1);
+                if (result == 0) {
+                    return_colorS3_out[i] = (short) try1;
+                } else {
+                    long try2;
+                    result = ei_decode_long(buff.buff, &buff.index, &try2);
+                    if (result == 0) {
+                        return_colorS3_out[i] = (short) try2;
+                    } else {
+                        fprintf(stderr, "[ERROR] cannot decode return_colorS3_out as short3 on pos %i, error code %i\n", i, result);
+                        ei_x_free(&buff);
+                        return result;
+                    }
+                }
+            }
+        }
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        callback->WeaponDef_Shield_getGoodColor(skirmishAIId, weaponDefId, return_colorS3_out);
+        int result = 3;
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "WeaponDef_Shield_getInterceptType") == 0) {
@@ -18597,7 +19640,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -18792,7 +19835,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -18913,7 +19956,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
@@ -19071,7 +20114,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
                     return result;
                 }
                 if (arity != 3) {
-                    fprintf(stderr, "[ERROR] wrong arity %%i for posf3 argument\n", arity);
+                    fprintf(stderr, "[ERROR] wrong arity %i for posf3 argument\n", arity);
                     ei_x_free(&buff);
                     return -1;
                 }
