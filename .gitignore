@@ -6,3 +6,6 @@ cmake_install.cmake
 lib*.so
 erl_interface*
 *.log
+elixir_generated
+springrts
+tmp
