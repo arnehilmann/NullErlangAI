@@ -1,7 +1,11 @@
 #!/bin/bash
 set -e -E -u
 
-SPRING_DIR=~/spring
+SPRING_DIR=/build/spring
 
-make clean install
-$SPRING_DIR/bin/spring-headless -w res/nullai_test.txt
+# misc/generate-sources
+make install
+
+epmd -daemon
+# $SPRING_DIR/bin/spring-headless -w res/nullai_test.txt
+$SPRING_DIR/bin/spring -w res/nullai_test.txt

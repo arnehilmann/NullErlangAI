@@ -1,0 +1,7 @@
+#!/bin/bash
+set -u -e -E
+
+for IMAGE in spring-build-base spring-build; do
+	docker build -t arne/$IMAGE -f $IMAGE.dockerfile .
+done
+docker build -t arne/nullerlangai-build -f nullerlangai-build.dockerfile .

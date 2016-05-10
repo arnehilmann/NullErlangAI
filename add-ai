@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e -E -u
+
+SPRING_DIR=${1:-/build/spring}
+ERL_INTERFACE_DIR=${2:-/usr/lib/erlang/lib/erl_interface-*}
+SCRIPT_DIR=$PWD
+
+echo "Preparing NullErlangAI development environment"
+echo " spring install: $SPRING_DIR"
+echo "  erl interface: $ERL_INTERFACE_DIR"
+
+ln -sf $ERL_INTERFACE_DIR erl_interface
+
+(
+    cd $SPRING_DIR/share/games/spring
+    ln -sf $SCRIPT_DIR/res/maps .
+    ln -sf $SCRIPT_DIR/res/games .
+)
+
+make clean || :
+
+(
+    cd ../../..
+    cmake -DCMAKE_INSTALL_PREFIX=$SPRING_DIR -DAI_TYPES="NATIVE" .
+)
+
+sed -i.bak s/-fuse-ld=gold// CMakeFiles/NullErlangAI.dir/link.txt
+make install
+
+epmd -daemon
