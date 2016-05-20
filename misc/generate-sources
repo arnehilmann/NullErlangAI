@@ -468,11 +468,25 @@ class SourceGeneratorCallbacks(object):
         try:
             os.makedirs(os.path.dirname(filename))
         except Exception as e:
-            print(e)
+            pass
+            # print(e)
+        last_submodule = None
         with open(filename, "w") as f:
             f.write("defmodule SpringRTS.Callbacks do\n    import SpringRTS.Helper, only: :functions\n")
-            f.write("    defp engine do\n        Application.get_env(SpringRTS, :engine)\n    end\n\n")
+            # f.write("    defp engine do\n        Application.get_env(SpringRTS, :engine)\n    end\n\n")
             for name in sorted(self.cbs):
+                try:
+                    submodule, name_without_submodule = name.split("_", 1)
+                except Exception as e:
+                    submodule, name_without_submodule = "", name
+
+                if submodule != last_submodule:
+                    if last_submodule:
+                        f.write("    end\n")
+                    if submodule:
+                        print("new submodule %s started" % submodule)
+                        f.write("\n    defmodule %s do\n" % submodule)
+                    last_submodule = submodule
                 cb = self.cbs[name]
                 lines = []
 
@@ -486,10 +500,17 @@ class SourceGeneratorCallbacks(object):
                         call_args.append(arg_name)
                     send_args.append(arg_name)
                 send_args.append('self()')
-                lines.append("    def %s(%s) do" % (_ensure_first_letter_lowercase(name), ", ".join(call_args)))
-                lines.append("        send engine(), {%s}" % ", ".join(send_args))
+		function_name = re.sub('(?!^)([A-Z]+)', r'_\1', name_without_submodule).lower()
+                if call_args:
+		    lines.append("    def %s(%s) do" % (function_name, ", ".join(call_args)))
+                else:
+		    lines.append("    def %s do" % function_name)
+                lines.append("        send Application.get_env(SpringRTS, :engine), {%s}" % ", ".join(send_args))
                 lines.append("        receive_response")
                 lines.append("    end")
+                if submodule:
+                    for i, line in enumerate(lines):
+                        lines[i] = "    " + line
                 lines.append("")
                 f.write("\n".join(lines))
             f.write("end\n")
