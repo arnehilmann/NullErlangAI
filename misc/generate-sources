@@ -268,7 +268,7 @@ class SourceGeneratorCommands(object):
             pass
             # print(e)
         with open(filename, "w") as f:
-            f.write("defmodule SpringRTS.Commands do\n    import SpringRTS.Helper, only: :functions\n")
+            f.write("defmodule SpringRTS.Commands do\n    @moduledoc false\n    import SpringRTS.Helper, only: :functions\n")
             f.write("    defp engine do\n        Application.get_env(SpringRTS, :engine)\n    end\n\n")
             for name in sorted(self.commands):
                 lines = []
@@ -284,7 +284,10 @@ class SourceGeneratorCommands(object):
                 fun_args = common_args
                 in_args = common_args + ["self()"]
 
-                lines.append("    def %s(%s) do" % (fun_name, ", ".join(fun_args)))
+                if fun_args:
+                    lines.append("    def %s(%s) do" % (fun_name, ", ".join(fun_args)))
+                else:
+                    lines.append("    def %s do" % fun_name)
                 lines.append("        send engine(), {:command, :%s, %s}" % (name, ", ".join(in_args)))
                 lines.append("        receive_response")
                 lines.append("    end")
@@ -472,7 +475,7 @@ class SourceGeneratorCallbacks(object):
             # print(e)
         last_submodule = None
         with open(filename, "w") as f:
-            f.write("defmodule SpringRTS.Callbacks do\n    import SpringRTS.Helper, only: :functions\n")
+            f.write("defmodule SpringRTS.Callbacks do\n    @moduledoc false\n    import SpringRTS.Helper, only: :functions\n")
             # f.write("    defp engine do\n        Application.get_env(SpringRTS, :engine)\n    end\n\n")
             for name in sorted(self.cbs):
                 try:
@@ -485,7 +488,7 @@ class SourceGeneratorCallbacks(object):
                         f.write("    end\n")
                     if submodule:
                         print("new submodule %s started" % submodule)
-                        f.write("\n    defmodule %s do\n" % submodule)
+                        f.write("\n    defmodule %s do\n        @moduledoc false\n" % submodule)
                     last_submodule = submodule
                 cb = self.cbs[name]
                 lines = []
