@@ -7,5 +7,5 @@ SPRING_DIR=/build/spring
 make install
 
 epmd -daemon
-# $SPRING_DIR/bin/spring-headless -w res/nullai_test.txt
-$SPRING_DIR/bin/spring -w res/nullai_test.txt
+$SPRING_DIR/bin/spring-headless -w res/nullai_test.txt
+# $SPRING_DIR/bin/spring -w res/nullai_test.txt
