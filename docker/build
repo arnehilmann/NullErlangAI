@@ -7,11 +7,10 @@ AI_TARGET_DIR=/src/spring/AI/Skirmish/NullErlangAI
 docker network inspect spring > /dev/null 2>&1 || docker network create --driver bridge spring
 
 docker run -it \
-	-v $AI_SRC_DIR:$AI_TARGET_DIR \
-	-w $AI_TARGET_DIR \
-	-p 7766:7766 \
-	-p 14369:4369 \
-	--net-alias engine \
-        --net spring \
-        -e DISPLAY=10.172.201.24:0 \
-	arne/nullerlangai-build 
+    -v $AI_SRC_DIR:$AI_TARGET_DIR \
+    -w $AI_TARGET_DIR \
+    -p 7766:7766 \
+    -p 14369:4369 \
+    --net-alias engine \
+    --net spring \
+    arne/nullerlangai-build
