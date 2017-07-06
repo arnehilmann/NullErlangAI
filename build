@@ -14,6 +14,7 @@ git clean -fx
 ln -sf $ERL_INTERFACE_DIR erl_interface
 
 (
+    misc/generate-sources
     cd ../../..
     cmake -DCMAKE_INSTALL_PREFIX=$SPRING_DIR -DAI_TYPES="NATIVE" .
     make install-spring
