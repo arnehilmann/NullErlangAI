@@ -289,7 +289,7 @@ class SourceGeneratorCommands(object):
                 else:
                     lines.append("    def %s do" % fun_name)
                 lines.append("        send engine(), {:command, :%s, %s}" % (name, ", ".join(in_args)))
-                lines.append("        receive_response")
+                lines.append("        receive_response()")
                 lines.append("    end")
                 lines.append("")
                 f.write("\n".join(lines))
@@ -509,7 +509,7 @@ class SourceGeneratorCallbacks(object):
                 else:
 		    lines.append("    def %s do" % function_name)
                 lines.append("        send Application.get_env(SpringRTS, :engine), {%s}" % ", ".join(send_args))
-                lines.append("        receive_response")
+                lines.append("        receive_response()")
                 lines.append("    end")
                 if submodule:
                     for i, line in enumerate(lines):
