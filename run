@@ -1,11 +1,12 @@
 #!/bin/bash
 set -e -E -u
 
-SPRING_DIR=/build/spring
+# SPRING_DIR=/build/spring
+SPRING_DIR=~/spring
 
 # misc/generate-sources
 make install
 
 epmd -daemon
-$SPRING_DIR/bin/spring-headless -w res/nullai_test.txt
-# $SPRING_DIR/bin/spring -w res/nullai_test.txt
+# $SPRING_DIR/bin/spring-headless -w res/nullai_test.txt
+$SPRING_DIR/bin/spring -w res/nullai_test.txt
