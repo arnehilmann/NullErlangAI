@@ -27,8 +27,12 @@
 #define MAX_TEAM_COUNT 4
 
 
+#define HOST_NAME "127.0.0.1"
+#define NODE_NAME "erlang_ai0@127.0.0.1"
+/*
 #define HOST_NAME "engine.spring"
 #define NODE_NAME "erlang_ai0@engine.spring"
+*/
 
 
 int frame = -1;

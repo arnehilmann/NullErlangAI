@@ -1893,6 +1893,110 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Feature_getRulesParamFloat") == 0) {
+        int unitId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            unitId = (int)tmp;
+        }
+
+        char* featureRulesParamName;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, featureRulesParamName);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'featureRulesParamName' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        float defaultValue;
+        {
+            double tmp;
+            int result = ei_decode_double(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'defaultValue' as 'float', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            defaultValue = (float)tmp;
+        }
+
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        float result = callback->Feature_getRulesParamFloat(skirmishAIId, unitId, featureRulesParamName, defaultValue);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_double(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Feature_getRulesParamString") == 0) {
+        int unitId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            unitId = (int)tmp;
+        }
+
+        char* featureRulesParamName;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, featureRulesParamName);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'featureRulesParamName' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        char* defaultValue;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, defaultValue);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'defaultValue' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        const char* result = callback->Feature_getRulesParamString(skirmishAIId, unitId, featureRulesParamName, defaultValue);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_string(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "File_getSize") == 0) {
         char* fileName;
         {
@@ -1920,99 +2024,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "GameRulesParam_getName") == 0) {
-        int gameRulesParamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'gameRulesParamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            gameRulesParamId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        const char* result = callback->GameRulesParam_getName(skirmishAIId, gameRulesParamId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_string(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "GameRulesParam_getValueFloat") == 0) {
-        int gameRulesParamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'gameRulesParamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            gameRulesParamId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        float result = callback->GameRulesParam_getValueFloat(skirmishAIId, gameRulesParamId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_double(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "GameRulesParam_getValueString") == 0) {
-        int gameRulesParamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'gameRulesParamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            gameRulesParamId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        const char* result = callback->GameRulesParam_getValueString(skirmishAIId, gameRulesParamId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Game_getAiInterfaceVersion") == 0) {
@@ -2164,103 +2175,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(callback_what, "Game_getGameRulesParamById") == 0) {
-        int rulesParamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'rulesParamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            rulesParamId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        int result = callback->Game_getGameRulesParamById(skirmishAIId, rulesParamId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Game_getGameRulesParamByName") == 0) {
-        char* rulesParamName;
-        {
-            int result = ei_decode_string(buff.buff, &buff.index, rulesParamName);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'rulesParamName' as 'char*', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        int result = callback->Game_getGameRulesParamByName(skirmishAIId, rulesParamName);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Game_getGameRulesParams") == 0) {
-        int paramIds_sizeMax;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'paramIds_sizeMax' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            paramIds_sizeMax = (int)tmp;
-        }
-
-        int paramIds[paramIds_sizeMax];
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        int result = callback->Game_getGameRulesParams(skirmishAIId, paramIds, paramIds_sizeMax);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
-        int i = 0;
-        for (; i < result; i++) {
-            ei_x_encode_long(&sendbuff, paramIds[i]);
-        }
-        ei_x_encode_empty_list(&sendbuff);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
     if (strcmp(callback_what, "Game_getMode") == 0) {
         erlang_pid from;
         {
@@ -2347,6 +2261,86 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_long(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Game_getRulesParamFloat") == 0) {
+        char* gameRulesParamName;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, gameRulesParamName);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'gameRulesParamName' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        float defaultValue;
+        {
+            double tmp;
+            int result = ei_decode_double(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'defaultValue' as 'float', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            defaultValue = (float)tmp;
+        }
+
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        float result = callback->Game_getRulesParamFloat(skirmishAIId, gameRulesParamName, defaultValue);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_double(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Game_getRulesParamString") == 0) {
+        char* gameRulesParamName;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, gameRulesParamName);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'gameRulesParamName' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        char* defaultValue;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, defaultValue);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'defaultValue' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        const char* result = callback->Game_getRulesParamString(skirmishAIId, gameRulesParamName, defaultValue);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Game_getSetupScript") == 0) {
@@ -3007,25 +3001,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         }
 
         bool result = callback->Game_isDebugModeEnabled(skirmishAIId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_boolean(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Game_isExceptionHandlingEnabled") == 0) {
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        bool result = callback->Game_isExceptionHandlingEnabled(skirmishAIId);
         ei_x_buff sendbuff;
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
@@ -5643,6 +5618,25 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_string(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Mod_getRadarMipLevel") == 0) {
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        int result = callback->Mod_getRadarMipLevel(skirmishAIId);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_long(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Mod_getReclaimAllowAllies") == 0) {
         erlang_pid from;
         {
@@ -6317,7 +6311,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_long(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(callback_what, "Team_TeamRulesParam_getName") == 0) {
+    if (strcmp(callback_what, "Team_getRulesParamFloat") == 0) {
         int teamId;
         {
             long tmp;
@@ -6330,16 +6324,26 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
             teamId = (int)tmp;
         }
 
-        int teamRulesParamId;
+        char* teamRulesParamName;
         {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            int result = ei_decode_string(buff.buff, &buff.index, teamRulesParamName);
             if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'teamRulesParamId' as 'int', error code %i\n", result);
+                fprintf(stderr, "[ERROR] cannot decode 'teamRulesParamName' as 'char*', error code %i\n", result);
                 ei_x_free(&buff);
                 return result;
             }
-            teamRulesParamId = (int)tmp;
+        }
+
+        float defaultValue;
+        {
+            double tmp;
+            int result = ei_decode_double(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'defaultValue' as 'float', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            defaultValue = (float)tmp;
         }
 
         erlang_pid from;
@@ -6352,50 +6356,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
             }
         }
 
-        const char* result = callback->Team_TeamRulesParam_getName(skirmishAIId, teamId, teamRulesParamId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_string(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Team_TeamRulesParam_getValueFloat") == 0) {
-        int teamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'teamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            teamId = (int)tmp;
-        }
-
-        int teamRulesParamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'teamRulesParamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            teamRulesParamId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        float result = callback->Team_TeamRulesParam_getValueFloat(skirmishAIId, teamId, teamRulesParamId);
+        float result = callback->Team_getRulesParamFloat(skirmishAIId, teamId, teamRulesParamName, defaultValue);
         ei_x_buff sendbuff;
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
@@ -6403,7 +6364,7 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(callback_what, "Team_TeamRulesParam_getValueString") == 0) {
+    if (strcmp(callback_what, "Team_getRulesParamString") == 0) {
         int teamId;
         {
             long tmp;
@@ -6416,16 +6377,24 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
             teamId = (int)tmp;
         }
 
-        int teamRulesParamId;
+        char* teamRulesParamName;
         {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            int result = ei_decode_string(buff.buff, &buff.index, teamRulesParamName);
             if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'teamRulesParamId' as 'int', error code %i\n", result);
+                fprintf(stderr, "[ERROR] cannot decode 'teamRulesParamName' as 'char*', error code %i\n", result);
                 ei_x_free(&buff);
                 return result;
             }
-            teamRulesParamId = (int)tmp;
+        }
+
+        char* defaultValue;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, defaultValue);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'defaultValue' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
         }
 
         erlang_pid from;
@@ -6438,145 +6407,12 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
             }
         }
 
-        const char* result = callback->Team_TeamRulesParam_getValueString(skirmishAIId, teamId, teamRulesParamId);
+        const char* result = callback->Team_getRulesParamString(skirmishAIId, teamId, teamRulesParamName, defaultValue);
         ei_x_buff sendbuff;
         ei_x_new_with_version(&sendbuff);
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_string(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Team_getTeamRulesParamById") == 0) {
-        int teamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'teamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            teamId = (int)tmp;
-        }
-
-        int rulesParamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'rulesParamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            rulesParamId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        int result = callback->Team_getTeamRulesParamById(skirmishAIId, teamId, rulesParamId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Team_getTeamRulesParamByName") == 0) {
-        int teamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'teamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            teamId = (int)tmp;
-        }
-
-        char* rulesParamName;
-        {
-            int result = ei_decode_string(buff.buff, &buff.index, rulesParamName);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'rulesParamName' as 'char*', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        int result = callback->Team_getTeamRulesParamByName(skirmishAIId, teamId, rulesParamName);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Team_getTeamRulesParams") == 0) {
-        int teamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'teamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            teamId = (int)tmp;
-        }
-
-        int paramIds_sizeMax;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'paramIds_sizeMax' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            paramIds_sizeMax = (int)tmp;
-        }
-
-        int paramIds[paramIds_sizeMax];
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        int result = callback->Team_getTeamRulesParams(skirmishAIId, teamId, paramIds, paramIds_sizeMax);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
-        int i = 0;
-        for (; i < result; i++) {
-            ei_x_encode_long(&sendbuff, paramIds[i]);
-        }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Team_hasAIController") == 0) {
@@ -14118,135 +13954,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_boolean(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
-    if (strcmp(callback_what, "Unit_UnitRulesParam_getName") == 0) {
-        int unitId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitId = (int)tmp;
-        }
-
-        int unitRulesParamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitRulesParamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitRulesParamId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        const char* result = callback->Unit_UnitRulesParam_getName(skirmishAIId, unitId, unitRulesParamId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_string(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Unit_UnitRulesParam_getValueFloat") == 0) {
-        int unitId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitId = (int)tmp;
-        }
-
-        int unitRulesParamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitRulesParamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitRulesParamId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        float result = callback->Unit_UnitRulesParam_getValueFloat(skirmishAIId, unitId, unitRulesParamId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_double(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Unit_UnitRulesParam_getValueString") == 0) {
-        int unitId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitId = (int)tmp;
-        }
-
-        int unitRulesParamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitRulesParamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitRulesParamId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        const char* result = callback->Unit_UnitRulesParam_getValueString(skirmishAIId, unitId, unitRulesParamId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_string(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
     if (strcmp(callback_what, "Unit_Weapon_getDef") == 0) {
         int unitId;
         {
@@ -15069,6 +14776,110 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_double(&sendbuff, result);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
+    if (strcmp(callback_what, "Unit_getRulesParamFloat") == 0) {
+        int unitId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            unitId = (int)tmp;
+        }
+
+        char* unitRulesParamName;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, unitRulesParamName);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'unitRulesParamName' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        float defaultValue;
+        {
+            double tmp;
+            int result = ei_decode_double(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'defaultValue' as 'float', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            defaultValue = (float)tmp;
+        }
+
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        float result = callback->Unit_getRulesParamFloat(skirmishAIId, unitId, unitRulesParamName, defaultValue);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_double(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
+    if (strcmp(callback_what, "Unit_getRulesParamString") == 0) {
+        int unitId;
+        {
+            long tmp;
+            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+            unitId = (int)tmp;
+        }
+
+        char* unitRulesParamName;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, unitRulesParamName);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'unitRulesParamName' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        char* defaultValue;
+        {
+            int result = ei_decode_string(buff.buff, &buff.index, defaultValue);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'defaultValue' as 'char*', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        erlang_pid from;
+        {
+            int result = ei_decode_pid(buff.buff, &buff.index, &from);
+            if (result != 0) {
+                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
+                ei_x_free(&buff);
+                return result;
+            }
+        }
+
+        const char* result = callback->Unit_getRulesParamString(skirmishAIId, unitId, unitRulesParamName, defaultValue);
+        ei_x_buff sendbuff;
+        ei_x_new_with_version(&sendbuff);
+        ei_x_encode_tuple_header(&sendbuff, 2);
+        ei_x_encode_atom(&sendbuff, "ok");
+        ei_x_encode_string(&sendbuff, result);
+        return send_to_pid(skirmishAIId, &from, sendbuff);
+    }
     if (strcmp(callback_what, "Unit_getSpeed") == 0) {
         int unitId;
         {
@@ -15222,139 +15033,6 @@ int handle_callback(int skirmishAIId, const struct SSkirmishAICallback* callback
         ei_x_encode_tuple_header(&sendbuff, 2);
         ei_x_encode_atom(&sendbuff, "ok");
         ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Unit_getUnitRulesParamById") == 0) {
-        int unitId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitId = (int)tmp;
-        }
-
-        int rulesParamId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'rulesParamId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            rulesParamId = (int)tmp;
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        int result = callback->Unit_getUnitRulesParamById(skirmishAIId, unitId, rulesParamId);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Unit_getUnitRulesParamByName") == 0) {
-        int unitId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitId = (int)tmp;
-        }
-
-        char* rulesParamName;
-        {
-            int result = ei_decode_string(buff.buff, &buff.index, rulesParamName);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'rulesParamName' as 'char*', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        int result = callback->Unit_getUnitRulesParamByName(skirmishAIId, unitId, rulesParamName);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_long(&sendbuff, result);
-        return send_to_pid(skirmishAIId, &from, sendbuff);
-    }
-    if (strcmp(callback_what, "Unit_getUnitRulesParams") == 0) {
-        int unitId;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'unitId' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            unitId = (int)tmp;
-        }
-
-        int paramIds_sizeMax;
-        {
-            long tmp;
-            int result = ei_decode_long(buff.buff, &buff.index, &tmp);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'paramIds_sizeMax' as 'int', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-            paramIds_sizeMax = (int)tmp;
-        }
-
-        int paramIds[paramIds_sizeMax];
-        erlang_pid from;
-        {
-            int result = ei_decode_pid(buff.buff, &buff.index, &from);
-            if (result != 0) {
-                fprintf(stderr, "[ERROR] cannot decode 'from' as 'erlang_pid', error code %i\n", result);
-                ei_x_free(&buff);
-                return result;
-            }
-        }
-
-        int result = callback->Unit_getUnitRulesParams(skirmishAIId, unitId, paramIds, paramIds_sizeMax);
-        ei_x_buff sendbuff;
-        ei_x_new_with_version(&sendbuff);
-        ei_x_encode_tuple_header(&sendbuff, 2);
-        ei_x_encode_atom(&sendbuff, "ok");
-        ei_x_encode_list_header(&sendbuff, result);
-        int i = 0;
-        for (; i < result; i++) {
-            ei_x_encode_long(&sendbuff, paramIds[i]);
-        }
-        ei_x_encode_empty_list(&sendbuff);
         return send_to_pid(skirmishAIId, &from, sendbuff);
     }
     if (strcmp(callback_what, "Unit_getVel") == 0) {
