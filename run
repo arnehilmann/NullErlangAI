@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e -E -u
 
+cd $(dirname $0)
+
 # SPRING_DIR=/build/spring
 SPRING_DIR=~/spring
 
