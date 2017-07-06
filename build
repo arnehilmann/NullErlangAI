@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e -E -u
 
+cd $(dirname $0)
+
 SPRING_DIR=${1:-~/spring}
 ERL_INTERFACE_DIR=${2:-/usr/lib/erlang/lib/erl_interface-*}
 SCRIPT_DIR=$PWD
