@@ -203,7 +203,7 @@ int send_tick(int team_id, int frame) {
 }
 
 
-int check_for_message_from_hq(int team_id) {
+int check_for_message_from_hq(int team_id, int frame) {
     int uplink = uplinks[team_id];
     if (uplink < 0) {
         uplink = uplinks[team_id] = ei_accept_tmo(&ecs[team_id], listen_fd[team_id], &conns[team_id], 10);
@@ -252,7 +252,7 @@ int check_for_message_from_hq(int team_id) {
         ei_decode_tuple_header(recvbuf.buff, &recvbuf.index, &arity);
         ei_decode_atom(recvbuf.buff, &recvbuf.index, message);
 
-        printf("received: %s <--[%i]-- /%i, 0:'%s'\n", msg.toname, uplink, arity, message);
+        printf("[%i] received: %s <--[%i]-- /%i, 0:'%s'\n", frame, msg.toname, uplink, arity, message);
     }
 //    if (strcmp(message, "ping") == 0) {
 //        erlang_pid from;
@@ -291,7 +291,7 @@ EXPORT(int) handleEvent(int team_id, int topic, const void* data) {
         //    return check_for_message_from_hq(team_id);
         //}
         //return 0;
-        return check_for_message_from_hq(team_id);
+        return check_for_message_from_hq(team_id, frame);
     }
 
     return send_event(team_id, topic, data);
